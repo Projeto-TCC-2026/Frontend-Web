@@ -1,0 +1,145 @@
+<div class="screen">
+  <div class="nav">
+    <div class="nav-logo" (click)="scrollToTop()">
+      <span class="cross-sm">
+        <span class="cv"></span>
+        <span class="ch"></span>
+      </span>
+      RecuperaSaúde
+    </div>
+    <div class="nav-links">
+      <div class="nl active" (click)="scrollToTop()">Início</div>
+      <div class="nl" (click)="scrollToSection('how')">Como funciona</div>
+      <div class="nl" (click)="goToRegister('medico')">Para médicos</div>
+      <div class="nl" (click)="scrollToSection('footer')">Suporte</div>
+      <button class="nav-btn" (click)="goToLogin()">Entrar</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-tag">✦ Acompanhamento pós-operatório digital</div>
+      <div class="hero-title">
+        Sua recuperação<br>
+        com <span>mais segurança</span><br>
+        e agilidade
+      </div>
+      <div class="hero-desc">
+        Conectamos médicos e pacientes durante todo o processo pós-cirúrgico e pós-consulta,
+        garantindo monitoramento contínuo e comunicação rápida e segura.
+      </div>
+      <div class="hero-btns">
+        <button class="hero-btn-p" (click)="goToRegister('paciente')">Criar conta gratuita</button>
+        <button class="hero-btn-o" (click)="goToRegister('medico')">Sou médico →</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="stat-card">
+        <div class="stat-label">Pacientes acompanhados</div>
+        <div class="stat-val">12.4k</div>
+        <div class="stat-desc">registrados na plataforma</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Médicos verificados</div>
+        <div class="stat-val">860+</div>
+        <div class="stat-desc">profissionais ativos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Satisfação dos usuários</div>
+        <div class="stat-val">98%</div>
+        <div class="stat-desc">avaliações positivas</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features" id="features">
+    <div class="section-head">
+      <h2>Por que usar o RecuperaSaúde?</h2>
+      <p>Uma plataforma completa para o cuidado contínuo do paciente pós-operatório</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon fi-blue">📋</div>
+        <div class="feat-name">Prontuário digital</div>
+        <div class="feat-desc">Histórico completo de cirurgias, consultas e evolução do paciente centralizado em um só lugar.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-red">🔔</div>
+        <div class="feat-name">Alertas automáticos</div>
+        <div class="feat-desc">Lembretes de medicação, retornos agendados e sinais de alerta enviados em tempo real.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-teal">💬</div>
+        <div class="feat-name">Chat com médico</div>
+        <div class="feat-desc">Comunicação direta, rápida e segura entre paciente e o profissional responsável.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-green">📊</div>
+        <div class="feat-name">Evolução clínica</div>
+        <div class="feat-desc">Gráficos e relatórios sobre sintomas, dor, mobilidade e outros indicadores de recuperação.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-amber">📅</div>
+        <div class="feat-name">Agendamento fácil</div>
+        <div class="feat-desc">Solicite retornos e consultas diretamente pelo app sem burocracia.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-purple">🔒</div>
+        <div class="feat-name">Dados protegidos</div>
+        <div class="feat-desc">Criptografia de ponta a ponta e conformidade com a LGPD para total segurança.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="how" id="how">
+    <h2>Como funciona em 4 passos simples</h2>
+    <p>Do cadastro ao acompanhamento completo em minutos</p>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-circle">1</div>
+        <div class="step-name">Cadastro</div>
+        <div class="step-desc">Médico e paciente criam suas contas na plataforma</div>
+      </div>
+      <div class="step-arrow">›</div>
+      <div class="step">
+        <div class="step-circle">2</div>
+        <div class="step-name">Vinculação</div>
+        <div class="step-desc">Médico vincula o paciente ao tratamento ou cirurgia realizada</div>
+      </div>
+      <div class="step-arrow">›</div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-name">Monitoramento</div>
+        <div class="step-desc">Paciente registra sintomas e evolução diariamente pelo app</div>
+      </div>
+      <div class="step-arrow">›</div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-name">Acompanhamento</div>
+        <div class="step-desc">Médico visualiza relatórios e responde dúvidas em tempo real</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <div class="cta-text">
+      <h3>Comece hoje, gratuitamente</h3>
+      <p>Junte-se a mais de 860 médicos que já usam o RecuperaSaúde para cuidar dos seus pacientes</p>
+    </div>
+    <div class="cta-btns">
+      <button class="cta-btn-w" (click)="goToRegister('paciente')">Criar conta paciente</button>
+      <button class="cta-btn-o" (click)="goToRegister('medico')">Sou profissional de saúde</button>
+    </div>
+  </div>
+
+  <div class="footer" id="footer">
+    <div class="footer-logo">RecuperaSaúde</div>
+    <div class="footer-links">
+      <div class="footer-link">Privacidade</div>
+      <div class="footer-link">Termos de uso</div>
+      <div class="footer-link">Contato</div>
+      <div class="footer-link">LGPD</div>
+    </div>
+    <div class="footer-copy">© 2025 RecuperaSaúde · Todos os direitos reservados</div>
+  </div>
+</div>

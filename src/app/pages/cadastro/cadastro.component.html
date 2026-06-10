@@ -1,0 +1,255 @@
+<div class="screen" (click)="closeDropdowns()">
+  <div class="header">
+    <div class="header-icon">
+      <div class="cross"><div class="cv"></div><div class="ch"></div></div>
+    </div>
+    <div class="header-text">
+      <h1 (click)="goToHome()">Criar conta — RecuperaSaúde</h1>
+      <p>Selecione o tipo de perfil e preencha os dados abaixo para concluir seu cadastro</p>
+    </div>
+  </div>
+
+  <div class="tab-row">
+    <div class="tab" [class.active]="activeTab==='medico'" (click)="setTab('medico')">👨‍⚕️ &nbsp;Médico / Profissional de saúde</div>
+    <div class="tab" [class.active]="activeTab==='paciente'" (click)="setTab('paciente')">🧑‍🦽 &nbsp;Paciente</div>
+  </div>
+
+  <div class="body">
+    <!-- MÉDICO -->
+    <div class="panel" [class.active]="activeTab==='medico'" id="panel-medico">
+      <div class="panel-head">
+        <div class="panel-title">Cadastro do profissional <span class="badge badge-blue">CRM obrigatório</span> <span class="badge badge-red">Verificação 24h</span></div>
+        <div class="panel-desc">Após o envio, sua documentação será analisada pela equipe RecuperaSaúde. Você receberá confirmação por e-mail em até 24 horas úteis.</div>
+      </div>
+      <div class="progress">
+        <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step current"></div><div class="prog-step"></div>
+      </div>
+
+      <div class="section-title">Dados pessoais</div>
+      <div class="fl">Nome completo</div>
+      <input type="text" class="fi" [class.error]="errors['medicoNome']" [(ngModel)]="medicoNome" placeholder="Dr(a). Nome Sobrenome">
+      <div class="error-message" [class.show]="errors['medicoNome']">{{errors['medicoNome']}}</div>
+
+      <div class="row2">
+        <div>
+          <div class="fl">CPF</div>
+          <input type="text" class="fi" [class.error]="errors['medicoCpf']" [value]="medicoCpf" (input)="onInput('medicoCpf', $any($event.target).value, formatCPF.bind(this))" placeholder="000.000.000-00" maxlength="14">
+          <div class="error-message" [class.show]="errors['medicoCpf']">{{errors['medicoCpf']}}</div>
+        </div>
+        <div>
+          <div class="fl">Data de nascimento</div>
+          <input type="text" class="fi" [class.error]="errors['medicoNascimento']" [value]="medicoNascimento" (input)="onInput('medicoNascimento', $any($event.target).value, formatDate.bind(this))" placeholder="DD/MM/AAAA" maxlength="10">
+          <div class="error-message" [class.show]="errors['medicoNascimento']">{{errors['medicoNascimento']}}</div>
+        </div>
+      </div>
+
+      <div class="fl">E-mail profissional</div>
+      <input type="email" class="fi" [class.error]="errors['medicoEmail']" [(ngModel)]="medicoEmail" placeholder="medico@hospital.com.br">
+      <div class="error-message" [class.show]="errors['medicoEmail']">{{errors['medicoEmail']}}</div>
+
+      <div class="section-title">Dados profissionais</div>
+      <div class="row2">
+        <div>
+          <div class="fl">CRM <span class="req">OBRIG.</span></div>
+          <input type="text" class="fi" [class.error]="errors['medicoCrm']" [(ngModel)]="medicoCrm" placeholder="Ex: 123456/SP">
+          <div class="error-message" [class.show]="errors['medicoCrm']">{{errors['medicoCrm']}}</div>
+        </div>
+        <div>
+          <div class="fl">Especialidade</div>
+          <div class="select-wrapper" (click)="$event.stopPropagation()">
+            <input type="text" class="fi" [class.error]="errors['medicoEspecialidade']" [value]="medicoEspecialidade" placeholder="Cirurgia geral ▾" readonly (click)="medicoEspecialidadeDropdownOpen=!medicoEspecialidadeDropdownOpen">
+            <div class="select-dropdown" [class.show]="medicoEspecialidadeDropdownOpen">
+              <div class="select-option" *ngFor="let e of especialidades" (click)="selectOption('medicoEspecialidade', e, 'medicoEspecialidadeDropdownOpen')">{{e}}</div>
+            </div>
+          </div>
+          <div class="error-message" [class.show]="errors['medicoEspecialidade']">{{errors['medicoEspecialidade']}}</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <div class="fl">Telefone profissional</div>
+          <input type="text" class="fi" [class.error]="errors['medicoTelefone']" [value]="medicoTelefone" (input)="onInput('medicoTelefone', $any($event.target).value, formatPhone.bind(this))" placeholder="(11) 99999-9999" maxlength="15">
+          <div class="error-message" [class.show]="errors['medicoTelefone']">{{errors['medicoTelefone']}}</div>
+        </div>
+        <div>
+          <div class="fl">Hospital / Clínica</div>
+          <input type="text" class="fi" [class.error]="errors['medicoHospital']" [(ngModel)]="medicoHospital" placeholder="Nome do estabelecimento">
+          <div class="error-message" [class.show]="errors['medicoHospital']">{{errors['medicoHospital']}}</div>
+        </div>
+      </div>
+
+      <div class="section-title">Documentos <span class="req">OBRIG.</span></div>
+      <div class="upload-box">
+        <div class="upload-icon">📄</div>
+        <div class="upload-label">Foto do RG — frente e verso</div>
+        <div class="upload-sub">Arraste ou clique para selecionar · JPG, PNG ou PDF · máx. 5 MB</div>
+      </div>
+      <div class="upload-box">
+        <div class="upload-icon">🎓</div>
+        <div class="upload-label">Diploma ou CRM digital</div>
+        <div class="upload-sub">Arraste ou clique para selecionar · PDF · máx. 10 MB</div>
+      </div>
+
+      <div class="section-title">Dados de acesso</div>
+      <div class="row2">
+        <div>
+          <div class="fl">Senha</div>
+          <input type="password" class="fi" [class.error]="errors['medicoSenha']" [(ngModel)]="medicoSenha" placeholder="Digite sua senha">
+          <div class="error-message" [class.show]="errors['medicoSenha']">{{errors['medicoSenha']}}</div>
+        </div>
+        <div>
+          <div class="fl">Confirmar senha</div>
+          <input type="password" class="fi" [class.error]="errors['medicoConfirmarSenha']" [(ngModel)]="medicoConfirmarSenha" placeholder="Confirme sua senha">
+          <div class="error-message" [class.show]="errors['medicoConfirmarSenha']">{{errors['medicoConfirmarSenha']}}</div>
+        </div>
+      </div>
+
+      <div class="check-row" (click)="medicoTermos=!medicoTermos">
+        <div class="check-box" [class.checked]="medicoTermos"></div>
+        <div class="check-text">Li e concordo com os Termos de Uso e a Política de Privacidade do RecuperaSaúde</div>
+      </div>
+      <div class="check-row" (click)="medicoVeracidade=!medicoVeracidade">
+        <div class="check-box" [class.checked]="medicoVeracidade"></div>
+        <div class="check-text">Confirmo que as informações e documentos enviados são verídicos e de minha autoria</div>
+      </div>
+
+      <button type="button" class="btn btn-blue" (click)="submitMedico()">Enviar cadastro para análise →</button>
+      <div class="login-hint">Já tem conta? <span (click)="goToLogin()">Fazer login</span></div>
+    </div>
+
+    <div class="panel-divider"></div>
+
+    <!-- PACIENTE -->
+    <div class="panel" [class.active]="activeTab==='paciente'" id="panel-paciente">
+      <div class="panel-head">
+        <div class="panel-title">Cadastro do paciente <span class="badge badge-teal">Rápido e simples</span></div>
+        <div class="panel-desc">Seu cadastro é aprovado automaticamente. Após criar sua conta, aguarde seu médico vinculá-lo ao acompanhamento.</div>
+      </div>
+      <div class="progress">
+        <div class="prog-step done"></div><div class="prog-step current"></div><div class="prog-step"></div><div class="prog-step"></div>
+      </div>
+
+      <div class="section-title">Dados pessoais</div>
+      <div class="fl">Nome completo</div>
+      <input type="text" class="fi" [class.error]="errors['pacienteNome']" [(ngModel)]="pacienteNome" placeholder="Seu nome completo">
+      <div class="error-message" [class.show]="errors['pacienteNome']">{{errors['pacienteNome']}}</div>
+
+      <div class="row2">
+        <div>
+          <div class="fl">CPF</div>
+          <input type="text" class="fi" [class.error]="errors['pacienteCpf']" [value]="pacienteCpf" (input)="onInput('pacienteCpf', $any($event.target).value, formatCPF.bind(this))" placeholder="000.000.000-00" maxlength="14">
+          <div class="error-message" [class.show]="errors['pacienteCpf']">{{errors['pacienteCpf']}}</div>
+        </div>
+        <div>
+          <div class="fl">Data de nascimento</div>
+          <input type="text" class="fi" [class.error]="errors['pacienteNascimento']" [value]="pacienteNascimento" (input)="onInput('pacienteNascimento', $any($event.target).value, formatDate.bind(this))" placeholder="DD/MM/AAAA" maxlength="10">
+          <div class="error-message" [class.show]="errors['pacienteNascimento']">{{errors['pacienteNascimento']}}</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <div class="fl">Telefone celular</div>
+          <input type="text" class="fi" [class.error]="errors['pacienteTelefone']" [value]="pacienteTelefone" (input)="onInput('pacienteTelefone', $any($event.target).value, formatPhone.bind(this))" placeholder="(11) 99999-9999" maxlength="15">
+          <div class="error-message" [class.show]="errors['pacienteTelefone']">{{errors['pacienteTelefone']}}</div>
+        </div>
+        <div>
+          <div class="fl">Gênero</div>
+          <div class="select-wrapper" (click)="$event.stopPropagation()">
+            <input type="text" class="fi" [class.error]="errors['pacienteGenero']" [value]="pacienteGenero" placeholder="Selecionar ▾" readonly (click)="pacienteGeneroDropdownOpen=!pacienteGeneroDropdownOpen">
+            <div class="select-dropdown" [class.show]="pacienteGeneroDropdownOpen">
+              <div class="select-option" *ngFor="let g of generos" (click)="selectOption('pacienteGenero', g, 'pacienteGeneroDropdownOpen')">{{g}}</div>
+            </div>
+          </div>
+          <div class="error-message" [class.show]="errors['pacienteGenero']">{{errors['pacienteGenero']}}</div>
+        </div>
+      </div>
+
+      <div class="fl">E-mail</div>
+      <input type="email" class="fi" [class.error]="errors['pacienteEmail']" [(ngModel)]="pacienteEmail" placeholder="seuemail@email.com">
+      <div class="error-message" [class.show]="errors['pacienteEmail']">{{errors['pacienteEmail']}}</div>
+
+      <div class="section-title">Endereço</div>
+      <div class="row2">
+        <div>
+          <div class="fl">CEP</div>
+          <input type="text" class="fi" [class.error]="errors['pacienteCep']" [value]="pacienteCep" (input)="onInput('pacienteCep', $any($event.target).value, formatCEP.bind(this))" (blur)="onCepBlur()" placeholder="00000-000" maxlength="9">
+          <div class="error-message" [class.show]="errors['pacienteCep']">{{errors['pacienteCep']}}</div>
+        </div>
+        <div>
+          <div class="fl">Estado</div>
+          <div class="select-wrapper" (click)="$event.stopPropagation()">
+            <input type="text" class="fi" [class.error]="errors['pacienteEstado']" [value]="pacienteEstado" placeholder="SP ▾" readonly (click)="pacienteEstadoDropdownOpen=!pacienteEstadoDropdownOpen">
+            <div class="select-dropdown" [class.show]="pacienteEstadoDropdownOpen">
+              <div class="select-option" *ngFor="let e of estados" (click)="selectOption('pacienteEstado', e, 'pacienteEstadoDropdownOpen')">{{e}}</div>
+            </div>
+          </div>
+          <div class="error-message" [class.show]="errors['pacienteEstado']">{{errors['pacienteEstado']}}</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <div class="fl">Cidade</div>
+          <input type="text" class="fi" [class.error]="errors['pacienteCidade']" [(ngModel)]="pacienteCidade" placeholder="São Paulo">
+          <div class="error-message" [class.show]="errors['pacienteCidade']">{{errors['pacienteCidade']}}</div>
+        </div>
+        <div>
+          <div class="fl">Bairro</div>
+          <input type="text" class="fi" [class.error]="errors['pacienteBairro']" [(ngModel)]="pacienteBairro" placeholder="Centro">
+          <div class="error-message" [class.show]="errors['pacienteBairro']">{{errors['pacienteBairro']}}</div>
+        </div>
+      </div>
+
+      <div class="section-title">Contato de emergência</div>
+      <div class="fl">Nome do responsável</div>
+      <input type="text" class="fi" [class.error]="errors['pacienteResponsavel']" [(ngModel)]="pacienteResponsavel" placeholder="Nome completo do responsável">
+      <div class="error-message" [class.show]="errors['pacienteResponsavel']">{{errors['pacienteResponsavel']}}</div>
+
+      <div class="row2">
+        <div>
+          <div class="fl">Telefone</div>
+          <input type="text" class="fi" [class.error]="errors['pacienteTelefoneEmergencia']" [value]="pacienteTelefoneEmergencia" (input)="onInput('pacienteTelefoneEmergencia', $any($event.target).value, formatPhone.bind(this))" placeholder="(11) 99999-9999" maxlength="15">
+          <div class="error-message" [class.show]="errors['pacienteTelefoneEmergencia']">{{errors['pacienteTelefoneEmergencia']}}</div>
+        </div>
+        <div>
+          <div class="fl">Parentesco</div>
+          <div class="select-wrapper" (click)="$event.stopPropagation()">
+            <input type="text" class="fi" [class.error]="errors['pacienteParentesco']" [value]="pacienteParentesco" placeholder="Cônjuge ▾" readonly (click)="pacienteParentescoDropdownOpen=!pacienteParentescoDropdownOpen">
+            <div class="select-dropdown" [class.show]="pacienteParentescoDropdownOpen">
+              <div class="select-option" *ngFor="let p of parentescos" (click)="selectOption('pacienteParentesco', p, 'pacienteParentescoDropdownOpen')">{{p}}</div>
+            </div>
+          </div>
+          <div class="error-message" [class.show]="errors['pacienteParentesco']">{{errors['pacienteParentesco']}}</div>
+        </div>
+      </div>
+
+      <div class="section-title">Dados de acesso</div>
+      <div class="row2">
+        <div>
+          <div class="fl">Senha</div>
+          <input type="password" class="fi" [class.error]="errors['pacienteSenha']" [(ngModel)]="pacienteSenha" placeholder="Digite sua senha">
+          <div class="error-message" [class.show]="errors['pacienteSenha']">{{errors['pacienteSenha']}}</div>
+        </div>
+        <div>
+          <div class="fl">Confirmar senha</div>
+          <input type="password" class="fi" [class.error]="errors['pacienteConfirmarSenha']" [(ngModel)]="pacienteConfirmarSenha" placeholder="Confirme sua senha">
+          <div class="error-message" [class.show]="errors['pacienteConfirmarSenha']">{{errors['pacienteConfirmarSenha']}}</div>
+        </div>
+      </div>
+
+      <div class="check-row" (click)="pacienteTermos=!pacienteTermos">
+        <div class="check-box" [class.checked]="pacienteTermos"></div>
+        <div class="check-text">Li e concordo com os Termos de Uso e a Política de Privacidade do RecuperaSaúde</div>
+      </div>
+      <div class="check-row" (click)="pacienteDados=!pacienteDados">
+        <div class="check-box" [class.checked]="pacienteDados"></div>
+        <div class="check-text">Autorizo o compartilhamento dos meus dados de saúde com meu médico responsável pelo acompanhamento</div>
+      </div>
+
+      <button type="button" class="btn btn-red" (click)="submitPaciente()">Criar minha conta gratuitamente →</button>
+      <div class="login-hint">Já tem conta? <span (click)="goToLogin()">Fazer login</span></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<div class="screen">
+  <div class="body">
+    <div class="left">
+      <div class="logo-icon">
+        <div class="cross">
+          <div class="cv"></div>
+          <div class="ch"></div>
+        </div>
+      </div>
+      <div class="logo-name" (click)="goToHome()">RecuperaSaúde</div>
+      <div class="logo-sub">Acompanhamento pós-operatório</div>
+      <div class="divider-left"></div>
+      <div class="tagline">
+        Monitoramento contínuo<br>
+        entre médico e paciente<br>
+        de forma simples e segura.
+      </div>
+      <div class="badges">
+        <div class="badge-item">
+          <div class="badge-dot"></div>
+          <div class="badge-text">Dados protegidos com criptografia</div>
+        </div>
+        <div class="badge-item">
+          <div class="badge-dot"></div>
+          <div class="badge-text">Profissionais verificados pelo CRM</div>
+        </div>
+        <div class="badge-item">
+          <div class="badge-dot"></div>
+          <div class="badge-text">Disponível 24h para emergências</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="login-title">Bem-vindo de volta</div>
+      <div class="login-desc">Acesse sua conta para acompanhar sua recuperação</div>
+
+      <div>
+        <div class="field-label">CPF</div>
+        <input type="text" class="field-input" [(ngModel)]="cpf" (input)="onCpfInput($event)"
+          placeholder="000.000.000-00" maxlength="14">
+
+        <div class="field-label">Senha</div>
+        <input type="password" class="field-input" [(ngModel)]="password"
+          placeholder="Digite sua senha">
+
+        <a href="#" class="forgot" (click)="toggleForgotBox($event)">Esqueci minha senha</a>
+
+        <div class="forgot-box" [class.show]="showForgotBox">
+          <div class="forgot-title">Recuperar senha</div>
+          <div class="forgot-text">Informe seu CPF cadastrado e enviaremos um link de redefinição para o seu e-mail.</div>
+          <input type="text" class="forgot-input" [(ngModel)]="forgotCpf" (input)="onForgotCpfInput($event)"
+            placeholder="000.000.000-00" maxlength="14">
+          <div class="success-message" [class.show]="showSuccessMessage">
+            Link de recuperação enviado com sucesso para seu e-mail!
+          </div>
+          <button type="button" class="btn-send" (click)="sendRecovery()">Enviar link de recuperação</button>
+        </div>
+
+        <button type="button" class="btn-login" (click)="onSubmit()">Entrar na minha conta</button>
+      </div>
+
+      <div class="sep">
+        <div class="sep-line"></div>
+        <div class="sep-text">ou</div>
+        <div class="sep-line"></div>
+      </div>
+
+      <button type="button" class="btn-register" (click)="goToRegister()">Criar nova conta</button>
+    </div>
+  </div>
+</div>
