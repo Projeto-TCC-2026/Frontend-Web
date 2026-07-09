@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError, switchMap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { ApiService } from './api.service';
 import { UserProfile, UserRole } from '../models/entities/user.model';
 import { LoginRequest, LoginResponse, RefreshTokenResponse } from '../models/dtos/auth.dto';
 
@@ -20,13 +19,12 @@ const ALLOWED_WEB_ROLES: UserRole[] = ['ADMIN', 'DOCTOR'];
 })
 export class AuthService {
 
-  private readonly apiUrl = `${environment.apiUrl}/auth`;
   private currentUserSubject = new BehaviorSubject<UserProfile | null>(this.getStoredUser());
 
   currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
-    private http: HttpClient,
+    private api: ApiService,
     private router: Router
   ) {}
 
@@ -36,7 +34,7 @@ export class AuthService {
    * After successful login, fetches full profile via GET /auth/me.
    */
   public login(credentials: LoginRequest): Observable<UserProfile> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+    return this.api.post<LoginResponse>('/auth/login', credentials).pipe(
       tap(response => {
         if (!ALLOWED_WEB_ROLES.includes(response.role)) {
           throw new Error('Acesso restrito ao aplicativo mobile');
@@ -59,7 +57,7 @@ export class AuthService {
    * Used on login and on app initialization (page reload).
    */
   public fetchProfile(): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${this.apiUrl}/me`).pipe(
+    return this.api.get<UserProfile>('/auth/me').pipe(
       tap(user => {
         this.storeUser(user);
         this.currentUserSubject.next(user);
@@ -78,7 +76,7 @@ export class AuthService {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    return this.http.post<RefreshTokenResponse>(`${this.apiUrl}/refresh`, { refreshToken }).pipe(
+    return this.api.post<RefreshTokenResponse>('/auth/refresh', { refreshToken }).pipe(
       tap(response => {
         this.storeTokens(response.accessToken, response.refreshToken);
       }),
@@ -96,7 +94,7 @@ export class AuthService {
     const refreshToken = this.getRefreshToken();
 
     if (refreshToken) {
-      this.http.post(`${this.apiUrl}/logout`, { refreshToken }).subscribe({
+      this.api.post<void>('/auth/logout', { refreshToken }).subscribe({
         error: () => {} // Fire and forget — clear storage regardless
       });
     }
