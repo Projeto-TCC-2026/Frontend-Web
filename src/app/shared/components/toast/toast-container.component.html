@@ -1,13 +1,22 @@
-<div class="flex flex-col gap-2 w-80 max-w-[90vw]">
+<div class="flex flex-col items-end gap-3 max-w-[90vw]">
     @for (toast of notifications.toasts$ | async; track toast.id) {
     <div
-        class="flex items-start gap-3 rounded-lg px-4 py-3 shadow-lg text-white"
+        class="flex w-fit max-w-full items-center gap-3 rounded-full px-4 py-5 shadow-lg text-white"
         [ngClass]="bgClass(toast.type)"
         role="status">
-        <span class="flex-1 text-sm leading-snug">{{ toast.message }}</span>
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/20"
+            aria-hidden="true">
+            @switch (toast.type) {
+                @case ('success') { <svg lucideCircleCheck [size]="18"></svg> }
+                @case ('error') { <svg lucideCircleX [size]="18"></svg> }
+                @case ('warning') { <svg lucideTriangleAlert [size]="18"></svg> }
+                @case ('info') { <svg lucideInfo [size]="18"></svg> }
+            }
+        </span>
+        <span class="flex-1 text-sm font-medium leading-relaxed whitespace-nowrap">{{ toast.message }}</span>
         <button
             type="button"
-            class="shrink-0 text-white/70 hover:text-white leading-none"
+            class="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full text-xl leading-none text-white/80 hover:bg-white/20 hover:text-white"
             aria-label="Fechar notificação"
             (click)="notifications.dismiss(toast.id)">&times;</button>
     </div>

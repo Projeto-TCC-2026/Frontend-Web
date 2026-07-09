@@ -26,6 +26,34 @@
   --color-brand-bg: var(--brand-bg);
 }
 
+/* Surgical baseline for form controls only.
+   Placed in @layer base (lowest priority) so Tailwind utilities AND the
+   existing pages' component CSS both override it — this just neutralizes the
+   browser's native control styling that preflight would normally remove,
+   without the aggressive global reset. */
+@layer base {
+  button {
+    cursor: pointer;
+    background-color: transparent;
+    background-image: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    line-height: inherit;
+  }
+
+  input,
+  select,
+  textarea {
+    color: inherit;
+    font: inherit;
+  }
+
+  button:disabled {
+    cursor: default;
+  }
+}
+
 /* Global resets / base (project-owned, replaces Tailwind preflight) */
 * {
   margin: 0;
