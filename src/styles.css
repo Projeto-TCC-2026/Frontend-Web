@@ -1,3 +1,32 @@
+/* Tailwind v4 — layers imported manually so we can OMIT preflight.
+   Preflight is left out on purpose to avoid disturbing the hand-written
+   CSS of the existing pages. Tailwind utilities remain additive. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* SINGLE SOURCE OF TRUTH for the brand palette.
+   Declared as plain CSS custom properties so they are always emitted and
+   usable from any stylesheet via var(--brand-*). */
+:root {
+  --brand-primary: #1f375d;
+  --brand-primary-deep: #0c4c8a;
+  --brand-accent: #99d5e0;
+  --brand-danger: #e03434;
+  --brand-bg: #e8edf4;
+}
+
+/* Feed the palette into Tailwind's theme so utilities are generated on demand
+   (bg-brand-primary, text-brand-accent, border-brand-danger, ...). */
+@theme {
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-deep: var(--brand-primary-deep);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-danger: var(--brand-danger);
+  --color-brand-bg: var(--brand-bg);
+}
+
+/* Global resets / base (project-owned, replaces Tailwind preflight) */
 * {
   margin: 0;
   padding: 0;
@@ -6,7 +35,7 @@
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: #e8edf4;
+  background: var(--brand-bg);
   margin: 0;
   padding: 0;
   min-height: 100vh;
