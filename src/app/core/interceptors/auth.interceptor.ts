@@ -1,80 +1,83 @@
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import {
-  HttpInterceptor,
+  HttpInterceptorFn,
   HttpRequest,
-  HttpHandler,
-  HttpEvent,
+  HttpHandlerFn,
   HttpErrorResponse
 } from '@angular/common/http';
-import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, throwError } from 'rxjs';
 import { catchError, filter, take, switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
+let isRefreshing = false;
+const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
-  private isRefreshing = false;
-  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
+const PUBLIC_PATHS = [
+  '/auth/login',
+  '/auth/refresh',
+  '/auth/logout',
+  '/auth/doctor/login',
+  '/auth/patient/login'
+];
 
-  constructor(private authService: AuthService) {}
+function isPublicRequest(url: string): boolean {
+  return PUBLIC_PATHS.some(path => url.includes(path));
+}
 
-  public intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (this.isPublicRequest(request.url)) {
-      return next.handle(request);
+function addToken(request: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
+  return request.clone({
+    setHeaders: {
+      Authorization: `Bearer ${token}`
     }
+  });
+}
 
-    const token = this.authService.getAccessToken();
+function handle401(
+  request: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+  authService: AuthService
+) {
+  if (!isRefreshing) {
+    isRefreshing = true;
+    refreshTokenSubject.next(null);
 
-    if (token) {
-      request = this.addToken(request, token);
-    }
-
-    return next.handle(request).pipe(
+    return authService.refreshToken().pipe(
+      switchMap(response => {
+        isRefreshing = false;
+        refreshTokenSubject.next(response.accessToken);
+        return next(addToken(request, response.accessToken));
+      }),
       catchError(error => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
-          return this.handle401Error(request, next);
-        }
+        isRefreshing = false;
+        authService.logout();
         return throwError(() => error);
       })
     );
   }
 
-  private handle401Error(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (!this.isRefreshing) {
-      this.isRefreshing = true;
-      this.refreshTokenSubject.next(null);
-
-      return this.authService.refreshToken().pipe(
-        switchMap(response => {
-          this.isRefreshing = false;
-          this.refreshTokenSubject.next(response.accessToken);
-          return next.handle(this.addToken(request, response.accessToken));
-        }),
-        catchError(error => {
-          this.isRefreshing = false;
-          this.authService.logout();
-          return throwError(() => error);
-        })
-      );
-    }
-
-    return this.refreshTokenSubject.pipe(
-      filter(token => token !== null),
-      take(1),
-      switchMap(token => next.handle(this.addToken(request, token!)))
-    );
-  }
-
-  private addToken(request: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
-    return request.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-  }
-
-  private isPublicRequest(url: string): boolean {
-    const publicPaths = ['/auth/login', '/auth/refresh', '/auth/logout', '/auth/doctor/login', '/auth/patient/login'];
-    return publicPaths.some(path => url.includes(path));
-  }
+  return refreshTokenSubject.pipe(
+    filter(token => token !== null),
+    take(1),
+    switchMap(token => next(addToken(request, token!)))
+  );
 }
+
+export const authInterceptor: HttpInterceptorFn = (request, next) => {
+  const authService = inject(AuthService);
+
+  if (isPublicRequest(request.url)) {
+    return next(request);
+  }
+
+  const token = authService.getAccessToken();
+  const authReq = token ? addToken(request, token) : request;
+
+  return next(authReq).pipe(
+    catchError(error => {
+      if (error instanceof HttpErrorResponse && error.status === 401) {
+        return handle401(request, next, authService);
+      }
+      return throwError(() => error);
+    })
+  );
+};

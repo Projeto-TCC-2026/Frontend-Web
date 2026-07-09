@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forbidden',
+  standalone: true,
   templateUrl: './forbidden.component.html',
   styleUrls: ['./forbidden.component.css']
 })
