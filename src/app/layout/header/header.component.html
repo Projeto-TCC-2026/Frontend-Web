@@ -1,0 +1,32 @@
+<header class="flex items-center h-16 px-6 bg-white border-b border-[var(--color-neutro-150)]">
+  <!-- Mobile menu button -->
+  <button
+    class="hidden max-md:flex items-center justify-center w-9 h-9 rounded-[var(--radius-sm)] text-[var(--color-neutro-700)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)]"
+    (click)="onMenuToggle()"
+    aria-label="Abrir menu"
+  >
+    <svg lucideMenu class="w-5 h-5"></svg>
+  </button>
+
+  <!-- Spacer -->
+  <div class="flex-1"></div>
+
+  <!-- User info -->
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-full bg-[var(--color-azul-primario)] flex items-center justify-center shrink-0">
+      <span class="font-heading text-[13px] font-bold text-white tracking-wide">{{ userInitials }}</span>
+    </div>
+    <div class="flex flex-col gap-px max-md:hidden">
+      <span class="text-[13px] font-semibold text-[var(--color-neutro-900)] leading-tight">{{ userName }}</span>
+      <span class="font-data text-[10.5px] text-[var(--color-neutro-500)] uppercase tracking-wide">{{ userRole }}</span>
+    </div>
+    <button
+      class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)]"
+      (click)="logout()"
+      aria-label="Sair"
+      title="Sair"
+    >
+      <svg lucideLogOut class="w-[18px] h-[18px]"></svg>
+    </button>
+  </div>
+</header>

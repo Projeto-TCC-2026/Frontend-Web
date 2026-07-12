@@ -1,0 +1,26 @@
+@if (breadcrumbs$ | async; as breadcrumbs) {
+  @if (breadcrumbs.length > 0) {
+    <nav class="flex items-center gap-1.5 py-3 text-[13px]" aria-label="Navegação estrutural">
+      <a
+        class="flex items-center text-[var(--color-neutro-500)] transition-colors duration-150 hover:text-[var(--color-azul-primario)]"
+        routerLink="/app/dashboard"
+        title="Dashboard"
+      >
+        <svg lucideHouse class="w-[15px] h-[15px]"></svg>
+      </a>
+      @for (crumb of breadcrumbs; track crumb.url; let last = $last) {
+        <span class="flex items-center text-[var(--color-neutro-300)]">
+          <svg lucideChevronRight class="w-3.5 h-3.5"></svg>
+        </span>
+        @if (!last) {
+          <a
+            class="text-[var(--color-neutro-500)] font-medium no-underline transition-colors duration-150 hover:text-[var(--color-azul-primario)]"
+            [routerLink]="crumb.url"
+          >{{ crumb.label }}</a>
+        } @else {
+          <span class="text-[var(--color-neutro-900)] font-semibold pointer-events-none" aria-current="page">{{ crumb.label }}</span>
+        }
+      }
+    </nav>
+  }
+}

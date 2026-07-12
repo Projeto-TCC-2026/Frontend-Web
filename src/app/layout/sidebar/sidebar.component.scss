@@ -1,0 +1,20 @@
+/* Apenas o estado ativo do routerLinkActive — não há classe Tailwind equivalente
+   para "classe aplicada condicionalmente pelo Angular" */
+:host .sidebar-link--active {
+  color: #fff;
+  background: rgba(153, 213, 224, 0.12);
+  border-left: 3px solid var(--color-aqua-claro);
+}
+
+/* Mobile: esconder sidebar por padrão */
+@media (max-width: 768px) {
+  :host aside {
+    position: fixed;
+    z-index: 50;
+    transform: translateX(-100%);
+  }
+
+  :host-context(.sidebar-mobile-open) aside {
+    transform: translateX(0);
+  }
+}

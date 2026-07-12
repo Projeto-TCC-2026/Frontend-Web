@@ -1,0 +1,64 @@
+<aside
+  class="h-screen sticky top-0 flex flex-col overflow-hidden bg-[var(--color-azul-profundo)] text-white transition-all duration-150 ease-in-out"
+  [class]="isSidebarCollapsed ? 'w-[68px] px-2 pt-8 pb-4' : 'w-[248px] px-4 pt-8 pb-4'"
+>
+  <!-- Brand -->
+  <div class="flex flex-col gap-1 px-2 mb-8">
+    <svg class="w-full h-4 text-[var(--color-aqua-claro)] mb-3" viewBox="0 0 200 16" fill="none">
+      <path
+        d="M0 8 H70 L78 8 L84 -4 L92 20 L98 8 L108 8 L114 2 L120 8 H200"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+    @if (!isSidebarCollapsed) {
+      <span class="font-heading font-extrabold text-[15px] tracking-wide text-white">RecuperaSaúde</span>
+      <span class="text-[10px] text-[var(--color-aqua-suave)] uppercase tracking-[0.12em]">Monitoramento Pós-Cirúrgico</span>
+    }
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 flex flex-col gap-0.5 overflow-y-auto">
+    @for (item of visibleItems; track item.path) {
+      <a
+        class="sidebar-link flex items-center justify-center gap-3 px-3 py-2.5 rounded-[var(--radius-sm)] text-white/[0.68] text-[13px] font-medium no-underline transition-all duration-150 hover:text-white hover:bg-white/[0.08]"
+        [routerLink]="getRoute(item)"
+        routerLinkActive="sidebar-link--active"
+        [title]="item.label"
+      >
+        <span class="flex items-center justify-center w-5 h-5 shrink-0 [&>svg]:w-5 [&>svg]:h-5">
+          @switch (item.icon) {
+            @case ('layout-dashboard') { <svg lucideLayoutDashboard></svg> }
+            @case ('users') { <svg lucideUsers></svg> }
+            @case ('calendar-days') { <svg lucideCalendarDays></svg> }
+            @case ('clipboard-list') { <svg lucideClipboardList></svg> }
+            @case ('message-square') { <svg lucideMessageSquare></svg> }
+            @case ('chart-bar') { <svg lucideChartBar></svg> }
+            @case ('settings') { <svg lucideSettings></svg> }
+            @case ('activity') { <svg lucideActivity></svg> }
+            @case ('shield') { <svg lucideShield></svg> }
+          }
+        </span>
+        @if (!isSidebarCollapsed) {
+          <span class="whitespace-nowrap overflow-hidden text-ellipsis w-full">{{ item.label }}</span>
+        }
+      </a>
+    }
+  </nav>
+
+  <!-- Collapse toggle -->
+  <button
+    class="mt-auto flex items-center justify-center p-2.5 rounded-[var(--radius-sm)] text-white/50 transition-all duration-150 hover:text-white hover:bg-white/[0.08]"
+    (click)="toggleCollapse()"
+    [attr.aria-label]="isSidebarCollapsed ? 'Expandir menu' : 'Recolher menu'"
+  >
+    <span
+      class="text-lg font-bold transition-transform duration-150"
+      [class.rotate-180]="isSidebarCollapsed"
+    >
+      ‹
+    </span>
+  </button>
+</aside>
