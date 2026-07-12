@@ -1,66 +1,51 @@
 # Recupera Saúde 🏥
 
-Sistema web para recuperação e acompanhamento de saúde desenvolvido como Trabalho de Conclusão de Curso (TCC) 2026.
+Portal web para profissionais de saúde (médicos e administradores) acompanharem pacientes em recuperação pós-cirúrgica. Trabalho de Conclusão de Curso (TCC) 2026.
 
-Este projeto foi gerado com [Angular CLI](https://github.com/angular/angular-cli) versão 17.3.17.
-
-## 📋 Funcionalidades
-
-- **Sistema de Login** - Autenticação de usuários
-- **Cadastro de Usuários** - Registro de novos pacientes
-- **Página Inicial** - Dashboard principal do sistema
-- **Navegação Responsiva** - Interface adaptável a diferentes dispositivos
+Gerado com [Angular CLI](https://github.com/angular/angular-cli) 17.3, arquitetura **standalone** (sem NgModules), **Tailwind v4** para estilo e **Angular CDK** para comportamento acessível.
 
 ## 🚀 Servidor de Desenvolvimento
 
-Execute `ng serve` para iniciar o servidor de desenvolvimento. 
-Navegue para `http://localhost:4200/`. A aplicação será recarregada automaticamente quando você alterar qualquer arquivo fonte.
-
-## 🏗️ Geração de Código
-
-Execute `ng generate component nome-do-componente` para gerar um novo componente. 
-Você também pode usar `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+ng serve
+```
+Navegue para `http://localhost:4200/`. Recarrega automaticamente ao alterar arquivos fonte.
 
 ## 📦 Build
 
-Execute `ng build` para construir o projeto. Os artefatos da build serão armazenados no diretório `dist/`.
+```bash
+ng build          # build de desenvolvimento
+ng build --configuration production
+```
+Artefatos em `dist/recupera-saude`.
 
-## 🧪 Executando Testes Unitários
+## 🛠️ Tecnologias
 
-Execute `ng test` para executar os testes unitários via [Karma](https://karma-runner.github.io).
+- **Angular 17.3** (standalone components)
+- **TypeScript 5.4**
+- **Tailwind CSS v4** (+ tokens de marca em CSS custom properties)
+- **Angular CDK** (overlay, focus-trap)
+- **@lucide/angular** (ícones)
+- Autenticação JWT com interceptor funcional (refresh no 401)
 
-## 🔄 Executando Testes End-to-End
-
-Execute `ng e2e` para executar os testes end-to-end através de uma plataforma de sua escolha. 
-Para usar este comando, você precisa primeiro adicionar um pacote que implementa capacidades de testes end-to-end.
-
-## 📁 Estrutura do Projeto
+## 📁 Estrutura resumida
 
 ```
-src/
-├── app/
-│   ├── pages/
-│   │   ├── home/          # Página inicial
-│   │   ├── login/         # Página de login
-│   │   └── cadastro/      # Página de cadastro
-│   ├── app-routing.module.ts
-│   ├── app.module.ts
-│   └── ...
-├── assets/
-└── ...
+src/app/
+├── core/       # Serviços, guards, interceptors, models, config (infra sem UI)
+├── layout/     # Shell autenticado: sidebar, header, breadcrumb, footer
+├── pages/      # Telas de feature (uma pasta por rota) + _template modelo
+└── shared/     # Componentes reutilizáveis (button, input, dialog, data-table, ...)
 ```
 
-## 🛠️ Tecnologias Utilizadas
+## 📚 Documentação
 
-- **Angular 17.3.17** - Framework principal
-- **TypeScript** - Linguagem de programação
-- **HTML5 & CSS3** - Estrutura e estilização
-- **Angular Router** - Roteamento da aplicação
+- **[docs/ARQUITETURA.md](docs/ARQUITETURA.md)** — estrutura de pastas, decisões de arquitetura, política de erros e **como criar uma nova tela**.
+- **[docs/COMPONENTES.md](docs/COMPONENTES.md)** — guia de uso (API) de cada componente reutilizável.
+- **[docs/styles/style-guide.md](docs/styles/style-guide.md)** — design system: paleta, tipografia, componentes.
 
-## 👥 Equipe de Desenvolvimento
+Vitrine ao vivo dos componentes: rota `/app/componentes` (autenticado).
 
-Projeto TCC 2026 - Frontend Web
+## 👥 Equipe
 
-## 📞 Ajuda Adicional
-
-Para obter mais ajuda sobre o Angular CLI, use `ng help` ou consulte a [Documentação Oficial do Angular CLI](https://angular.io/cli).
+Projeto TCC 2026 — Frontend Web
