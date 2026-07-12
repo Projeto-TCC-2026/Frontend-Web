@@ -1,0 +1,24 @@
+<!-- =============================================================
+  PÁGINA MODELO — copie esta pasta para criar uma nova tela.
+
+  1. Copie _template/ para pages/<nome-da-feature>/
+  2. Renomeie os arquivos: template-page → <feature>
+  3. Atualize o selector, classe e referências
+  4. Adicione a rota em app.routes.ts com lazy loading:
+     {
+       path: '<feature>',
+       data: { breadcrumb: 'Nome da Feature' },
+       loadComponent: () => import('./pages/<feature>/<feature>.component')
+         .then(m => m.<Feature>Component)
+     }
+  ============================================================= -->
+
+<div>
+  <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Título da Página</h1>
+  <p class="text-sm text-[var(--color-neutro-500)] mb-8">Descrição breve do que esta página faz.</p>
+
+  <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
+    <!-- Conteúdo da página aqui -->
+    <p class="text-[13px] text-[var(--color-neutro-500)] italic">Conteúdo em construção.</p>
+  </section>
+</div>
