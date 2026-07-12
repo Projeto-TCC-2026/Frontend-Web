@@ -5,14 +5,7 @@ import { LucideLoaderCircle } from '@lucide/angular';
   selector: 'app-loading',
   standalone: true,
   imports: [LucideLoaderCircle],
-  template: `
-    <div [class]="containerClasses" role="status" aria-label="Carregando">
-      <svg lucideLoaderCircle [class]="spinnerClasses" aria-hidden="true"></svg>
-      @if (text) {
-        <span class="text-sm text-[var(--color-neutro-500)]">{{ text }}</span>
-      }
-    </div>
-  `,
+  templateUrl: './loading.component.html',
 })
 export class LoadingComponent {
   @Input() size: 'sm' | 'md' | 'lg' = 'md';

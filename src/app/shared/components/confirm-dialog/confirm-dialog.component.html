@@ -1,0 +1,23 @@
+@if (dialog.isOpen()) {
+  <app-dialog
+    [open]="true"
+    [title]="dialog.config()!.title!"
+    size="sm"
+    (closed)="onCancel()"
+  >
+    <p>{{ dialog.config()!.message }}</p>
+
+    <div dialogActions>
+      <app-button variant="ghost" size="sm" (clicked)="onCancel()">
+        {{ dialog.config()!.cancelLabel }}
+      </app-button>
+      <app-button
+        [variant]="dialog.config()!.variant === 'destructive' ? 'destructive' : 'primary'"
+        size="sm"
+        (clicked)="onConfirm()"
+      >
+        {{ dialog.config()!.confirmLabel }}
+      </app-button>
+    </div>
+  </app-dialog>
+}

@@ -1,0 +1,51 @@
+@if (open) {
+  <!-- Backdrop -->
+  <div
+    class="fixed inset-0 z-50 bg-[var(--color-neutro-900)]/60 transition-opacity duration-150"
+    (click)="onBackdropClick()"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Dialog -->
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    role="dialog"
+    [attr.aria-labelledby]="titleId"
+    aria-modal="true"
+    (keydown.escape)="onEscapeKey()"
+  >
+    <div
+      #dialogPanel
+      [class]="panelClasses"
+    >
+      <!-- Header -->
+      @if (title) {
+        <div class="flex items-center justify-between mb-4">
+          <h2
+            [id]="titleId"
+            class="font-heading font-bold text-lg text-[var(--color-neutro-900)]"
+          >{{ title }}</h2>
+          @if (closable) {
+            <button
+              class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:text-[var(--color-neutro-900)] hover:bg-[var(--color-neutro-100)]"
+              (click)="close()"
+              aria-label="Fechar"
+            >
+              <svg lucideX class="w-5 h-5"></svg>
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Body -->
+      <div class="text-sm text-[var(--color-neutro-700)]">
+        <ng-content></ng-content>
+      </div>
+
+      <!-- Footer / Actions -->
+      <div class="mt-6 flex items-center justify-end gap-3">
+        <ng-content select="[dialogActions]"></ng-content>
+      </div>
+    </div>
+  </div>
+}

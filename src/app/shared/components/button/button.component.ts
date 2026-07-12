@@ -9,21 +9,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
   selector: 'app-button',
   standalone: true,
   imports: [CommonModule, LucideLoaderCircle],
-  template: `
-    <button
-      [type]="type"
-      [disabled]="disabled || loading"
-      [class]="computedClasses"
-      (click)="handleClick($event)"
-    >
-      @if (loading) {
-        <svg lucideLoaderCircle class="w-4 h-4 animate-spin" aria-hidden="true"></svg>
-        <span>{{ loadingText }}</span>
-      } @else {
-        <ng-content></ng-content>
-      }
-    </button>
-  `,
+  templateUrl: './button.component.html',
 })
 export class ButtonComponent {
   @Input() variant: ButtonVariant = 'primary';

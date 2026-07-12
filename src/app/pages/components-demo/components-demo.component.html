@@ -1,6 +1,6 @@
 <div>
   <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Componentes</h1>
-  <p class="text-sm text-[var(--color-neutro-500)] mb-8">Biblioteca de componentes presentacionais do projeto.</p>
+  <p class="text-sm text-[var(--color-neutro-500)] mb-8">Biblioteca de componentes presentacionais e comportamentais do projeto.</p>
 
   <!-- BUTTONS -->
   <app-card title="Button" subtitle="5 variantes + estados" class="mb-6 block">
@@ -98,4 +98,53 @@
       <app-button variant="primary" size="sm">Adicionar paciente</app-button>
     </app-empty-state>
   </app-card>
+
+  <!-- DIALOG -->
+  <app-card title="Dialog" subtitle="CDK Overlay com focus-trap, ESC e backdrop" class="mb-6 block">
+    <div class="flex flex-wrap items-center gap-3">
+      <app-button variant="primary" (clicked)="openCustomDialog()">Abrir dialog customizado</app-button>
+      <app-button variant="destructive" (clicked)="openConfirmDialog()">Abrir confirm dialog</app-button>
+      @if (confirmResult()) {
+        <span class="text-sm text-[var(--color-neutro-700)]">Resultado: {{ confirmResult() }}</span>
+      }
+    </div>
+
+    <!-- Custom dialog (template-driven) -->
+    <app-dialog
+      [open]="customDialogOpen()"
+      title="Novo agendamento"
+      size="md"
+      (closed)="closeCustomDialog()"
+    >
+      <p class="mb-4">Preencha os dados para agendar uma nova consulta.</p>
+      <app-input label="Paciente" placeholder="Nome do paciente"></app-input>
+
+      <div dialogActions>
+        <app-button variant="ghost" size="sm" (clicked)="closeCustomDialog()">Cancelar</app-button>
+        <app-button variant="primary" size="sm" (clicked)="closeCustomDialog()">Salvar</app-button>
+      </div>
+    </app-dialog>
+  </app-card>
+
+  <!-- TOASTS -->
+  <app-card title="Toast / Notifications" subtitle="NotificationService sobre CDK Overlay — 4 tipos com auto-dismiss" class="mb-6 block">
+    <div class="flex flex-wrap items-center gap-3">
+      <app-button variant="success" (clicked)="showSuccessToast()">Toast de sucesso</app-button>
+      <app-button variant="destructive" (clicked)="showErrorToast()">Toast de erro</app-button>
+      <app-button variant="secondary" (clicked)="showWarningToast()">Toast de atenção</app-button>
+      <app-button variant="ghost" (clicked)="showInfoToast()">Toast informativo</app-button>
+    </div>
+  </app-card>
+
+  <!-- DATA TABLE -->
+  <app-card title="Data Table" subtitle="Colunas configuráveis + paginação client-side" class="mb-6 block">
+    <app-data-table
+      [columns]="tableColumns"
+      [data]="tableData"
+      [pageSize]="5"
+    ></app-data-table>
+  </app-card>
 </div>
+
+<!-- Global confirm dialog (driven by DialogService) -->
+<app-confirm-dialog></app-confirm-dialog>

@@ -1,0 +1,13 @@
+<button
+  [type]="type"
+  [disabled]="disabled || loading"
+  [class]="computedClasses"
+  (click)="handleClick($event)"
+>
+  @if (loading) {
+    <svg lucideLoaderCircle class="w-4 h-4 animate-spin" aria-hidden="true"></svg>
+    <span>{{ loadingText }}</span>
+  } @else {
+    <ng-content></ng-content>
+  }
+</button>

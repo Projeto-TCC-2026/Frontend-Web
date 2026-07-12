@@ -15,36 +15,7 @@ export type InputState = 'default' | 'error' | 'success';
       multi: true,
     },
   ],
-  template: `
-    <div class="flex flex-col gap-1.5">
-      @if (label) {
-        <label
-          [for]="inputId"
-          class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide"
-        >
-          {{ label }}
-          @if (required) {
-            <span class="text-[var(--color-critico)]">*</span>
-          }
-        </label>
-      }
-
-      <input
-        [id]="inputId"
-        [type]="type"
-        [placeholder]="placeholder"
-        [disabled]="isDisabled()"
-        [class]="inputClasses"
-        [value]="value()"
-        (input)="onInput($event)"
-        (blur)="onBlur()"
-      />
-
-      @if (helperText) {
-        <span [class]="helperClasses">{{ helperText }}</span>
-      }
-    </div>
-  `,
+  templateUrl: './input.component.html',
 })
 export class InputComponent implements ControlValueAccessor {
   @Input() label = '';

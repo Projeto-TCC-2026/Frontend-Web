@@ -3,21 +3,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-card',
   standalone: true,
-  template: `
-    <div [class]="computedClasses">
-      @if (title || subtitle) {
-        <div class="mb-4">
-          @if (title) {
-            <h3 class="font-heading font-bold text-base text-[var(--color-neutro-900)]">{{ title }}</h3>
-          }
-          @if (subtitle) {
-            <p class="text-xs text-[var(--color-neutro-500)] mt-0.5">{{ subtitle }}</p>
-          }
-        </div>
-      }
-      <ng-content></ng-content>
-    </div>
-  `,
+  templateUrl: './card.component.html',
 })
 export class CardComponent {
   @Input() title = '';

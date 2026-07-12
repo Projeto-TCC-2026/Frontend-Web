@@ -1,0 +1,6 @@
+<div [class]="containerClasses" role="status" aria-label="Carregando">
+  <svg lucideLoaderCircle [class]="spinnerClasses" aria-hidden="true"></svg>
+  @if (text) {
+    <span class="text-sm text-[var(--color-neutro-500)]">{{ text }}</span>
+  }
+</div>
