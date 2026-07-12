@@ -1,36 +1,40 @@
-/* Tailwind v4 — layers imported manually so we can OMIT preflight.
-   Preflight is left out on purpose to avoid disturbing the hand-written
-   CSS of the existing pages. Tailwind utilities remain additive. */
-@layer theme, base, components, utilities;
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
-
 /* Google Fonts — 3 famílias funcionais do Design System */
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
 
-/* ============================================================
-   SINGLE SOURCE OF TRUTH — Design System Tokens
-   All colors, typography, and spacing defined here as CSS custom
-   properties. Tailwind @theme below consumes them for utilities.
-   ============================================================ */
-:root {
-  /* --- Paleta primária (marca e navegação) --- */
-  --color-aqua-claro: #99D5E0;
-  --color-azul-primario: #0C4C8A;
-  --color-azul-marinho: #1F375D;
-  --color-aqua-suave: #AEDEDE;
-  --color-azul-profundo: #142D54;
+/* Tailwind v4 — single entry point. Preflight disabled via @layer config below. */
+@import "tailwindcss";
 
-  /* --- Neutros (derivados, textos e superfícies) --- */
+/* Disable preflight (base reset) — we have our own minimal reset */
+@layer base {
+  /* empty: we override Tailwind's base later in this file */
+}
+
+/* Tell Tailwind where to scan for class usage (Angular templates + TS files) */
+@source "./**/*.{html,ts}";
+
+/* ============================================================
+   @theme — Tailwind v4 design tokens.
+   Defines the utilities generated (bg-*, text-*, font-*, rounded-*, etc.)
+   ============================================================ */
+@theme {
+  /* --- Marca --- */
+  --color-brand-primary: #1F375D;
+  --color-brand-primary-deep: #0C4C8A;
+  --color-brand-accent: #99D5E0;
+  --color-brand-accent-soft: #AEDEDE;
+  --color-brand-deep: #142D54;
+  --color-brand-danger: #D9484B;
+  --color-brand-bg: #EEF2F5;
+
+  /* --- Neutros --- */
   --color-neutro-900: #142230;
   --color-neutro-700: #445468;
   --color-neutro-500: #7C8DA1;
   --color-neutro-300: #C3CDD6;
   --color-neutro-150: #E4E9ED;
   --color-neutro-100: #EEF2F5;
-  --color-branco: #FFFFFF;
 
-  /* --- Cores semânticas (status clínico e do sistema) --- */
+  /* --- Semânticas --- */
   --color-sucesso: #2F9E6E;
   --color-sucesso-bg: #E5F6EE;
   --color-atencao: #E5A139;
@@ -42,20 +46,65 @@
   --color-desabilitado: #B8C0C8;
   --color-desabilitado-bg: #F1F3F5;
 
-  /* --- Tipografia --- */
+  /* --- Font families (utilities: font-heading, font-body, font-data) --- */
+  --font-heading: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-data: 'IBM Plex Mono', monospace;
+
+  /* --- Border radius (utilities: rounded-sm, rounded-md, rounded-lg) --- */
+  --radius-sm: 9px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+}
+
+/* ============================================================
+   CSS Custom Properties (usable via var() in arbitrary values)
+   These mirror @theme but are available as var(--color-*) for
+   inline arbitrary Tailwind classes like bg-[var(--color-azul-primario)]
+   ============================================================ */
+:root {
+  /* Paleta primária */
+  --color-aqua-claro: #99D5E0;
+  --color-azul-primario: #0C4C8A;
+  --color-azul-marinho: #1F375D;
+  --color-aqua-suave: #AEDEDE;
+  --color-azul-profundo: #142D54;
+
+  /* Neutros */
+  --color-neutro-900: #142230;
+  --color-neutro-700: #445468;
+  --color-neutro-500: #7C8DA1;
+  --color-neutro-300: #C3CDD6;
+  --color-neutro-150: #E4E9ED;
+  --color-neutro-100: #EEF2F5;
+  --color-branco: #FFFFFF;
+
+  /* Semânticas */
+  --color-sucesso: #2F9E6E;
+  --color-sucesso-bg: #E5F6EE;
+  --color-atencao: #E5A139;
+  --color-atencao-bg: #FBF1DF;
+  --color-critico: #D9484B;
+  --color-critico-bg: #FBE7E7;
+  --color-info: #2E77B8;
+  --color-info-bg: #E7F1FA;
+  --color-desabilitado: #B8C0C8;
+  --color-desabilitado-bg: #F1F3F5;
+
+  /* Tipografia */
   --font-display: 'Manrope', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-data: 'IBM Plex Mono', monospace;
 
-  /* --- Border radius --- */
+  /* Radius */
   --radius-sm: 9px;
   --radius-md: 12px;
   --radius-lg: 14px;
 
-  /* --- Transição padrão --- */
+  /* Transição padrão */
   --transition-default: 150ms ease;
 
-  /* --- Legacy aliases (backwards compat com páginas existentes) --- */
+  /* Legacy aliases */
   --brand-primary: #1f375d;
   --brand-primary-deep: #0c4c8a;
   --brand-accent: #99d5e0;
@@ -63,50 +112,29 @@
   --brand-bg: #e8edf4;
 }
 
-/* Feed tokens into Tailwind's theme so utilities are generated on demand. */
-@theme {
-  /* Marca */
-  --color-brand-primary: var(--color-azul-marinho);
-  --color-brand-primary-deep: var(--color-azul-primario);
-  --color-brand-accent: var(--color-aqua-claro);
-  --color-brand-accent-soft: var(--color-aqua-suave);
-  --color-brand-deep: var(--color-azul-profundo);
-  --color-brand-danger: var(--color-critico);
-  --color-brand-bg: var(--color-neutro-100);
-
-  /* Neutros */
-  --color-neutro-900: var(--color-neutro-900);
-  --color-neutro-700: var(--color-neutro-700);
-  --color-neutro-500: var(--color-neutro-500);
-  --color-neutro-300: var(--color-neutro-300);
-  --color-neutro-150: var(--color-neutro-150);
-  --color-neutro-100: var(--color-neutro-100);
-
-  /* Semânticas */
-  --color-sucesso: var(--color-sucesso);
-  --color-sucesso-bg: var(--color-sucesso-bg);
-  --color-atencao: var(--color-atencao);
-  --color-atencao-bg: var(--color-atencao-bg);
-  --color-critico: var(--color-critico);
-  --color-critico-bg: var(--color-critico-bg);
-  --color-info: var(--color-info);
-  --color-info-bg: var(--color-info-bg);
-  --color-desabilitado: var(--color-desabilitado);
-  --color-desabilitado-bg: var(--color-desabilitado-bg);
-
-  /* Font families */
-  --font-display: var(--font-display);
-  --font-body: var(--font-body);
-  --font-data: var(--font-data);
-
-  /* Border radius */
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-}
-
-/* Surgical baseline for form controls only. */
+/* ============================================================
+   Custom base styles (replaces Tailwind preflight)
+   ============================================================ */
 @layer base {
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--color-neutro-100);
+    color: var(--color-neutro-900);
+    min-height: 100vh;
+  }
+
   button {
     cursor: pointer;
     background-color: transparent;
@@ -117,34 +145,14 @@
     line-height: inherit;
   }
 
+  button:disabled {
+    cursor: default;
+  }
+
   input,
   select,
   textarea {
     color: inherit;
     font: inherit;
   }
-
-  button:disabled {
-    cursor: default;
-  }
-}
-
-/* Global resets / base (project-owned, replaces Tailwind preflight) */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: var(--font-body);
-  background: var(--color-neutro-100);
-  color: var(--color-neutro-900);
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-}
-
-html {
-  scroll-behavior: smooth;
 }

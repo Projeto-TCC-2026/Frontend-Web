@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private scrollListener: (() => void) | null = null;
