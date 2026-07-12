@@ -6,20 +6,14 @@ import { ForbiddenComponent } from './pages/forbidden/forbidden.component';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
-import { NAV_ITEMS } from './core/config/navigation.config';
+import { NAV_ITEMS, TEMPLATE_PAGE_LOADER } from './core/config/navigation.config';
 
-/**
- * Maps each NavItem to a lazy-loaded child route.
- * Dashboard gets its own component; the rest use the template placeholder.
- */
 function buildChildRoutes(): Route[] {
   return NAV_ITEMS.map(item => ({
     path: item.path,
     data: { breadcrumb: item.label, roles: item.roles },
     canActivate: [roleGuard],
-    loadComponent: item.path === 'dashboard'
-      ? () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent)
-      : () => import('./pages/_template/template-page.component').then(m => m.TemplatePageComponent),
+    loadComponent: item.loadComponent ?? TEMPLATE_PAGE_LOADER,
   }));
 }
 
@@ -40,6 +34,9 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
+
+  // ─── Legacy redirect ─────────────────────────────────────────
+  { path: 'dashboard', redirectTo: 'app/dashboard', pathMatch: 'full' },
 
   // ─── Wildcard ────────────────────────────────────────────────
   { path: '**', redirectTo: '' },
