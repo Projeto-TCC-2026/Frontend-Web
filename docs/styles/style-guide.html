@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Style Guide — Sistema de Monitoramento Pós-Cirúrgico</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ===== Paleta base do projeto ===== */
+    --aqua-claro:#99D5E0;
+    --azul-primario:#0C4C8A;
+    --azul-marinho:#1F375D;
+    --aqua-suave:#AEDEDE;
+    --azul-profundo:#142D54;
+
+    /* ===== Neutros (derivados da paleta, para textos e superfícies) ===== */
+    --n-900:#142230;
+    --n-700:#445468;
+    --n-500:#7C8DA1;
+    --n-300:#C3CDD6;
+    --n-150:#E4E9ED;
+    --n-100:#EEF2F5;
+    --n-white:#FFFFFF;
+
+    /* ===== Cores funcionais / semânticas ===== */
+    --sucesso:#2F9E6E;
+    --sucesso-bg:#E5F6EE;
+    --atencao:#E5A139;
+    --atencao-bg:#FBF1DF;
+    --critico:#D9484B;
+    --critico-bg:#FBE7E7;
+    --info:#2E77B8;
+    --info-bg:#E7F1FA;
+    --desabilitado:#B8C0C8;
+    --desabilitado-bg:#F1F3F5;
+
+    --font-display:'Manrope', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-data:'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--font-body);
+    background:#F7FAFB;
+    color:var(--n-900);
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar{
+    width:248px;
+    flex-shrink:0;
+    background:var(--azul-profundo);
+    color:#fff;
+    padding:32px 24px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .sidebar .brand{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:15px;
+    letter-spacing:0.02em;
+    color:#fff;
+    margin-bottom:4px;
+  }
+  .sidebar .brand-sub{
+    font-size:11px;
+    color:var(--aqua-suave);
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    margin-bottom:36px;
+    display:block;
+  }
+  .pulse-divider{
+    width:100%;
+    height:16px;
+    margin:20px 0 28px;
+  }
+  .sidebar nav a{
+    display:block;
+    color:rgba(255,255,255,0.68);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+    padding:9px 0;
+    border-left:2px solid transparent;
+    padding-left:12px;
+    margin-left:-12px;
+    transition:color .15s, border-color .15s;
+  }
+  .sidebar nav a:hover{color:#fff; border-left-color:var(--aqua-claro);}
+  .sidebar .nav-group-label{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    color:var(--n-500);
+    margin:22px 0 6px;
+  }
+
+  /* ===== Main content ===== */
+  main{flex:1; padding:56px 64px 120px; max-width:1080px;}
+  .hero{margin-bottom:64px;}
+  .hero .eyebrow{
+    font-family:var(--font-data);
+    font-size:12px;
+    color:var(--azul-primario);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .eyebrow .dot{
+    width:7px; height:7px; border-radius:50%; background:var(--sucesso);
+    box-shadow:0 0 0 3px var(--sucesso-bg);
+  }
+  h1.title{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:40px;
+    line-height:1.15;
+    color:var(--azul-profundo);
+    letter-spacing:-0.01em;
+    margin-bottom:14px;
+  }
+  .hero p{
+    font-size:16px;
+    color:var(--n-700);
+    max-width:620px;
+    line-height:1.6;
+  }
+
+  section{margin-bottom:76px; scroll-margin-top:32px;}
+  .section-label{
+    font-family:var(--font-data);
+    font-size:12px;
+    color:var(--azul-primario);
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    margin-bottom:8px;
+  }
+  h2.section-title{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:26px;
+    color:var(--azul-profundo);
+    margin-bottom:10px;
+  }
+  .section-desc{
+    font-size:14px;
+    color:var(--n-700);
+    max-width:640px;
+    line-height:1.6;
+    margin-bottom:32px;
+  }
+
+  /* ===== Color swatches ===== */
+  .swatch-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:16px;}
+  .swatch{
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid var(--n-150);
+    background:#fff;
+  }
+  .swatch .fill{height:96px;}
+  .swatch .meta{padding:14px 16px;}
+  .swatch .name{font-family:var(--font-display); font-weight:700; font-size:14px; margin-bottom:2px;}
+  .swatch .hex{font-family:var(--font-data); font-size:12px; color:var(--n-500);}
+  .swatch .usage{font-size:11.5px; color:var(--n-500); margin-top:6px; line-height:1.4;}
+
+  /* ===== Semantic colors ===== */
+  .semantic-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:16px;}
+  .semantic-card{
+    border-radius:12px;
+    padding:20px;
+    border:1px solid var(--n-150);
+    background:#fff;
+  }
+  .semantic-card .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-data);
+    font-size:11px; font-weight:600;
+    padding:5px 10px; border-radius:999px;
+    text-transform:uppercase; letter-spacing:0.04em;
+    margin-bottom:14px;
+  }
+  .semantic-card .badge .dot{width:6px; height:6px; border-radius:50%;}
+  .semantic-card .label{font-family:var(--font-display); font-weight:700; font-size:15px; margin-bottom:4px;}
+  .semantic-card .hex{font-family:var(--font-data); font-size:12px; color:var(--n-500); margin-bottom:10px;}
+  .semantic-card .desc{font-size:12.5px; color:var(--n-700); line-height:1.5;}
+
+  /* ===== Text colors ===== */
+  .text-sample{
+    display:flex; align-items:baseline; gap:24px;
+    padding:16px 0; border-bottom:1px solid var(--n-150);
+  }
+  .text-sample:last-child{border-bottom:none;}
+  .text-sample .tag{
+    font-family:var(--font-data); font-size:11px; color:var(--n-500);
+    width:170px; flex-shrink:0; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .text-sample .swtiny{width:14px; height:14px; border-radius:4px; flex-shrink:0; margin-right:2px;}
+  .text-sample .demo{flex:1;}
+
+  /* ===== Typography specimens ===== */
+  .type-specimen{
+    display:flex; align-items:baseline; gap:28px;
+    padding:20px 0; border-bottom:1px solid var(--n-150);
+  }
+  .type-specimen:last-child{border-bottom:none;}
+  .type-specimen .type-meta{
+    width:190px; flex-shrink:0;
+  }
+  .type-specimen .type-meta .role{font-family:var(--font-display); font-weight:700; font-size:12.5px; color:var(--azul-profundo);}
+  .type-specimen .type-meta .spec{font-family:var(--font-data); font-size:11px; color:var(--n-500); margin-top:3px; line-height:1.5;}
+  .font-block{
+    background:#fff; border:1px solid var(--n-150); border-radius:14px; padding:28px 32px; margin-bottom:20px;
+  }
+  .font-block .font-name{font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--azul-profundo);}
+  .font-block .font-role{font-family:var(--font-data); font-size:11.5px; color:var(--azul-primario); text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px; display:block; margin-top:4px;}
+  .font-block .font-why{font-size:13px; color:var(--n-700); line-height:1.6; max-width:560px;}
+
+  /* ===== Inputs ===== */
+  .input-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:24px;}
+  .input-demo{}
+  .input-demo label{
+    display:block; font-size:12px; font-weight:600; color:var(--n-700); margin-bottom:7px;
+  }
+  .input-demo input{
+    width:100%; font-family:var(--font-body); font-size:14px;
+    padding:12px 14px; border-radius:9px; border:1.5px solid var(--n-300);
+    background:#fff; color:var(--n-900); outline:none;
+  }
+  .input-demo input::placeholder{color:var(--n-500);}
+  .input-demo .helper{font-size:11.5px; margin-top:6px; color:var(--n-500);}
+  .input-demo .state-tag{
+    font-family:var(--font-data); font-size:10.5px; color:var(--n-500);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; display:block;
+  }
+  .input-demo.focus input{border-color:var(--azul-primario); box-shadow:0 0 0 3px rgba(12,76,138,0.14);}
+  .input-demo.filled input{border-color:var(--n-300); color:var(--n-900);}
+  .input-demo.disabled input{background:var(--desabilitado-bg); border-color:var(--n-150); color:var(--n-500); cursor:not-allowed;}
+  .input-demo.error input{border-color:var(--critico);}
+  .input-demo.error .helper{color:var(--critico);}
+  .input-demo.success input{border-color:var(--sucesso);}
+  .input-demo.success .helper{color:var(--sucesso);}
+
+  /* ===== Buttons ===== */
+  .btn-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:20px;}
+  .btn-demo{
+    background:#fff; border:1px solid var(--n-150); border-radius:12px; padding:22px; text-align:center;
+  }
+  .btn-demo .state-tag{
+    font-family:var(--font-data); font-size:10.5px; color:var(--n-500);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px; display:block;
+  }
+  .btn{
+    font-family:var(--font-body); font-weight:600; font-size:14px;
+    border-radius:9px; padding:11px 22px; border:none; cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary{background:var(--azul-primario); color:#fff;}
+  .btn-primary.hover{background:#0A3F72;}
+  .btn-primary.active{background:#083058;}
+  .btn-primary.disabled{background:var(--desabilitado); color:#fff; cursor:not-allowed;}
+  .btn-secondary{background:#fff; color:var(--azul-primario); border:1.5px solid var(--azul-primario);}
+  .btn-secondary.hover{background:var(--info-bg);}
+  .btn-ghost{background:transparent; color:var(--azul-primario);}
+  .btn-ghost.hover{background:var(--n-100);}
+  .btn-danger{background:var(--critico); color:#fff;}
+  .btn-danger.hover{background:#C13639;}
+  .btn-success{background:var(--sucesso); color:#fff;}
+  .spinner{
+    width:13px; height:13px; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff;
+    border-radius:50%; animation:spin .7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ===== Cards ===== */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px;}
+  .patient-card{
+    background:#fff; border-radius:14px; border:1px solid var(--n-150); padding:20px;
+    border-left:4px solid var(--sucesso);
+  }
+  .patient-card.warn{border-left-color:var(--atencao);}
+  .patient-card.crit{border-left-color:var(--critico);}
+  .patient-card .top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;}
+  .patient-card .name{font-family:var(--font-display); font-weight:700; font-size:15px; color:var(--n-900);}
+  .patient-card .room{font-size:11.5px; color:var(--n-500); margin-top:2px;}
+  .patient-card .status-pill{
+    font-family:var(--font-data); font-size:10px; font-weight:600; text-transform:uppercase;
+    padding:4px 9px; border-radius:999px; letter-spacing:.04em;
+  }
+  .patient-card.ok .status-pill{background:var(--sucesso-bg); color:var(--sucesso);}
+  .patient-card.warn .status-pill{background:var(--atencao-bg); color:var(--atencao);}
+  .patient-card.crit .status-pill{background:var(--critico-bg); color:var(--critico);}
+  .vitals-row{display:flex; gap:22px; margin-top:8px;}
+  .vital{}
+  .vital .v-label{font-size:10.5px; color:var(--n-500); text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px;}
+  .vital .v-value{font-family:var(--font-data); font-weight:600; font-size:22px; color:var(--n-900);}
+  .vital .v-unit{font-size:11px; color:var(--n-500); font-weight:500;}
+  .patient-card.crit .vital .v-value{color:var(--critico);}
+  .patient-card.warn .vital.flag .v-value{color:var(--atencao);}
+
+  footer{
+    padding:32px 64px 64px; color:var(--n-500); font-size:12px; max-width:1080px;
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <span class="brand">TCC GUIA DE ESTILOS</span>
+  <span class="brand-sub">Style Guide v1.0</span>
+
+  <svg class="pulse-divider" viewBox="0 0 200 16" fill="none">
+    <path d="M0 8 H70 L78 8 L84 -4 L92 20 L98 8 L108 8 L114 2 L120 8 H200" stroke="#99D5E0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+  <nav>
+    <div class="nav-group-label">Fundamentos</div>
+    <a href="#paleta">Paleta de cores</a>
+    <a href="#semanticas">Cores funcionais</a>
+    <a href="#texto">Cores de texto</a>
+    <a href="#tipografia">Tipografia</a>
+    <div class="nav-group-label">Componentes</div>
+    <a href="#inputs">Estados de input</a>
+    <a href="#botoes">Variantes de botão</a>
+    <a href="#cards">Cards</a>
+  </nav>
+</aside>
+
+<main>
+  <div class="hero">
+    <div class="eyebrow"><span class="dot"></span>Design System — TCC</div>
+    <h1 class="title">Style Guide do Sistema de<br>Monitoramento Pós-Cirúrgico</h1>
+    <p>Padrão visual único para web e mobile, construído para leitura rápida de dados clínicos, hierarquia clara de urgência e confiança visual — do dashboard do profissional de saúde ao app do paciente.</p>
+  </div>
+
+  <!-- PALETA -->
+  <section id="paleta">
+    <div class="section-label">01 · Fundamentos</div>
+    <h2 class="section-title">Paleta de cores</h2>
+    <p class="section-desc">Paleta primária do projeto, em tons de azul e aqua — transmite confiança clínica, calma e precisão tecnológica, evitando o branco/verde genérico de "app de hospital".</p>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="fill" style="background:#99D5E0"></div>
+        <div class="meta"><div class="name">Aqua Claro</div><div class="hex">#99D5E0</div><div class="usage">Destaques leves, backgrounds de ícones, gráficos secundários</div></div>
+      </div>
+      <div class="swatch">
+        <div class="fill" style="background:#0C4C8A"></div>
+        <div class="meta"><div class="name">Azul Primário</div><div class="hex">#0C4C8A</div><div class="usage">Cor de marca — botões primários, links, ícones ativos</div></div>
+      </div>
+      <div class="swatch">
+        <div class="fill" style="background:#1F375D"></div>
+        <div class="meta"><div class="name">Azul Marinho</div><div class="hex">#1F375D</div><div class="usage">Headers, navegação, superfícies escuras</div></div>
+      </div>
+      <div class="swatch">
+        <div class="fill" style="background:#AEDEDE"></div>
+        <div class="meta"><div class="name">Aqua Suave</div><div class="hex">#AEDEDE</div><div class="usage">Backgrounds de seção, estados hover suaves</div></div>
+      </div>
+      <div class="swatch">
+        <div class="fill" style="background:#142D54"></div>
+        <div class="meta"><div class="name">Azul Profundo</div><div class="hex">#142D54</div><div class="usage">Sidebar, títulos de maior hierarquia, footer</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEMANTICAS -->
+  <section id="semanticas">
+    <div class="section-label">02 · Fundamentos</div>
+    <h2 class="section-title">Cores funcionais (semânticas)</h2>
+    <p class="section-desc">Cores que comunicam <em>estado clínico e do sistema</em> — usadas de forma consistente em alertas, badges, bordas de card e mensagens de validação. Nunca usar cor de marca (azul) para indicar erro ou sucesso.</p>
+    <div class="semantic-grid">
+      <div class="semantic-card">
+        <span class="badge" style="background:var(--sucesso-bg); color:var(--sucesso)"><span class="dot" style="background:var(--sucesso)"></span>Sucesso / Estável</span>
+        <div class="label">Verde Sucesso</div>
+        <div class="hex">#2F9E6E</div>
+        <div class="desc">Paciente estável, ação concluída, confirmação, sinal vital dentro da faixa normal.</div>
+      </div>
+      <div class="semantic-card">
+        <span class="badge" style="background:var(--atencao-bg); color:var(--atencao)"><span class="dot" style="background:var(--atencao)"></span>Atenção</span>
+        <div class="label">Âmbar Atenção</div>
+        <div class="hex">#E5A139</div>
+        <div class="desc">Sinal vital se aproximando do limite, alerta de baixa prioridade, avisos não bloqueantes.</div>
+      </div>
+      <div class="semantic-card">
+        <span class="badge" style="background:var(--critico-bg); color:var(--critico)"><span class="dot" style="background:var(--critico)"></span>Crítico</span>
+        <div class="label">Vermelho Crítico</div>
+        <div class="hex">#D9484B</div>
+        <div class="desc">Alerta automático disparado, sinal vital fora da faixa segura, ação que requer resposta imediata.</div>
+      </div>
+      <div class="semantic-card">
+        <span class="badge" style="background:var(--info-bg); color:var(--info)"><span class="dot" style="background:var(--info)"></span>Informativo</span>
+        <div class="label">Azul Informativo</div>
+        <div class="hex">#2E77B8</div>
+        <div class="desc">Mensagens neutras do sistema, dicas, tooltips, notificações não urgentes.</div>
+      </div>
+      <div class="semantic-card">
+        <span class="badge" style="background:var(--desabilitado-bg); color:#889199"><span class="dot" style="background:var(--desabilitado)"></span>Desabilitado</span>
+        <div class="label">Cinza Desabilitado</div>
+        <div class="hex">#B8C0C8</div>
+        <div class="desc">Elementos inativos, funcionalidades bloqueadas, campos não editáveis.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEXTO -->
+  <section id="texto">
+    <div class="section-label">03 · Fundamentos</div>
+    <h2 class="section-title">Cores de texto</h2>
+    <p class="section-desc">Hierarquia de texto usando neutros derivados da paleta — garante contraste adequado (WCAG AA) sobre fundo claro.</p>
+    <div style="background:#fff; border:1px solid var(--n-150); border-radius:14px; padding:8px 24px;">
+      <div class="text-sample">
+        <div class="tag"><span class="swtiny" style="background:var(--n-900); display:inline-block;"></span>Título · #142230</div>
+        <div class="demo" style="font-family:var(--font-display); font-weight:700; font-size:20px; color:var(--n-900);">Monitoramento em tempo real</div>
+      </div>
+      <div class="text-sample">
+        <div class="tag"><span class="swtiny" style="background:var(--n-700); display:inline-block;"></span>Parágrafo · #445468</div>
+        <div class="demo" style="font-size:14px; color:var(--n-700); line-height:1.6;">Os dados vitais são coletados a cada 30 segundos pelo dispositivo vestível e sincronizados automaticamente com o servidor.</div>
+      </div>
+      <div class="text-sample">
+        <div class="tag"><span class="swtiny" style="background:var(--n-500); display:inline-block;"></span>Descrição / Secundário · #7C8DA1</div>
+        <div class="demo" style="font-size:12.5px; color:var(--n-500);">Última sincronização há 2 minutos</div>
+      </div>
+      <div class="text-sample">
+        <div class="tag"><span class="swtiny" style="background:var(--n-300); display:inline-block;"></span>Inativo / Desabilitado · #C3CDD6</div>
+        <div class="demo" style="font-size:13px; color:var(--n-300);">Relatório indisponível para este período</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIPOGRAFIA -->
+  <section id="tipografia">
+    <div class="section-label">04 · Fundamentos</div>
+    <h2 class="section-title">Tipografia</h2>
+    <p class="section-desc">Três famílias, cada uma com um papel funcional específico — pensadas para leitura clínica rápida, não decoração.</p>
+
+    <div class="font-block">
+      <span class="font-name">Manrope</span>
+      <span class="font-role">Display · Títulos e navegação</span>
+      <div class="font-why">Geométrica, moderna e com peso forte nos títulos (700/800) — dá personalidade à marca sem parecer "corporativo genérico". Usada em H1, H2, H3, nomes de seção e labels de navegação.</div>
+    </div>
+    <div class="font-block">
+      <span class="font-name" style="font-family:var(--font-body); font-weight:700;">Inter</span>
+      <span class="font-role">Corpo de texto · Interface</span>
+      <div class="font-why">Desenhada especificamente para telas, com ótima legibilidade em tamanhos pequenos. Usada em parágrafos, labels de formulário, botões e todo o texto de interface.</div>
+    </div>
+    <div class="font-block">
+      <span class="font-name" style="font-family:var(--font-data); font-weight:700;">IBM Plex Mono</span>
+      <span class="font-role">Dados vitais · Valores numéricos</span>
+      <div class="font-why">Números tabulares monoespaçados — essencial para leitura rápida de sinais vitais (BPM, SpO2, pressão), timestamps e códigos de paciente, onde alinhamento e não-ambiguidade importam mais que estética.</div>
+    </div>
+
+    <div style="background:#fff; border:1px solid var(--n-150); border-radius:14px; padding:8px 28px; margin-top:28px;">
+      <div class="type-specimen">
+        <div class="type-meta"><div class="role">H1 · Título de página</div><div class="spec">Manrope 800 · 32/40</div></div>
+        <div style="font-family:var(--font-display); font-weight:800; font-size:32px; color:var(--n-900);">Dashboard clínico</div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-meta"><div class="role">H2 · Título de seção</div><div class="spec">Manrope 700 · 24/32</div></div>
+        <div style="font-family:var(--font-display); font-weight:700; font-size:24px; color:var(--n-900);">Pacientes monitorados</div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-meta"><div class="role">H3 · Subtítulo</div><div class="spec">Manrope 600 · 20/28</div></div>
+        <div style="font-family:var(--font-display); font-weight:600; font-size:20px; color:var(--n-900);">Histórico de alertas</div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-meta"><div class="role">Body · Texto corrido</div><div class="spec">Inter 400 · 16/24</div></div>
+        <div style="font-family:var(--font-body); font-size:16px; color:var(--n-700);">O paciente apresentou frequência cardíaca estável nas últimas 4 horas.</div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-meta"><div class="role">Caption · Legenda</div><div class="spec">Inter 500 · 12/16 · uppercase</div></div>
+        <div style="font-family:var(--font-body); font-weight:500; font-size:12px; color:var(--n-500); text-transform:uppercase; letter-spacing:.06em;">Última atualização</div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-meta"><div class="role">Data XL · Sinal vital</div><div class="spec">IBM Plex Mono 600 · 44/48</div></div>
+        <div style="font-family:var(--font-data); font-weight:600; font-size:44px; color:var(--azul-primario);">98<span style="font-size:18px; color:var(--n-500);"> bpm</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INPUTS -->
+  <section id="inputs">
+    <div class="section-label">05 · Componentes</div>
+    <h2 class="section-title">Estados de input</h2>
+    <p class="section-desc">Todos os inputs seguem o mesmo comportamento: borda neutra em repouso, borda azul + glow suave no foco, e cor semântica para validação. Transições de 150ms em todos os estados.</p>
+    <div class="input-grid">
+      <div class="input-demo">
+        <span class="state-tag">Default</span>
+        <label>E-mail</label>
+        <input placeholder="paciente@email.com">
+        <div class="helper">Usaremos para enviar alertas de acompanhamento</div>
+      </div>
+      <div class="input-demo focus">
+        <span class="state-tag">Foco</span>
+        <label>E-mail</label>
+        <input value="joao.silva@" placeholder="paciente@email.com">
+        <div class="helper">Borda azul primário + glow de 3px</div>
+      </div>
+      <div class="input-demo filled">
+        <span class="state-tag">Preenchido</span>
+        <label>Nome do paciente</label>
+        <input value="João da Silva">
+        <div class="helper">Valor confirmado, borda neutra escura</div>
+      </div>
+      <div class="input-demo disabled">
+        <span class="state-tag">Desabilitado</span>
+        <label>Código do dispositivo</label>
+        <input value="WD-2291" disabled>
+        <div class="helper">Campo bloqueado pelo sistema</div>
+      </div>
+      <div class="input-demo error">
+        <span class="state-tag">Erro</span>
+        <label>Frequência cardíaca limite</label>
+        <input value="500">
+        <div class="helper">⚠ Valor fora da faixa permitida (30–220 bpm)</div>
+      </div>
+      <div class="input-demo success">
+        <span class="state-tag">Validado</span>
+        <label>Telefone de emergência</label>
+        <input value="(11) 91234-5678">
+        <div class="helper">✓ Número verificado</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTOES -->
+  <section id="botoes">
+    <div class="section-label">06 · Componentes</div>
+    <h2 class="section-title">Variantes de botão</h2>
+    <p class="section-desc">Hierarquia clara entre ação primária, secundária e destrutiva — importante em um sistema onde algumas ações (ex: encerrar monitoramento) têm consequência clínica.</p>
+    <div class="btn-grid">
+      <div class="btn-demo"><span class="state-tag">Primary · Default</span><button class="btn btn-primary">Salvar alterações</button></div>
+      <div class="btn-demo"><span class="state-tag">Primary · Hover</span><button class="btn btn-primary hover">Salvar alterações</button></div>
+      <div class="btn-demo"><span class="state-tag">Primary · Processando</span><button class="btn btn-primary" style="opacity:.85"><span class="spinner"></span>Salvando...</button></div>
+      <div class="btn-demo"><span class="state-tag">Primary · Desabilitado</span><button class="btn btn-primary disabled">Salvar alterações</button></div>
+      <div class="btn-demo"><span class="state-tag">Secondary · Default</span><button class="btn btn-secondary">Cancelar</button></div>
+      <div class="btn-demo"><span class="state-tag">Secondary · Hover</span><button class="btn btn-secondary hover">Cancelar</button></div>
+      <div class="btn-demo"><span class="state-tag">Ghost / Texto</span><button class="btn btn-ghost">Ver detalhes</button></div>
+      <div class="btn-demo"><span class="state-tag">Destrutivo</span><button class="btn btn-danger">Encerrar monitoramento</button></div>
+      <div class="btn-demo"><span class="state-tag">Confirmação positiva</span><button class="btn btn-success">Confirmar alta</button></div>
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section id="cards">
+    <div class="section-label">07 · Componentes</div>
+    <h2 class="section-title">Cards de paciente</h2>
+    <p class="section-desc">O card é o componente central do dashboard — a borda lateral colorida comunica o status clínico antes mesmo de ler qualquer número, permitindo triagem visual rápida.</p>
+    <div class="card-grid">
+      <div class="patient-card ok">
+        <div class="top">
+          <div><div class="name">João da Silva</div><div class="room">Leito 12 · Pós-op D+2</div></div>
+          <span class="status-pill">Estável</span>
+        </div>
+        <div class="vitals-row">
+          <div class="vital"><div class="v-label">BPM</div><div class="v-value">78</div></div>
+          <div class="vital"><div class="v-label">SpO2</div><div class="v-value">98<span class="v-unit">%</span></div></div>
+        </div>
+      </div>
+      <div class="patient-card warn">
+        <div class="top">
+          <div><div class="name">Maria Oliveira</div><div class="room">Leito 07 · Pós-op D+1</div></div>
+          <span class="status-pill">Atenção</span>
+        </div>
+        <div class="vitals-row">
+          <div class="vital flag"><div class="v-label">BPM</div><div class="v-value">112</div></div>
+          <div class="vital"><div class="v-label">SpO2</div><div class="v-value">95<span class="v-unit">%</span></div></div>
+        </div>
+      </div>
+      <div class="patient-card crit">
+        <div class="top">
+          <div><div class="name">Carlos Mendes</div><div class="room">Leito 03 · Pós-op D+0</div></div>
+          <span class="status-pill">Crítico</span>
+        </div>
+        <div class="vitals-row">
+          <div class="vital"><div class="v-label">BPM</div><div class="v-value">142</div></div>
+          <div class="vital"><div class="v-label">SpO2</div><div class="v-value">89<span class="v-unit">%</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Style Guide — Sistema de Monitoramento Pós-Cirúrgico
+  </footer>
+</main>
+
+</body>
+</html>
