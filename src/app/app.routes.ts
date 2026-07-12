@@ -35,9 +35,6 @@ export const routes: Routes = [
     ],
   },
 
-  // ─── Legacy redirect ─────────────────────────────────────────
-  { path: 'dashboard', redirectTo: 'app/dashboard', pathMatch: 'full' },
-
   // ─── Wildcard ────────────────────────────────────────────────
   { path: '**', redirectTo: '' },
 ];

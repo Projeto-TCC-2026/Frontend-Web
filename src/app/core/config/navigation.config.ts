@@ -35,6 +35,14 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Administração', path: 'admin',         icon: 'shield',         roles: ['ADMIN'] },
   { label: 'Pacientes',     path: 'pacientes',     icon: 'users',          roles: ['ADMIN', 'DOCTOR'] },
   { label: 'Configurações', path: 'configuracoes', icon: 'settings',       roles: ['ADMIN', 'DOCTOR'] },
+  {
+    label: 'Componentes',
+    path: 'componentes',
+    icon: 'layout-dashboard',
+    roles: ['ADMIN', 'DOCTOR'],
+    showInSidebar: false,
+    loadComponent: () => import('../../pages/components-demo/components-demo.component').then(m => m.ComponentsDemoComponent),
+  },
 ];
 
 /** Fallback loader for items without a dedicated component */

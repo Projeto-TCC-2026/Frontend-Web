@@ -1,0 +1,101 @@
+<div>
+  <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Componentes</h1>
+  <p class="text-sm text-[var(--color-neutro-500)] mb-8">Biblioteca de componentes presentacionais do projeto.</p>
+
+  <!-- BUTTONS -->
+  <app-card title="Button" subtitle="5 variantes + estados" class="mb-6 block">
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <app-button variant="primary">Primário</app-button>
+      <app-button variant="secondary">Secundário</app-button>
+      <app-button variant="ghost">Ghost</app-button>
+      <app-button variant="destructive">Destrutivo</app-button>
+      <app-button variant="success">Confirmação</app-button>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <app-button variant="primary" size="sm">Small</app-button>
+      <app-button variant="primary" size="md">Medium</app-button>
+      <app-button variant="primary" size="lg">Large</app-button>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <app-button variant="primary" [loading]="loadingBtn()" (clicked)="simulateLoading()">Clique para loading</app-button>
+      <app-button variant="secondary" [disabled]="true">Desabilitado</app-button>
+    </div>
+  </app-card>
+
+  <!-- INPUTS -->
+  <app-card title="Input" subtitle="Integrável com ReactiveForms + estados" class="mb-6 block">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-input
+        label="Nome completo"
+        placeholder="Digite seu nome"
+        [formControl]="nameControl"
+        [required]="true"
+      ></app-input>
+
+      <app-input
+        label="E-mail"
+        type="email"
+        placeholder="usuario@email.com"
+        [formControl]="emailControl"
+      ></app-input>
+
+      <app-input
+        label="Campo com erro"
+        placeholder="Valor inválido"
+        state="error"
+        helperText="Este campo é obrigatório."
+      ></app-input>
+
+      <app-input
+        label="Campo com sucesso"
+        placeholder="Valor validado"
+        state="success"
+        helperText="E-mail verificado com sucesso."
+      ></app-input>
+
+      <app-input
+        label="Campo desabilitado"
+        placeholder="Não editável"
+        [disabled]="true"
+      ></app-input>
+    </div>
+  </app-card>
+
+  <!-- CARD -->
+  <app-card title="Card" subtitle="Content projection com título e subtítulo" class="mb-6 block">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <app-card title="Card simples">
+        <p class="text-sm text-[var(--color-neutro-700)]">Conteúdo projetado dentro do card via ng-content.</p>
+      </app-card>
+
+      <app-card title="Card sem borda" [bordered]="false" padding="sm">
+        <p class="text-sm text-[var(--color-neutro-700)]">Padding SM, sem borda.</p>
+      </app-card>
+
+      <app-card padding="lg">
+        <p class="text-sm text-[var(--color-neutro-700)]">Sem título, padding LG.</p>
+      </app-card>
+    </div>
+  </app-card>
+
+  <!-- LOADING -->
+  <app-card title="Loading" subtitle="Spinner com tamanhos e texto opcional" class="mb-6 block">
+    <div class="flex items-end gap-8">
+      <app-loading size="sm"></app-loading>
+      <app-loading size="md" text="Carregando dados..."></app-loading>
+      <app-loading size="lg"></app-loading>
+    </div>
+  </app-card>
+
+  <!-- EMPTY STATE -->
+  <app-card title="Empty State" subtitle="Quando não há dados para exibir" class="mb-6 block">
+    <app-empty-state
+      title="Nenhum paciente encontrado"
+      description="Adicione um paciente para começar o monitoramento."
+    >
+      <app-button variant="primary" size="sm">Adicionar paciente</app-button>
+    </app-empty-state>
+  </app-card>
+</div>

@@ -1,0 +1,26 @@
+import { Component, Input } from '@angular/core';
+import { LucideInbox } from '@lucide/angular';
+
+@Component({
+  selector: 'app-empty-state',
+  standalone: true,
+  imports: [LucideInbox],
+  template: `
+    <div class="flex flex-col items-center justify-center py-12 px-6 text-center">
+      <div class="w-16 h-16 rounded-full bg-[var(--color-neutro-100)] flex items-center justify-center mb-4">
+        <svg lucideInbox class="w-8 h-8 text-[var(--color-neutro-300)]" aria-hidden="true"></svg>
+      </div>
+      <h3 class="font-heading font-bold text-base text-[var(--color-neutro-900)] mb-1">{{ title }}</h3>
+      @if (description) {
+        <p class="text-sm text-[var(--color-neutro-500)] max-w-sm">{{ description }}</p>
+      }
+      <div class="mt-4">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  `,
+})
+export class EmptyStateComponent {
+  @Input() title = 'Nenhum item encontrado';
+  @Input() description = '';
+}
