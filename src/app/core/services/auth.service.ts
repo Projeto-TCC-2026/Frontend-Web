@@ -95,7 +95,7 @@ export class AuthService {
 
     if (refreshToken) {
       this.api.post<void>('/auth/logout', { refreshToken }).subscribe({
-        error: () => {} // Fire and forget — clear storage regardless
+        error: () => {} // Fire and forget - clear storage regardless
       });
     }
 

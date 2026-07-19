@@ -40,12 +40,12 @@ src/app/
 
 ## 📚 Documentação
 
-- **[docs/ARQUITETURA.md](docs/ARQUITETURA.md)** — estrutura de pastas, decisões de arquitetura, política de erros e **como criar uma nova tela**.
-- **[docs/COMPONENTES.md](docs/COMPONENTES.md)** — guia de uso (API) de cada componente reutilizável.
-- **[docs/styles/style-guide.md](docs/styles/style-guide.md)** — design system: paleta, tipografia, componentes.
+- **[docs/ARQUITETURA.md](docs/ARQUITETURA.md)** - estrutura de pastas, decisões de arquitetura, política de erros e **como criar uma nova tela**.
+- **[docs/COMPONENTES.md](docs/COMPONENTES.md)** - guia de uso (API) de cada componente reutilizável.
+- **[docs/styles/style-guide.md](docs/styles/style-guide.md)** - design system: paleta, tipografia, componentes.
 
 Vitrine ao vivo dos componentes: rota `/app/componentes` (autenticado).
 
 ## 👥 Equipe
 
-Projeto TCC 2026 — Frontend Web
+Projeto TCC 2026 - Frontend Web

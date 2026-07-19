@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 /**
- * PÁGINA MODELO — copie e adapte para criar uma nova tela.
+ * PÁGINA MODELO - copie e adapte para criar uma nova tela.
  *
  * Checklist:
  * 1. Renomear classe e selector

@@ -70,7 +70,7 @@ export class DataTableComponent {
     if (col.format) {
       return col.format(value, row);
     }
-    return value ?? '—';
+    return value ?? '-';
   }
 
   protected goToPage(page: number): void {

@@ -12,7 +12,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 
 ## Presentacionais
 
-### Button — `<app-button>`
+### Button - `<app-button>`
 
 | Input | Tipo | Default | Descrição |
 |---|---|---|---|
@@ -33,9 +33,9 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 <app-button variant="primary" [loading]="salvando()">Salvar</app-button>
 ```
 
-### Input — `<app-input>`
+### Input - `<app-input>`
 
-Implementa `ControlValueAccessor` — funciona com `formControl`, `formControlName` e `ngModel`.
+Implementa `ControlValueAccessor` - funciona com `formControl`, `formControlName` e `ngModel`.
 
 | Input | Tipo | Default | Descrição |
 |---|---|---|---|
@@ -52,7 +52,7 @@ Implementa `ControlValueAccessor` — funciona com `formControl`, `formControlNa
            state="error" helperText="E-mail inválido"></app-input>
 ```
 
-### Card — `<app-card>`
+### Card - `<app-card>`
 
 Container com content projection.
 
@@ -69,7 +69,7 @@ Container com content projection.
 </app-card>
 ```
 
-### Loading — `<app-loading>`
+### Loading - `<app-loading>`
 
 | Input | Tipo | Default | Descrição |
 |---|---|---|---|
@@ -81,7 +81,7 @@ Container com content projection.
 <app-loading size="lg" text="Carregando pacientes..." [fullPage]="true"></app-loading>
 ```
 
-### Empty State — `<app-empty-state>`
+### Empty State - `<app-empty-state>`
 
 | Input | Tipo | Default | Descrição |
 |---|---|---|---|
@@ -100,7 +100,7 @@ Aceita `<ng-content>` para uma ação (ex.: botão).
 
 ## Comportamentais (CDK)
 
-### Dialog — `<app-dialog>`
+### Dialog - `<app-dialog>`
 
 Modal sobre CDK com focus-trap; fecha por ESC e clique no backdrop.
 
@@ -146,7 +146,7 @@ async excluir() {
 }
 ```
 
-### Data Table — `<app-data-table>`
+### Data Table - `<app-data-table>`
 
 Tabela com colunas configuráveis e paginação client-side.
 
@@ -185,4 +185,4 @@ this.notify.warning('Reveja os campos.');
 this.notify.info('Sincronizando...');       // dismiss em 4s
 ```
 
-Erros HTTP 5xx/rede já disparam toast automaticamente pelo `error.interceptor` — não precisa chamar manualmente.
+Erros HTTP 5xx/rede já disparam toast automaticamente pelo `error.interceptor` - não precisa chamar manualmente.

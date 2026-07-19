@@ -1,4 +1,4 @@
-# Style Guide — Sistema de Monitoramento Pós-Cirúrgico
+# Style Guide - Sistema de Monitoramento Pós-Cirúrgico
 
 **Versão:** 1.0
 **Escopo:** Web (Angular) e Mobile (React Native / Expo)
@@ -27,9 +27,9 @@ O sistema monitora pacientes em pós-operatório por meio de dispositivos vestí
 
 | Princípio | Aplicação prática |
 |---|---|
-| **Triagem visual rápida** | Status clínico (estável/atenção/crítico) deve ser identificável sem leitura de texto — cor e posição fazem o trabalho primeiro. |
+| **Triagem visual rápida** | Status clínico (estável/atenção/crítico) deve ser identificável sem leitura de texto - cor e posição fazem o trabalho primeiro. |
 | **Precisão numérica** | Valores de sinais vitais usam fonte monoespaçada com números tabulares, para evitar ambiguidade de leitura em contexto de decisão clínica. |
-| **Consistência entre plataformas** | Web e mobile compartilham os mesmos tokens de cor, tipografia e espaçamento — a implementação muda, o design system não. |
+| **Consistência entre plataformas** | Web e mobile compartilham os mesmos tokens de cor, tipografia e espaçamento - a implementação muda, o design system não. |
 | **Confiança visual** | Paleta azul/aqua transmite estabilidade clínica e tecnologia, evitando o branco genérico de "app de hospital". |
 
 ---
@@ -46,11 +46,11 @@ Paleta primária definida para o projeto, com nomes semânticos para uso em cód
 | `aqua-suave` | `#AEDEDE` | rgb(174, 222, 222) | Backgrounds de seção, hover suave, estados "selecionado" leves |
 | `azul-profundo` | `#142D54` | rgb(20, 45, 84) | Sidebar, títulos de maior hierarquia, footer, elementos de alto contraste |
 
-> **Regra de uso:** a paleta primária (azul/aqua) é reservada para **identidade de marca e navegação** — nunca para comunicar status clínico. Status usa exclusivamente as cores funcionais da seção 3.
+> **Regra de uso:** a paleta primária (azul/aqua) é reservada para **identidade de marca e navegação** - nunca para comunicar status clínico. Status usa exclusivamente as cores funcionais da seção 3.
 
 ### Neutros (derivados, para texto e superfícies)
 
-A paleta original não define neutros — foram derivados com leve tonalidade fria (dessaturação do azul-marinho) para manter coesão visual.
+A paleta original não define neutros - foram derivados com leve tonalidade fria (dessaturação do azul-marinho) para manter coesão visual.
 
 | Token | Hex | Uso |
 |---|---|---|
@@ -72,7 +72,7 @@ Cores que comunicam **estado do sistema e estado clínico do paciente**. Cada um
 |---|---|---|---|---|
 | **Sucesso / Estável** | `sucesso` / `sucesso-bg` | `#2F9E6E` | `#E5F6EE` | Sinal vital dentro da faixa normal, ação concluída com sucesso, confirmação |
 | **Atenção** | `atencao` / `atencao-bg` | `#E5A139` | `#FBF1DF` | Sinal vital se aproximando do limite, alerta de baixa prioridade, aviso não bloqueante |
-| **Crítico** | `critico` / `critico-bg` | `#D9484B` | `#FBE7E7` | Alerta automático disparado — sinal vital fora da faixa segura, requer resposta imediata |
+| **Crítico** | `critico` / `critico-bg` | `#D9484B` | `#FBE7E7` | Alerta automático disparado - sinal vital fora da faixa segura, requer resposta imediata |
 | **Informativo** | `info` / `info-bg` | `#2E77B8` | `#E7F1FA` | Mensagens neutras do sistema, tooltips, notificações não urgentes |
 | **Desabilitado** | `desabilitado` / `desabilitado-bg` | `#B8C0C8` | `#F1F3F5` | Elementos inativos, funcionalidade bloqueada, campo não editável |
 
@@ -105,17 +105,17 @@ Hierarquia de 4 níveis, todos testados para contraste mínimo AA sobre fundo br
 
 ## 5. Tipografia
 
-Três famílias, cada uma com papel funcional específico — a escolha não é estética, é orientada por caso de uso clínico.
+Três famílias, cada uma com papel funcional específico - a escolha não é estética, é orientada por caso de uso clínico.
 
 ### 5.1 Famílias
 
 | Família | Papel | Justificativa |
 |---|---|---|
-| **Manrope** (700/800) | Display — títulos, navegação, nomes de seção | Geométrica e com peso forte, dá identidade de marca sem soar "corporativo genérico". Boa legibilidade em headings grandes. |
-| **Inter** (400/500/600) | Corpo — texto de interface, formulários, botões | Desenhada especificamente para telas; excelente legibilidade em tamanhos pequenos (12–16px), amplamente suportada em Angular e React Native. |
-| **IBM Plex Mono** (500/600) | Dados — valores de sinais vitais, timestamps, códigos | Números tabulares monoespaçados: essencial para leitura rápida e não-ambígua de BPM, SpO2, pressão arterial — o mesmo princípio usado em displays de monitores hospitalares reais. |
+| **Manrope** (700/800) | Display - títulos, navegação, nomes de seção | Geométrica e com peso forte, dá identidade de marca sem soar "corporativo genérico". Boa legibilidade em headings grandes. |
+| **Inter** (400/500/600) | Corpo - texto de interface, formulários, botões | Desenhada especificamente para telas; excelente legibilidade em tamanhos pequenos (12–16px), amplamente suportada em Angular e React Native. |
+| **IBM Plex Mono** (500/600) | Dados - valores de sinais vitais, timestamps, códigos | Números tabulares monoespaçados: essencial para leitura rápida e não-ambígua de BPM, SpO2, pressão arterial - o mesmo princípio usado em displays de monitores hospitalares reais. |
 
-Todas open-source, disponíveis via Google Fonts — sem custo de licenciamento (relevante dado o constraint de custo zero do projeto).
+Todas open-source, disponíveis via Google Fonts - sem custo de licenciamento (relevante dado o constraint de custo zero do projeto).
 
 ### 5.2 Escala tipográfica
 
@@ -147,7 +147,7 @@ npx expo install expo-font @expo-google-fonts/manrope @expo-google-fonts/inter @
 
 ## 6. Estados de input
 
-Todos os inputs seguem o mesmo padrão de comportamento — consistência é o que permite o usuário aprender o sistema uma vez e reconhecer em qualquer tela.
+Todos os inputs seguem o mesmo padrão de comportamento - consistência é o que permite o usuário aprender o sistema uma vez e reconhecer em qualquer tela.
 
 | Estado | Borda | Background | Comportamento |
 |---|---|---|---|
@@ -162,7 +162,7 @@ Todos os inputs seguem o mesmo padrão de comportamento — consistência é o q
 ### Regras de comportamento
 
 - **Transição:** todas as mudanças de estado (borda, background, glow) usam `transition: 150ms ease`.
-- **Erro é reativo, não proativo:** o estado de erro só aparece após o campo perder o foco (`blur`) ou após tentativa de submit — nunca enquanto o usuário ainda está digitando a primeira vez.
+- **Erro é reativo, não proativo:** o estado de erro só aparece após o campo perder o foco (`blur`) ou após tentativa de submit - nunca enquanto o usuário ainda está digitando a primeira vez.
 - **Helper text muda de função conforme o estado:** em repouso, é uma dica (`neutro-500`); em erro, é a mensagem do que corrigir (`critico`); em sucesso, é uma confirmação (`sucesso`).
 - **Placeholder** sempre em `neutro-500`, nunca em `neutro-300` (contraste insuficiente).
 - **Inputs numéricos de dados clínicos** (ex: threshold de frequência cardíaca) usam a fonte `IBM Plex Mono` para o valor digitado, mesmo que o label esteja em Inter.
@@ -187,15 +187,15 @@ Hierarquia de 5 tipos, pensada para que ações de consequência clínica (ex: e
 |---|---|
 | **Default** | Cor base da variante |
 | **Hover** (web) | Escurece a cor base em ~8–10% (ex: `azul-primario` → `#0A3F72`) |
-| **Active/Pressed** | Escurece mais um nível (ex: `#083058`), sem movimento/scale — evita jank em telas de monitoramento |
-| **Processando (loading)** | Opacidade 85%, ícone de spinner (14px, borda 2px, animação de rotação 700ms linear) à esquerda do texto, texto muda para verbo no gerúndio ("Salvando...") — botão fica com `pointer-events: none` |
+| **Active/Pressed** | Escurece mais um nível (ex: `#083058`), sem movimento/scale - evita jank em telas de monitoramento |
+| **Processando (loading)** | Opacidade 85%, ícone de spinner (14px, borda 2px, animação de rotação 700ms linear) à esquerda do texto, texto muda para verbo no gerúndio ("Salvando...") - botão fica com `pointer-events: none` |
 | **Desabilitado** | Background muda para `desabilitado` (#B8C0C8), texto branco mantido, `cursor: not-allowed`, sem hover/active |
 
 ### Regras de copy (texto do botão)
 
 - Verbo no infinitivo/imperativo, nunca genérico: **"Salvar alterações"**, não "Enviar" ou "OK"
 - O nome da ação se mantém do botão até a confirmação: se o botão diz "Encerrar monitoramento", a mensagem de sucesso deve dizer "Monitoramento encerrado", não "Operação concluída"
-- Botões destrutivos sempre pedem confirmação em modal antes de executar — nunca disparam a ação diretamente no clique
+- Botões destrutivos sempre pedem confirmação em modal antes de executar - nunca disparam a ação diretamente no clique
 
 ---
 
@@ -218,16 +218,16 @@ O card de paciente é o componente central do dashboard clínico.
 | Elemento | Especificação |
 |---|---|
 | **Container** | `border-radius: 14px`, `border: 1px solid neutro-150`, background branco |
-| **Borda de status** | `border-left: 4px solid` — cor conforme severidade (sucesso/atencao/critico) |
+| **Borda de status** | `border-left: 4px solid` - cor conforme severidade (sucesso/atencao/critico) |
 | **Nome do paciente** | Manrope 700, 15px, `neutro-900` |
 | **Metadado (leito/dia)** | Inter 400, 11.5px, `neutro-500` |
 | **Status pill** | Badge com bg suave + texto forte da cor semântica correspondente, uppercase, `IBM Plex Mono` 10px |
-| **Valores de sinais vitais** | `IBM Plex Mono` 600, 22px — cor muda para `critico` automaticamente se o valor estiver fora da faixa seletiva daquele paciente |
+| **Valores de sinais vitais** | `IBM Plex Mono` 600, 22px - cor muda para `critico` automaticamente se o valor estiver fora da faixa seletiva daquele paciente |
 | **Unidade (bpm/%)** | Inter 500, 11px, `neutro-500`, ao lado do valor |
 
 ### Regra de cor condicional
 
-O valor numérico do sinal vital **herda a cor semântica do status geral do paciente apenas quando aquele sinal específico é o motivo do alerta** — evita que todos os números fiquem vermelhos quando só um está fora da faixa, preservando a precisão da triagem visual.
+O valor numérico do sinal vital **herda a cor semântica do status geral do paciente apenas quando aquele sinal específico é o motivo do alerta** - evita que todos os números fiquem vermelhos quando só um está fora da faixa, preservando a precisão da triagem visual.
 
 ---
 
@@ -281,7 +281,7 @@ Pronto para copiar como CSS custom properties (web) ou objeto JS (React Native /
 ```
 
 ```javascript
-// tokens.js — para uso em React Native / Styled Components
+// tokens.js - para uso em React Native / Styled Components
 export const colors = {
   aquaClaro: '#99D5E0',
   azulPrimario: '#0C4C8A',
@@ -330,15 +330,15 @@ Verificação de contraste (WCAG 2.1) para as combinações de texto mais usadas
 | `azul-primario` sobre branco | ~7.3:1 | AAA | Seguro para links e botões secundários |
 | Branco sobre `azul-primario` | ~7.3:1 | AAA | Seguro para botões primários |
 | Branco sobre `critico` | ~4.9:1 | AA | Adequado para botões; evitar texto pequeno (<14px) em cima |
-| `aqua-claro` sobre branco | ~1.6:1 | **Falha** | **Nunca usar para texto** — apenas background/decoração |
+| `aqua-claro` sobre branco | ~1.6:1 | **Falha** | **Nunca usar para texto** - apenas background/decoração |
 | `neutro-300` sobre branco | ~1.9:1 | **Falha** | Reservado para texto inativo/desabilitado, nunca para conteúdo ativo |
 
 ### Recomendações adicionais
 
-- Nunca comunicar status **apenas por cor** — sempre acompanhar de texto (badge "Crítico") ou ícone, para usuários com daltonismo.
-- Manter foco visível (outline/glow) em todos os elementos interativos — obrigatório para navegação por teclado no dashboard web.
+- Nunca comunicar status **apenas por cor** - sempre acompanhar de texto (badge "Crítico") ou ícone, para usuários com daltonismo.
+- Manter foco visível (outline/glow) em todos os elementos interativos - obrigatório para navegação por teclado no dashboard web.
 - Em mobile, alvo de toque mínimo de 44×44px para todos os botões, especialmente os destrutivos (evitar toque acidental).
 
 ---
 
-*Documento vivo — deve ser atualizado junto ao repositório do projeto conforme novos componentes forem definidos (modais, tabelas, gráficos de série temporal).*
+*Documento vivo - deve ser atualizado junto ao repositório do projeto conforme novos componentes forem definidos (modais, tabelas, gráficos de série temporal).*

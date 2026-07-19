@@ -1,4 +1,4 @@
-# Arquitetura — Frontend Web (RecuperaSaúde)
+# Arquitetura - Frontend Web (RecuperaSaúde)
 
 Portal web para profissionais de saúde (médicos/admins) monitorarem pacientes em recuperação pós-cirúrgica. Angular 17 standalone, Tailwind v4 para estilo e Angular CDK para comportamento.
 
@@ -6,9 +6,9 @@ Portal web para profissionais de saúde (médicos/admins) monitorarem pacientes 
 
 | Decisão | Escolha |
 |---|---|
-| Componentes | **Standalone** — sem NgModules |
+| Componentes | **Standalone** - sem NgModules |
 | Estilo | **Tailwind v4** (utilities no template) + tokens de marca em CSS custom properties |
-| Comportamento acessível | **Angular CDK** (overlay, focus-trap) — **sem Angular Material** |
+| Comportamento acessível | **Angular CDK** (overlay, focus-trap) - **sem Angular Material** |
 | Formato de estilo dos componentes | **SCSS** (quando há arquivo); `src/styles.css` fica CSS puro (PostCSS/Tailwind) |
 | Acesso à API | **`ApiService`** fino e tipado como ponto único |
 | Erros | Interceptor com política (401 refresh / 403→/403 / 4xx→caller / 5xx→toast) + `NotificationService` (toast CDK) + `ErrorHandler` global |
@@ -18,13 +18,13 @@ Portal web para profissionais de saúde (médicos/admins) monitorarem pacientes 
 
 ```
 src/app/
-├── app.component.{ts,html}     # Raiz — apenas <router-outlet>
+├── app.component.{ts,html}     # Raiz - apenas <router-outlet>
 ├── app.config.ts               # Providers (router, http + interceptors, ErrorHandler)
 ├── app.routes.ts               # Rotas geradas a partir de NAV_ITEMS
 │
 ├── core/                       # Singletons e infra transversal (sem UI)
 │   ├── config/
-│   │   └── navigation.config.ts    # NAV_ITEMS — fonte única de navegação
+│   │   └── navigation.config.ts    # NAV_ITEMS - fonte única de navegação
 │   ├── errors/
 │   │   └── global-error-handler.ts # ErrorHandler global (JS não tratado)
 │   ├── guards/
@@ -50,7 +50,7 @@ src/app/
 │   └── footer/
 │
 ├── pages/                      # Telas de feature (uma pasta por rota)
-│   ├── _template/                  # MODELO — copie para criar uma nova tela
+│   ├── _template/                  # MODELO - copie para criar uma nova tela
 │   ├── home/ login/ cadastro/ forbidden/   # Páginas públicas
 │   ├── dashboard/                  # Tela autenticada
 │   └── components-demo/            # Vitrine dos componentes reutilizáveis
@@ -64,12 +64,12 @@ src/app/
 
 **Regra de dependência:** `pages` e `layout` dependem de `core` e `shared`. `core` e `shared` **não** dependem de `pages`. `core` não tem UI; `shared` não tem estado global.
 
-## Navegação — fonte única
+## Navegação - fonte única
 
 `core/config/navigation.config.ts` define `NAV_ITEMS`. É consumido por:
 
-- **`app.routes.ts`** — gera as rotas filhas de `/app` com breadcrumb, `roles`, `roleGuard` e lazy loading.
-- **`SidebarComponent`** — renderiza o menu filtrado pelo papel do usuário.
+- **`app.routes.ts`** - gera as rotas filhas de `/app` com breadcrumb, `roles`, `roleGuard` e lazy loading.
+- **`SidebarComponent`** - renderiza o menu filtrado pelo papel do usuário.
 
 Adicionar/remover uma tela = editar um único array. Ver "Como criar uma nova tela" abaixo.
 
@@ -127,4 +127,4 @@ Erros de JS não tratados caem no `GlobalErrorHandler` (que ignora `HttpErrorRes
 
 4. **Se o ícone for novo**, importe o componente Lucide correspondente no `SidebarComponent` e adicione o `@case` no template (`sidebar.component.html`).
 
-Pronto — sem tocar em `app.routes.ts`.
+Pronto - sem tocar em `app.routes.ts`.

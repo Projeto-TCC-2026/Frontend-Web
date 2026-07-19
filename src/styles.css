@@ -1,10 +1,10 @@
-/* Google Fonts — 3 famílias funcionais do Design System */
+/* Google Fonts - 3 famílias funcionais do Design System */
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
 
-/* Tailwind v4 — single entry point. Preflight disabled via @layer config below. */
+/* Tailwind v4 - single entry point. Preflight disabled via @layer config below. */
 @import "tailwindcss";
 
-/* Disable preflight (base reset) — we have our own minimal reset */
+/* Disable preflight (base reset) - we have our own minimal reset */
 @layer base {
   /* empty: we override Tailwind's base later in this file */
 }
@@ -13,7 +13,7 @@
 @source "./**/*.{html,ts}";
 
 /* ============================================================
-   @theme — Tailwind v4 design tokens.
+   @theme - Tailwind v4 design tokens.
    Defines the utilities generated (bg-*, text-*, font-*, rounded-*, etc.)
    ============================================================ */
 @theme {
