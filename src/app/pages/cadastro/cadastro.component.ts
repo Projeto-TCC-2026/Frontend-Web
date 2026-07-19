@@ -134,7 +134,7 @@ export class CadastroComponent implements OnInit {
     if (this.pacienteSenha !== this.pacienteConfirmarSenha) this.errors['pacienteConfirmarSenha'] = 'Senhas não coincidem';
     if (!this.pacienteTermos || !this.pacienteDados) { alert('Por favor, aceite os termos e autorize o compartilhamento de dados.'); return; }
     if (Object.keys(this.errors).length > 0) return;
-    alert('Conta criada com sucesso! Bem-vindo ao RecuperaSaúde!');
+    alert('Conta criada com sucesso! Bem-vindo ao Recupera Saúde!');
   }
 
   onCepBlur(): void {

@@ -1,4 +1,4 @@
-# Arquitetura - Frontend Web (RecuperaSaúde)
+# Arquitetura - Frontend Web (Recupera Saúde)
 
 Portal web para profissionais de saúde (médicos/admins) monitorarem pacientes em recuperação pós-cirúrgica. Angular 17 standalone, Tailwind v4 para estilo e Angular CDK para comportamento.
 
