@@ -2,8 +2,8 @@
    para "classe aplicada condicionalmente pelo Angular" */
 :host .sidebar-link--active {
   color: #fff;
+  font-weight: 600;
   background: rgba(153, 213, 224, 0.12);
-  border-left: 3px solid var(--color-aqua-claro);
 }
 
 /* Mobile: esconder sidebar por padrão */

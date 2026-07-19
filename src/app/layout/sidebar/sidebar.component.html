@@ -1,10 +1,10 @@
 <aside
-  class="h-screen sticky top-0 flex flex-col overflow-hidden bg-[var(--color-azul-profundo)] text-white transition-all duration-150 ease-in-out"
+  class="h-screen sticky top-0 flex flex-col overflow-hidden bg-[var(--color-azul-profundo)] text-white transition-all duration-150 ease-in-out rounded-r-md"
   [class]="isSidebarCollapsed ? 'w-[68px] px-2 pt-8 pb-4' : 'w-[248px] px-4 pt-8 pb-4'"
 >
   <!-- Brand -->
   <div class="flex flex-col gap-1 px-2 mb-8">
-    <svg class="w-full h-4 text-[var(--color-aqua-claro)] mb-3" viewBox="0 0 200 16" fill="none">
+    <svg class="w-full text-[var(--color-aqua-claro)] mb-3" viewBox="0 0 200 16" fill="none">
       <path
         d="M0 8 H70 L78 8 L84 -4 L92 20 L98 8 L108 8 L114 2 L120 8 H200"
         stroke="currentColor"
@@ -14,8 +14,8 @@
       />
     </svg>
     @if (!isSidebarCollapsed) {
-      <span class="font-heading font-extrabold text-[15px] tracking-wide text-white">RecuperaSaúde</span>
-      <span class="text-[10px] text-[var(--color-aqua-suave)] uppercase tracking-[0.12em]">Monitoramento Pós-Cirúrgico</span>
+      <span class="font-heading font-extrabold text-[15px] tracking-wide text-white">Recupera Saúde</span>
+      <span class="text-[8px] text-[var(--color-aqua-suave)] uppercase tracking-[0.12em]">Monitoramento Pós-Cirúrgico</span>
     }
   </div>
 

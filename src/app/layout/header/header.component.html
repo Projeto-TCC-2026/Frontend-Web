@@ -16,10 +16,11 @@
     <div class="w-9 h-9 rounded-full bg-[var(--color-azul-primario)] flex items-center justify-center shrink-0">
       <span class="font-heading text-[13px] font-bold text-white tracking-wide">{{ userInitials }}</span>
     </div>
-    <div class="flex flex-col gap-px max-md:hidden">
+    <div class="flex flex-col gap-0.5 max-md:hidden">
       <span class="text-[13px] font-semibold text-[var(--color-neutro-900)] leading-tight">{{ userName }}</span>
       <span class="font-data text-[10.5px] text-[var(--color-neutro-500)] uppercase tracking-wide">{{ userRole }}</span>
     </div>
+
     <button
       class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)]"
       (click)="logout()"
