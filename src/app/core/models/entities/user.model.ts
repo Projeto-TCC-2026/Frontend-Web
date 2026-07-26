@@ -1,11 +1,11 @@
 export type UserRole = 'ADMIN' | 'DOCTOR' | 'PATIENT';
 
 export interface UserProfile {
-  id: number;
+  id: string;
   email: string;
   role: UserRole;
   fullName?: string;
-  doctorId?: number;
+  doctorId?: string;
   crm?: string;
   specialty?: string;
   hospitalName?: string;
