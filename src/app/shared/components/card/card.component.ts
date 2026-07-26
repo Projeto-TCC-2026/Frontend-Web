@@ -4,6 +4,7 @@ import { Component, Input } from '@angular/core';
   selector: 'app-card',
   standalone: true,
   templateUrl: './card.component.html',
+  host: { class: 'block h-full' },
 })
 export class CardComponent {
   @Input() title = '';
@@ -12,7 +13,7 @@ export class CardComponent {
   @Input() bordered = true;
 
   protected get computedClasses(): string {
-    const base = 'bg-white rounded-[var(--radius-lg)]';
+    const base = 'bg-white rounded-[var(--radius-lg)] h-full';
 
     const paddings = {
       none: '',

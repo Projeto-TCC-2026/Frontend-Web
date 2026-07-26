@@ -1,145 +1,462 @@
-<div class="screen">
-  <div class="nav">
-    <div class="nav-logo" (click)="scrollToTop()">
-      <span class="cross-sm">
-        <span class="cv"></span>
-        <span class="ch"></span>
-      </span>
+<div class="min-h-screen flex flex-col">
+  <!-- ═══════════ NAV ═══════════ -->
+  <nav
+    class="flex flex-wrap items-center justify-between bg-brand-primary py-3 px-4 md:px-8 sticky top-0 z-50">
+    <h3
+      class="text-neutro-150 font-bold text-lg font-heading cursor-pointer"
+      (click)="scrollToTop()">
       Recupera Saúde
-    </div>
-    <div class="nav-links">
-      <div class="nl active" (click)="scrollToTop()">Início</div>
-      <div class="nl" (click)="scrollToSection('how')">Como funciona</div>
-      <div class="nl" (click)="goToRegister('medico')">Para médicos</div>
-      <div class="nl" (click)="scrollToSection('footer')">Suporte</div>
-      <button class="nav-btn" (click)="goToLogin()">Entrar</button>
-    </div>
-  </div>
+    </h3>
 
-  <div class="hero">
-    <div class="hero-text">
-      <div class="hero-tag">✦ Acompanhamento pós-operatório digital</div>
-      <div class="hero-title">
-        Sua recuperação<br>
-        com <span>mais segurança</span><br>
-        e agilidade
-      </div>
-      <div class="hero-desc">
-        Conectamos médicos e pacientes durante todo o processo pós-cirúrgico e pós-consulta,
-        garantindo monitoramento contínuo e comunicação rápida e segura.
-      </div>
-      <div class="hero-btns">
-        <button class="hero-btn-p" (click)="goToRegister('paciente')">Criar conta gratuita</button>
-        <button class="hero-btn-o" (click)="goToRegister('medico')">Sou médico →</button>
-      </div>
-    </div>
-    <div class="hero-right">
-      <div class="stat-card">
-        <div class="stat-label">Pacientes acompanhados</div>
-        <div class="stat-val">12.4k</div>
-        <div class="stat-desc">registrados na plataforma</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Médicos verificados</div>
-        <div class="stat-val">860+</div>
-        <div class="stat-desc">profissionais ativos</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Satisfação dos usuários</div>
-        <div class="stat-val">98%</div>
-        <div class="stat-desc">avaliações positivas</div>
-      </div>
-    </div>
-  </div>
+    <!-- Hamburger button (mobile) -->
+    <button
+      class="md:hidden flex flex-col gap-1 p-2 rounded-[var(--radius-sm)] hover:bg-white/10 transition-colors duration-150"
+      (click)="toggleMobileMenu()"
+      aria-label="Abrir menu de navegação"
+      [attr.aria-expanded]="mobileMenuOpen">
+      <span class="block w-5 h-0.5 bg-[var(--color-neutro-150)] transition-transform duration-150"
+        [class.rotate-45]="mobileMenuOpen"
+        [class.translate-y-[6px]]="mobileMenuOpen"></span>
+      <span class="block w-5 h-0.5 bg-[var(--color-neutro-150)] transition-opacity duration-150"
+        [class.opacity-0]="mobileMenuOpen"></span>
+      <span class="block w-5 h-0.5 bg-[var(--color-neutro-150)] transition-transform duration-150"
+        [class.-rotate-45]="mobileMenuOpen"
+        [class.-translate-y-[6px]]="mobileMenuOpen"></span>
+    </button>
 
-  <div class="features" id="features">
-    <div class="section-head">
-      <h2>Por que usar o Recupera Saúde?</h2>
-      <p>Uma plataforma completa para o cuidado contínuo do paciente pós-operatório</p>
-    </div>
-    <div class="feat-grid">
-      <div class="feat-card">
-        <div class="feat-icon fi-blue">📋</div>
-        <div class="feat-name">Prontuário digital</div>
-        <div class="feat-desc">Histórico completo de cirurgias, consultas e evolução do paciente centralizado em um só lugar.</div>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon fi-red">🔔</div>
-        <div class="feat-name">Alertas automáticos</div>
-        <div class="feat-desc">Lembretes de medicação, retornos agendados e sinais de alerta enviados em tempo real.</div>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon fi-teal">💬</div>
-        <div class="feat-name">Chat com médico</div>
-        <div class="feat-desc">Comunicação direta, rápida e segura entre paciente e o profissional responsável.</div>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon fi-green">📊</div>
-        <div class="feat-name">Evolução clínica</div>
-        <div class="feat-desc">Gráficos e relatórios sobre sintomas, dor, mobilidade e outros indicadores de recuperação.</div>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon fi-amber">📅</div>
-        <div class="feat-name">Agendamento fácil</div>
-        <div class="feat-desc">Solicite retornos e consultas diretamente pelo app sem burocracia.</div>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon fi-purple">🔒</div>
-        <div class="feat-name">Dados protegidos</div>
-        <div class="feat-desc">Criptografia de ponta a ponta e conformidade com a LGPD para total segurança.</div>
-      </div>
-    </div>
-  </div>
+    <!-- Desktop links -->
+    <div class="hidden md:flex gap-6 items-center">
+      <a
+        data-nav-link="inicio"
+        (click)="scrollToTop()"
+        class="text-[var(--color-neutro-150)] duration-150 hover:text-white text-xs cursor-pointer">
+        Início
+      </a>
+      <a
+        data-nav-link="features"
+        (click)="scrollToSection('features')"
+        class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-xs cursor-pointer">
+        Recursos
+      </a>
+      <a
+        data-nav-link="how"
+        (click)="scrollToSection('how')"
+        class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-xs cursor-pointer">
+        Como funciona
+      </a>
+      <a
+        data-nav-link="footer"
+        (click)="scrollToSection('footer')"
+        class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-xs cursor-pointer">
+        Suporte
+      </a>
 
-  <div class="how" id="how">
-    <h2>Como funciona em 4 passos simples</h2>
-    <p>Do cadastro ao acompanhamento completo em minutos</p>
-    <div class="steps-row">
-      <div class="step">
-        <div class="step-circle">1</div>
-        <div class="step-name">Cadastro</div>
-        <div class="step-desc">Médico e paciente criam suas contas na plataforma</div>
-      </div>
-      <div class="step-arrow">›</div>
-      <div class="step">
-        <div class="step-circle">2</div>
-        <div class="step-name">Vinculação</div>
-        <div class="step-desc">Médico vincula o paciente ao tratamento ou cirurgia realizada</div>
-      </div>
-      <div class="step-arrow">›</div>
-      <div class="step">
-        <div class="step-circle">3</div>
-        <div class="step-name">Monitoramento</div>
-        <div class="step-desc">Paciente registra sintomas e evolução diariamente pelo app</div>
-      </div>
-      <div class="step-arrow">›</div>
-      <div class="step">
-        <div class="step-circle">4</div>
-        <div class="step-name">Acompanhamento</div>
-        <div class="step-desc">Médico visualiza relatórios e responde dúvidas em tempo real</div>
-      </div>
+      <app-button size="sm" (clicked)="goToLogin()">
+        Entrar
+      </app-button>
     </div>
-  </div>
 
-  <div class="cta">
-    <div class="cta-text">
-      <h3>Comece hoje, gratuitamente</h3>
-      <p>Junte-se a mais de 860 médicos que já usam o Recupera Saúde para cuidar dos seus pacientes</p>
-    </div>
-    <div class="cta-btns">
-      <button class="cta-btn-w" (click)="goToRegister('paciente')">Criar conta paciente</button>
-      <button class="cta-btn-o" (click)="goToRegister('medico')">Sou profissional de saúde</button>
-    </div>
-  </div>
+    <!-- Mobile menu -->
+    @if (mobileMenuOpen) {
+      <div class="w-full md:hidden flex flex-col gap-3 pt-4 pb-2 border-t border-white/10 mt-3">
+        <a
+          data-nav-link="inicio"
+          (click)="scrollToTop()"
+          class="text-[var(--color-neutro-150)] duration-150 hover:text-white text-sm cursor-pointer py-1">
+          Início
+        </a>
+        <a
+          data-nav-link="features"
+          (click)="scrollToSection('features')"
+          class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-sm cursor-pointer py-1">
+          Recursos
+        </a>
+        <a
+          data-nav-link="how"
+          (click)="scrollToSection('how')"
+          class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-sm cursor-pointer py-1">
+          Como funciona
+        </a>
+        <a
+          data-nav-link="footer"
+          (click)="scrollToSection('footer')"
+          class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-sm cursor-pointer py-1">
+          Suporte
+        </a>
 
-  <div class="footer" id="footer">
-    <div class="footer-logo">Recupera Saúde</div>
-    <div class="footer-links">
-      <div class="footer-link">Privacidade</div>
-      <div class="footer-link">Termos de uso</div>
-      <div class="footer-link">Contato</div>
-      <div class="footer-link">LGPD</div>
+        <app-button size="sm" [fullWidth]="true" (clicked)="goToLogin()">
+          Entrar
+        </app-button>
+      </div>
+    }
+  </nav>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section
+    class="bg-[linear-gradient(130deg,_var(--color-azul-marinho)_0%,_var(--color-azul-primario)_100%)] px-6 py-12 md:px-12 md:py-16">
+    <div
+      class="max-w-6xl mx-auto flex flex-col md:flex-row gap-10 items-center">
+      <!-- Texto -->
+      <div class="flex-1 flex flex-col gap-4">
+        <span
+          class="text-[var(--color-laranja-primario)] font-body text-xs font-medium tracking-wide uppercase">
+          ✦ Acompanhamento pós-operatório digital
+        </span>
+
+        <h1
+          class="font-heading font-extrabold text-[32px] leading-10 text-white">
+          Sua recuperação com
+          <span class="text-[var(--color-aqua-suave)]">mais segurança</span>
+          e agilidade
+        </h1>
+
+        <p
+          class="text-sm text-[var(--color-neutro-300)] font-body leading-relaxed max-w-lg">
+          Conectamos médicos e pacientes durante todo o processo pós-cirúrgico e
+          pós-consulta,
+          garantindo monitoramento contínuo e comunicação rápida e segura.
+        </p>
+
+        <div class="flex gap-3 mt-4 flex-wrap">
+          <app-button
+            customClass="!bg-[var(--color-laranja-primario)] !text-[var(--color-neutro-900)] hover:!bg-[#e5a35f]"
+            (clicked)="goToRegister('paciente')">
+            Criar conta gratuita
+          </app-button>
+          <app-button variant="secondary"
+            customClass="text-white border-white/40 hover:bg-white/10"
+            (clicked)="goToRegister('medico')">
+            Sou médico
+          </app-button>
+        </div>
+      </div>
+
+      <!-- Stats cards -->
+      <div class="flex flex-col gap-4 w-full md:w-auto">
+        <div
+          class="rounded-[var(--radius-lg)] border border-white/20 bg-white/10 backdrop-blur-sm p-4 transition-transform duration-150 ease-out hover:-translate-y-1 cursor-default">
+          <div class="flex flex-col gap-1">
+            <span
+              class="text-[var(--color-neutro-300)] text-xs font-body">Pacientes
+              acompanhados</span>
+            <span
+              class="font-data font-semibold text-[22px] leading-7 text-white">12.4k</span>
+            <span
+              class="text-[var(--color-neutro-300)] text-[11px] font-body">registrados
+              na plataforma</span>
+          </div>
+        </div>
+
+        <div
+          class="rounded-[var(--radius-lg)] border border-white/20 bg-white/10 backdrop-blur-sm p-4 transition-transform duration-150 ease-out hover:-translate-y-1 cursor-default">
+          <div class="flex flex-col gap-1">
+            <span
+              class="text-[var(--color-neutro-300)] text-xs font-body">Médicos
+              verificados</span>
+            <span
+              class="font-data font-semibold text-[22px] leading-7 text-white">860+</span>
+            <span
+              class="text-[var(--color-neutro-300)] text-[11px] font-body">profissionais
+              ativos</span>
+          </div>
+        </div>
+
+        <div
+          class="rounded-[var(--radius-lg)] border border-white/20 bg-white/10 backdrop-blur-sm p-4 transition-transform duration-150 ease-out hover:-translate-y-1 cursor-default">
+          <div class="flex flex-col gap-1">
+            <span
+              class="text-[var(--color-neutro-300)] text-xs font-body">Satisfação
+              dos usuários</span>
+            <span
+              class="font-data font-semibold text-[22px] leading-7 text-[var(--color-laranja-primario)]">98%</span>
+            <span
+              class="text-[var(--color-neutro-300)] text-[11px] font-body">avaliações
+              positivas</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="footer-copy">© 2025 Recupera Saúde · Todos os direitos reservados</div>
-  </div>
+  </section>
+
+  <!-- ═══════════ FEATURES ═══════════ -->
+  <section id="features" class="px-6 py-12 md:px-12 md:py-16 bg-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-8 flex flex-col gap-2">
+        <h2
+          class="font-heading font-bold text-2xl text-[var(--color-neutro-900)]">
+          Por que usar o Recupera Saúde?
+        </h2>
+        <p class="text-[var(--color-neutro-500)] text-sm font-body">
+          Uma plataforma completa para o cuidado contínuo do paciente
+          pós-operatório
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <app-card padding="md">
+          <div class="flex flex-col gap-3">
+            <div
+              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-info-bg)] flex items-center justify-center text-lg">
+              📋
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Prontuário
+              digital</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              Histórico completo de cirurgias, consultas e evolução do paciente
+              centralizado em um só lugar.
+            </p>
+          </div>
+        </app-card>
+
+        <app-card padding="md">
+          <div class="flex flex-col gap-3">
+            <div
+              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-critico-bg)] flex items-center justify-center text-lg">
+              🔔
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Alertas
+              automáticos</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              Lembretes de medicação, retornos agendados e sinais de alerta
+              enviados em tempo real.
+            </p>
+          </div>
+        </app-card>
+
+        <app-card padding="md">
+          <div class="flex flex-col gap-3">
+            <div
+              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-sucesso-bg)] flex items-center justify-center text-lg">
+              ⚠️
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Monitoramento
+              contínuo</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              Dados em tempo real através do uso de dispositivos vestiveis
+              integrados ao app, permitindo monitoramento contínuo.
+            </p>
+          </div>
+        </app-card>
+
+        <app-card padding="md">
+          <div class="flex flex-col gap-3">
+            <div
+              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-sucesso-bg)] flex items-center justify-center text-lg">
+              📊
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Evolução
+              clínica</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              Gráficos e relatórios sobre sintomas, dor, mobilidade e outros
+              indicadores de recuperação.
+            </p>
+          </div>
+        </app-card>
+
+        <app-card padding="md">
+          <div class="flex flex-col gap-3">
+            <div
+              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-atencao-bg)] flex items-center justify-center text-lg">
+              📅
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Agendamento
+              fácil</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              Solicite retornos e consultas diretamente pelo app sem burocracia.
+            </p>
+          </div>
+        </app-card>
+
+        <app-card padding="md">
+          <div class="flex flex-col gap-3">
+            <div
+              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-info-bg)] flex items-center justify-center text-lg">
+              🔒
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Dados
+              protegidos</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              Criptografia de ponta a ponta e conformidade com a LGPD para total
+              segurança.
+            </p>
+          </div>
+        </app-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ COMO FUNCIONA ═══════════ -->
+  <section id="how"
+    class="px-6 py-12 md:px-12 md:py-16 bg-[var(--color-neutro-100)]">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-8 flex flex-col gap-2">
+        <h2
+          class="font-heading font-bold text-2xl text-[var(--color-neutro-900)]">
+          Como funciona em 5 passos simples
+        </h2>
+        <p class="text-[var(--color-neutro-500)] text-sm font-body">
+          Do cadastro ao acompanhamento completo em minutos
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Passo 1 -->
+        <app-card padding="md">
+          <div class="flex flex-col items-center text-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
+              1
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Cadastro</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              O hospital cria uma conta na plataforma e cadastra sua equipe
+              médica.
+            </p>
+          </div>
+        </app-card>
+
+        <!-- Passo 2 -->
+        <app-card padding="md">
+          <div class="flex flex-col items-center text-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
+              2
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Pacientes</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              No painel gerencial do médico, ele cadastra seus próprios
+              pacientes.
+            </p>
+          </div>
+        </app-card>
+
+        <!-- Passo 3 -->
+        <app-card padding="md">
+          <div class="flex flex-col items-center text-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
+              3
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Vinculação</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              Vincula o paciente ao procedimento realizado, seja tratamento ou
+              cirurgia.
+            </p>
+          </div>
+        </app-card>
+
+        <!-- Passo 4 -->
+        <app-card padding="md">
+          <div class="flex flex-col items-center text-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
+              4
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Monitoramento</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              Paciente registra sintomas e evolução diariamente pelo app
+            </p>
+          </div>
+        </app-card>
+
+        <!-- Passo 5 — centralizado quando é o último ímpar -->
+        <app-card padding="md" class="sm:col-span-2 sm:max-w-[50%] sm:mx-auto lg:col-span-1 lg:max-w-none">
+          <div class="flex flex-col items-center text-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
+              5
+            </div>
+            <h3
+              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Acompanhamento</h3>
+            <p
+              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
+              Médico visualiza relatórios e acompanha a evolução dos pacientes em tempo real
+            </p>
+          </div>
+        </app-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ CTA ═══════════ -->
+  <section class="px-6 py-12 md:px-12 md:py-16 bg-[var(--color-azul-profundo)]">
+    <div
+      class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex flex-col gap-2">
+        <h3 class="font-heading font-bold text-xl text-white">
+          Comece hoje, gratuitamente
+        </h3>
+        <p class="text-[var(--color-neutro-300)] text-sm font-body">
+          Junte-se a mais de 860 médicos que já usam o Recupera Saúde para
+          cuidar dos seus pacientes
+        </p>
+      </div>
+
+      <div class="flex gap-3 flex-wrap">
+        <app-button variant="secondary"
+          customClass="text-white border-white/40 hover:bg-white/10"
+          (clicked)="goToRegister('paciente')">
+          Criar conta para gerenciar seu hospital
+        </app-button>
+        <app-button (clicked)="goToRegister('medico')">
+          Já tenho uma conta
+        </app-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer id="footer" class="bg-brand-primary px-6 py-6 md:px-8">
+    <div class="max-w-6xl mx-auto flex flex-col gap-4">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <h4 class="text-neutro-150 font-heading font-bold text-base">Recupera
+          Saúde</h4>
+
+        <div class="flex gap-4">
+          <a
+            class="text-[var(--color-neutro-500)] hover:text-[var(--color-neutro-150)] text-xs duration-150 cursor-pointer font-body">
+            Privacidade
+          </a>
+          <a
+            class="text-[var(--color-neutro-500)] hover:text-[var(--color-neutro-150)] text-xs duration-150 cursor-pointer font-body">
+            Termos de uso
+          </a>
+          <a
+            class="text-[var(--color-neutro-500)] hover:text-[var(--color-neutro-150)] text-xs duration-150 cursor-pointer font-body">
+            Contato
+          </a>
+          <a
+            class="text-[var(--color-neutro-500)] hover:text-[var(--color-neutro-150)] text-xs duration-150 cursor-pointer font-body">
+            LGPD
+          </a>
+        </div>
+      </div>
+
+      <div class="flex justify-center md:justify-start">
+        <p class="text-[13px] text-[var(--color-neutro-500)] font-body">
+          © 2026 Recupera Saúde · Todos os direitos reservados
+        </p>
+      </div>
+    </div>
+  </footer>
 </div>

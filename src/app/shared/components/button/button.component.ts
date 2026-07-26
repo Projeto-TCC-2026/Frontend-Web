@@ -19,6 +19,8 @@ export class ButtonComponent {
   @Input() loading = false;
   @Input() loadingText = 'Processando...';
   @Input() fullWidth = false;
+  /** Classes extras para sobrescrever cor de texto/borda (ex.: 'text-white border-white/40') */
+  @Input() customClass = '';
 
   @Output() clicked = new EventEmitter<MouseEvent>();
 
@@ -39,7 +41,7 @@ export class ButtonComponent {
 
     const variants: Record<ButtonVariant, string> = {
       primary: 'bg-[var(--color-azul-primario)] text-white hover:bg-[var(--color-azul-marinho)] focus:ring-[var(--color-azul-primario)]/40',
-      secondary: 'bg-white text-[var(--color-azul-primario)] border border-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/5 focus:ring-[var(--color-azul-primario)]/30',
+      secondary: 'bg-transparent text-[var(--color-azul-primario)] border border-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/5 focus:ring-[var(--color-azul-primario)]/30',
       ghost: 'bg-transparent text-[var(--color-azul-primario)] hover:bg-[var(--color-neutro-100)] focus:ring-[var(--color-azul-primario)]/20',
       destructive: 'bg-[var(--color-critico)] text-white hover:bg-[#c13e40] focus:ring-[var(--color-critico)]/40',
       success: 'bg-[var(--color-sucesso)] text-white hover:bg-[#278a5e] focus:ring-[var(--color-sucesso)]/40',
@@ -51,7 +53,7 @@ export class ButtonComponent {
 
     const widthClass = this.fullWidth ? 'w-full' : '';
 
-    return [base, sizes[this.size], variants[this.variant], disabledClass, widthClass]
+    return [base, sizes[this.size], variants[this.variant], disabledClass, widthClass, this.customClass]
       .filter(Boolean)
       .join(' ');
   }
