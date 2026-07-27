@@ -23,6 +23,7 @@ export class HeaderComponent {
     const role = this.auth.getRole();
     switch (role) {
       case 'ADMIN': return 'Administrador';
+      case 'HOSPITAL': return 'Hospital';
       case 'DOCTOR': return 'Médico';
       default: return '';
     }

@@ -11,6 +11,8 @@ import {
   LucideSettings,
   LucideActivity,
   LucideShield,
+  LucideUserRound,
+  LucideBuilding2,
 } from '@lucide/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { NAV_ITEMS, NavItem } from '../../core/config/navigation.config';
@@ -31,6 +33,8 @@ import { NAV_ITEMS, NavItem } from '../../core/config/navigation.config';
     LucideSettings,
     LucideActivity,
     LucideShield,
+    LucideUserRound,
+    LucideBuilding2,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',

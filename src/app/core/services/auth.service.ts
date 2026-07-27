@@ -12,7 +12,7 @@ const STORAGE_KEYS = {
   USER: 'user'
 } as const;
 
-const ALLOWED_WEB_ROLES: UserRole[] = ['ADMIN', 'DOCTOR'];
+const ALLOWED_WEB_ROLES: UserRole[] = ['ADMIN', 'HOSPITAL', 'DOCTOR'];
 
 @Injectable({
   providedIn: 'root'
