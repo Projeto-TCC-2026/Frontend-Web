@@ -2,27 +2,86 @@
   <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Dashboard</h1>
   <p class="text-sm text-[var(--color-neutro-500)] mb-8">Visão geral do monitoramento pós-cirúrgico</p>
 
-  <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mb-8">
-    <!-- Placeholder cards -->
-    <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
-      <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Pacientes ativos</span>
-      <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">-</span>
-    </div>
-    <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
-      <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Alertas hoje</span>
-      <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">-</span>
-    </div>
-    <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
-      <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Consultas agendadas</span>
-      <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">-</span>
-    </div>
-    <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
-      <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Dispositivos online</span>
-      <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">-</span>
-    </div>
-  </div>
+  <!-- Dashboard do Hospital -->
+  @if (role() === 'HOSPITAL') {
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mb-8">
 
-  <p class="text-[13px] text-[var(--color-neutro-500)] italic">
-    Os dados serão preenchidos quando a integração com o backend estiver ativa.
-  </p>
+      <!-- Total de Doutores -->
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Total de Doutores</span>
+          <span class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] bg-[var(--color-azul-primario)]/10 text-[var(--color-azul-primario)]">
+            <svg lucideUserRound class="w-4 h-4"></svg>
+          </span>
+        </div>
+        @if (loading()) {
+          <div class="h-8 w-16 rounded bg-[var(--color-neutro-150)] animate-pulse"></div>
+        } @else {
+          <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">
+            {{ summary()?.totalDoctors ?? '—' }}
+          </span>
+        }
+      </div>
+
+      <!-- Total de Pacientes -->
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Total de Pacientes</span>
+          <span class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] bg-[var(--color-info-bg)] text-[var(--color-info)]">
+            <svg lucideUsers class="w-4 h-4"></svg>
+          </span>
+        </div>
+        @if (loading()) {
+          <div class="h-8 w-16 rounded bg-[var(--color-neutro-150)] animate-pulse"></div>
+        } @else {
+          <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">
+            {{ summary()?.totalPatients ?? '—' }}
+          </span>
+        }
+      </div>
+
+      <!-- Procedimentos Realizados -->
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Procedimentos Realizados</span>
+          <span class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] bg-[var(--color-sucesso-bg)] text-[var(--color-sucesso)]">
+            <svg lucideClipboardList class="w-4 h-4"></svg>
+          </span>
+        </div>
+        @if (loading()) {
+          <div class="h-8 w-16 rounded bg-[var(--color-neutro-150)] animate-pulse"></div>
+        } @else {
+          <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">
+            {{ summary()?.totalProcedures ?? '—' }}
+          </span>
+        }
+      </div>
+
+    </div>
+  }
+
+  <!-- Dashboard de outras roles (placeholder) -->
+  @if (role() !== 'HOSPITAL') {
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mb-8">
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Pacientes ativos</span>
+        <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">-</span>
+      </div>
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Alertas hoje</span>
+        <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">-</span>
+      </div>
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Consultas agendadas</span>
+        <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">-</span>
+      </div>
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Dispositivos online</span>
+        <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">-</span>
+      </div>
+    </div>
+    <p class="text-[13px] text-[var(--color-neutro-500)] italic">
+      Os dados serão preenchidos quando a integração com o backend estiver ativa.
+    </p>
+  }
 </div>
