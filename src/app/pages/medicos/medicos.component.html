@@ -1,0 +1,160 @@
+<div>
+  <!-- Header -->
+  <div class="flex items-start justify-between mb-8 gap-4 flex-wrap">
+    <div>
+      <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Médicos</h1>
+      <p class="text-sm text-[var(--color-neutro-500)]">Gerencie os médicos do seu hospital</p>
+    </div>
+    <app-button variant="primary" (clicked)="openCreate()">
+      <svg lucidePlus class="w-4 h-4"></svg>
+      Novo Médico
+    </app-button>
+  </div>
+
+  <!-- Busca -->
+  <div class="relative mb-6 max-w-sm">
+    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-neutro-400)] pointer-events-none">
+      <svg lucideSearch class="w-4 h-4"></svg>
+    </span>
+    <input
+      type="text"
+      placeholder="Buscar por nome, CRM ou especialidade..."
+      class="w-full pl-9 pr-4 py-2.5 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-400)] outline-none focus:border-[var(--color-azul-primario)] focus:shadow-[0_0_0_3px_rgba(12,76,138,0.14)] transition-all duration-150"
+      (input)="onSearch($event)"
+    />
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <app-loading text="Carregando médicos..." [fullPage]="true"></app-loading>
+  }
+
+  <!-- Conteúdo -->
+  @if (!loading()) {
+    @if (filteredDoctors().length === 0) {
+      <app-empty-state
+        title="Nenhum médico encontrado"
+        description="Cadastre um novo médico para começar."
+      >
+        <app-button variant="primary" size="sm" (clicked)="openCreate()">Cadastrar médico</app-button>
+      </app-empty-state>
+    } @else {
+      <div class="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)]">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-[var(--color-neutro-100)] border-b border-[var(--color-neutro-150)]">
+                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">Nome</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">CPF</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">CRM</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">Especialidade</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">Telefone</th>
+                <th class="px-4 py-3 text-right text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (doctor of filteredDoctors(); track doctor.id) {
+                <tr class="border-b border-[var(--color-neutro-150)] last:border-b-0 hover:bg-[var(--color-neutro-100)]/50 transition-colors duration-100">
+                  <td class="px-4 py-3 font-medium text-[var(--color-neutro-900)]">{{ doctor.fullName }}</td>
+                  <td class="px-4 py-3 font-data text-xs text-[var(--color-neutro-700)]">{{ doctor.cpf }}</td>
+                  <td class="px-4 py-3 font-data text-xs text-[var(--color-neutro-700)]">{{ doctor.crm }}</td>
+                  <td class="px-4 py-3 text-[var(--color-neutro-700)]">{{ doctor.specialty }}</td>
+                  <td class="px-4 py-3 text-[var(--color-neutro-700)]">{{ doctor.phone }}</td>
+                  <td class="px-4 py-3">
+                    <div class="flex items-center justify-end gap-1">
+                      <button
+                        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
+                        title="Editar"
+                        (click)="openEdit(doctor)"
+                      >
+                        <svg lucidePencil class="w-4 h-4"></svg>
+                      </button>
+                      <button
+                        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)] transition-all duration-150"
+                        title="Excluir"
+                        (click)="onDelete(doctor)"
+                      >
+                        <svg lucideTrash2 class="w-4 h-4"></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Modal: Cadastro / Edição -->
+  <app-dialog
+    [open]="formOpen()"
+    [title]="formMode() === 'create' ? 'Novo Médico' : 'Editar Médico'"
+    size="md"
+    (closed)="closeForm()"
+  >
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-4">
+
+      <app-input
+        label="Nome completo"
+        placeholder="Dr. João da Silva"
+        formControlName="fullName"
+        [required]="true"
+        [state]="isFieldInvalid('fullName') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('fullName') ? 'Nome é obrigatório' : ''"
+      ></app-input>
+
+      <div class="grid grid-cols-2 gap-4">
+        <app-input
+          label="CPF"
+          placeholder="000.000.000-00"
+          formControlName="cpf"
+          [required]="formMode() === 'create'"
+          [disabled]="formMode() === 'edit'"
+          [state]="isFieldInvalid('cpf') ? 'error' : 'default'"
+          [helperText]="isFieldInvalid('cpf') ? 'CPF é obrigatório' : ''"
+        ></app-input>
+
+        <app-input
+          label="CRM"
+          placeholder="CRM/SP 123456"
+          formControlName="crm"
+          [required]="formMode() === 'create'"
+          [disabled]="formMode() === 'edit'"
+          [state]="isFieldInvalid('crm') ? 'error' : 'default'"
+          [helperText]="isFieldInvalid('crm') ? 'CRM é obrigatório' : ''"
+        ></app-input>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <app-input
+          label="Especialidade"
+          placeholder="Cardiologia"
+          formControlName="specialty"
+          [required]="true"
+          [state]="isFieldInvalid('specialty') ? 'error' : 'default'"
+          [helperText]="isFieldInvalid('specialty') ? 'Especialidade é obrigatória' : ''"
+        ></app-input>
+
+        <app-input
+          label="Telefone"
+          type="tel"
+          placeholder="(11) 99999-9999"
+          formControlName="phone"
+          [required]="true"
+          [state]="isFieldInvalid('phone') ? 'error' : 'default'"
+          [helperText]="isFieldInvalid('phone') ? 'Telefone é obrigatório' : ''"
+        ></app-input>
+      </div>
+
+      <div dialogActions>
+        <app-button variant="ghost" size="sm" type="button" (clicked)="closeForm()">Cancelar</app-button>
+        <app-button variant="primary" size="sm" type="submit" [loading]="formLoading()">
+          {{ formMode() === 'create' ? 'Cadastrar' : 'Salvar alterações' }}
+        </app-button>
+      </div>
+
+    </form>
+  </app-dialog>
+</div>

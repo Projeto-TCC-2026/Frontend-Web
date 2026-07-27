@@ -1,0 +1,135 @@
+<div class="max-w-2xl">
+  <!-- Header -->
+  <div class="flex items-start justify-between mb-8 gap-4 flex-wrap">
+    <div>
+      <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Hospital</h1>
+      <p class="text-sm text-[var(--color-neutro-500)]">Informações cadastrais do seu hospital</p>
+    </div>
+    @if (!editing() && !loading()) {
+      <app-button variant="secondary" (clicked)="startEditing()">
+        <svg lucidePencil class="w-4 h-4"></svg>
+        Editar
+      </app-button>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <app-loading text="Carregando dados..." [fullPage]="true"></app-loading>
+  }
+
+  <!-- Visualização -->
+  @if (!loading() && !editing() && hospital()) {
+    <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] overflow-hidden">
+
+      <!-- Cabeçalho do card -->
+      <div class="flex items-center gap-4 px-6 py-5 border-b border-[var(--color-neutro-150)] bg-[var(--color-neutro-100)]/60">
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-azul-primario)]/10 text-[var(--color-azul-primario)]">
+          <svg lucideBuilding2 class="w-6 h-6"></svg>
+        </span>
+        <div>
+          <p class="font-heading font-bold text-lg text-[var(--color-neutro-900)]">{{ hospital()!.name }}</p>
+          <p class="text-xs text-[var(--color-neutro-500)]">CNPJ: {{ hospital()!.cnpj }}</p>
+        </div>
+      </div>
+
+      <!-- Campos -->
+      <dl class="divide-y divide-[var(--color-neutro-150)]">
+        <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6">
+          <dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-neutro-500)] sm:w-28 shrink-0">E-mail</dt>
+          <dd class="text-sm text-[var(--color-neutro-900)]">{{ hospital()!.email }}</dd>
+        </div>
+        <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6">
+          <dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-neutro-500)] sm:w-28 shrink-0">Telefone</dt>
+          <dd class="text-sm text-[var(--color-neutro-900)]">{{ hospital()!.phone }}</dd>
+        </div>
+        <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6">
+          <dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-neutro-500)] sm:w-28 shrink-0">Endereço</dt>
+          <dd class="text-sm text-[var(--color-neutro-900)]">{{ hospital()!.address }}</dd>
+        </div>
+        <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6">
+          <dt class="text-xs font-semibold uppercase tracking-wide text-[var(--color-neutro-500)] sm:w-28 shrink-0">Cidade / UF</dt>
+          <dd class="text-sm text-[var(--color-neutro-900)]">{{ hospital()!.city }} — {{ hospital()!.state }}</dd>
+        </div>
+      </dl>
+    </div>
+  }
+
+  <!-- Edição -->
+  @if (!loading() && editing()) {
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      novalidate
+      class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6 flex flex-col gap-5"
+    >
+      <app-input
+        label="Nome do hospital"
+        placeholder="Hospital Santa Clara"
+        formControlName="name"
+        [required]="true"
+        [state]="isFieldInvalid('name') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('name') ? 'Nome é obrigatório' : ''"
+      ></app-input>
+
+      <app-input
+        label="E-mail"
+        type="email"
+        placeholder="contato@hospital.com"
+        formControlName="email"
+        [required]="true"
+        [state]="isFieldInvalid('email') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('email') ? 'Informe um e-mail válido' : ''"
+      ></app-input>
+
+      <app-input
+        label="Telefone"
+        type="tel"
+        placeholder="(11) 99999-9999"
+        formControlName="phone"
+        [required]="true"
+        [state]="isFieldInvalid('phone') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('phone') ? 'Telefone é obrigatório' : ''"
+      ></app-input>
+
+      <app-input
+        label="Endereço"
+        placeholder="Av. Paulista, 1000"
+        formControlName="address"
+        [required]="true"
+        [state]="isFieldInvalid('address') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('address') ? 'Endereço é obrigatório' : ''"
+      ></app-input>
+
+      <div class="grid grid-cols-2 gap-4">
+        <app-input
+          label="Cidade"
+          placeholder="São Paulo"
+          formControlName="city"
+          [required]="true"
+          [state]="isFieldInvalid('city') ? 'error' : 'default'"
+          [helperText]="isFieldInvalid('city') ? 'Cidade é obrigatória' : ''"
+        ></app-input>
+
+        <app-input
+          label="Estado (UF)"
+          placeholder="SP"
+          formControlName="state"
+          [required]="true"
+          [state]="isFieldInvalid('state') ? 'error' : 'default'"
+          [helperText]="isFieldInvalid('state') ? 'Estado é obrigatório' : ''"
+        ></app-input>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <app-button variant="ghost" type="button" (clicked)="cancelEditing()">
+          <svg lucideX class="w-4 h-4"></svg>
+          Cancelar
+        </app-button>
+        <app-button variant="primary" type="submit" [loading]="saving()">
+          Salvar alterações
+        </app-button>
+      </div>
+    </form>
+  }
+</div>
