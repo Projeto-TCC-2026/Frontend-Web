@@ -137,7 +137,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(loginRequest).subscribe({
       next: (user) => {
         this.loading.set(false);
-        this.notify.success(`Bem-vindo, ${user.name || user.email}!`);
+        this.notify.success(`Bem-vindo, ${user.fullName || user.email}!`);
         this.router.navigate(['/app/dashboard']);
       },
       error: (error) => {

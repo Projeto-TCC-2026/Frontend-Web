@@ -16,7 +16,6 @@ import { NotificationService } from '../../core/services/notification.service';
 import { Hospital } from '../../core/models/entities/hospital.model';
 
 import { ButtonComponent } from '../../shared/components/button/button.component';
-import { InputComponent } from '../../shared/components/input/input.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 
 @Component({
@@ -26,7 +25,6 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
     CommonModule,
     ReactiveFormsModule,
     ButtonComponent,
-    InputComponent,
     LoadingComponent,
     LucidePlus,
     LucidePencil,
