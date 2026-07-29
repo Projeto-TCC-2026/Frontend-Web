@@ -1,24 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
+import { LoginRequest } from '../../core/models/dtos/auth.dto';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  cpf: string = '';
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private notify = inject(NotificationService);
+
+  email: string = '';
   password: string = '';
-  forgotCpf: string = '';
+  forgotEmail: string = '';
   showForgotBox: boolean = false;
   showSuccessMessage: boolean = false;
+  loading = signal(false);
 
-  constructor(private router: Router) {}
+  // Manter compatibilidade com CPF (legacy)
+  cpf: string = '';
+  forgotCpf: string = '';
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Se já estiver logado, redirecionar para dashboard
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/app/dashboard']);
+    }
+  }
 
   formatCPF(value: string): string {
     return value
@@ -45,16 +61,24 @@ export class LoginComponent implements OnInit {
     return true;
   }
 
+  isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
   onCpfInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     input.value = this.formatCPF(input.value);
     this.cpf = input.value;
+    // Para compatibilidade, usar CPF como email temporariamente
+    this.email = input.value;
   }
 
   onForgotCpfInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     input.value = this.formatCPF(input.value);
     this.forgotCpf = input.value;
+    this.forgotEmail = input.value;
   }
 
   toggleForgotBox(event: Event): void {
@@ -63,9 +87,19 @@ export class LoginComponent implements OnInit {
   }
 
   sendRecovery(): void {
-    if (!this.forgotCpf) { alert('Por favor, informe seu CPF.'); return; }
-    if (!this.isValidCPF(this.forgotCpf)) { alert('Por favor, informe um CPF válido.'); return; }
+    const emailToCheck = this.forgotEmail || this.forgotCpf;
+    if (!emailToCheck) { 
+      this.notify.error('Por favor, informe seu email ou CPF.');
+      return; 
+    }
+    
+    if (!this.isValidEmail(emailToCheck) && !this.isValidCPF(emailToCheck)) { 
+      this.notify.error('Por favor, informe um email válido ou CPF válido.');
+      return; 
+    }
+    
     this.showSuccessMessage = true;
+    this.forgotEmail = '';
     this.forgotCpf = '';
     setTimeout(() => {
       this.showSuccessMessage = false;
@@ -74,10 +108,43 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (!this.cpf || !this.password) { alert('Por favor, preencha todos os campos.'); return; }
-    if (!this.isValidCPF(this.cpf)) { alert('Por favor, informe um CPF válido.'); return; }
-    if (this.password.length < 6) { alert('A senha deve ter pelo menos 6 caracteres.'); return; }
-    alert('Login realizado com sucesso! Redirecionando...');
+    // Suporte para CPF (legacy) ou Email
+    const loginEmail = this.email || this.cpf;
+    
+    if (!loginEmail || !this.password) { 
+      this.notify.error('Por favor, preencha todos os campos.');
+      return; 
+    }
+    
+    // Validação: aceita email válido ou CPF válido
+    if (!this.isValidEmail(loginEmail) && !this.isValidCPF(loginEmail)) { 
+      this.notify.error('Por favor, informe um email válido ou CPF válido.');
+      return; 
+    }
+    
+    if (this.password.length < 6) { 
+      this.notify.error('A senha deve ter pelo menos 6 caracteres.');
+      return; 
+    }
+
+    this.loading.set(true);
+
+    const loginRequest: LoginRequest = {
+      email: loginEmail,
+      password: this.password
+    };
+
+    this.authService.login(loginRequest).subscribe({
+      next: (user) => {
+        this.loading.set(false);
+        this.notify.success(`Bem-vindo, ${user.name || user.email}!`);
+        this.router.navigate(['/app/dashboard']);
+      },
+      error: (error) => {
+        this.loading.set(false);
+        this.notify.error(error.message || 'Credenciais inválidas. Tente novamente.');
+      }
+    });
   }
 
   goToHome(): void {

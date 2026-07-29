@@ -1,0 +1,306 @@
+<div>
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">
+        Gestão de Hospitais
+      </h1>
+      <p class="text-sm text-[var(--color-neutro-500)]">
+        Gerencie todos os hospitais cadastrados na plataforma
+      </p>
+    </div>
+    <button 
+      type="button"
+      (click)="openCreateModal()"
+      class="flex items-center gap-2 px-4 py-2 bg-[var(--color-azul-primario)] text-white rounded-[var(--radius-lg)] hover:bg-[var(--color-azul-primario)]/90 transition-colors"
+    >
+      <svg lucidePlus class="w-4 h-4"></svg>
+      Novo Hospital
+    </button>
+  </div>
+
+  <!-- Busca e Filtros -->
+  <div class="mb-6">
+    <div class="max-w-md">
+      <input 
+        type="text"
+        placeholder="Buscar por nome, email, cidade..."
+        (input)="onSearchInput($event)"
+        class="w-full px-4 py-2 border border-[var(--color-neutro-300)] rounded-[var(--radius-lg)] focus:outline-none focus:ring-2 focus:ring-[var(--color-azul-primario)] focus:border-transparent"
+      >
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="flex justify-center items-center py-12">
+      <app-loading></app-loading>
+    </div>
+  }
+
+  <!-- Hospital List -->
+  @if (!loading() && filteredHospitals().length > 0) {
+    <div class="bg-white rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-[var(--color-neutro-50)] border-b border-[var(--color-neutro-150)]">
+          <tr>
+            <th class="px-6 py-4 text-left text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">
+              Hospital
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">
+              CNPJ
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">
+              Localização
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">
+              Contato
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">
+              Ações
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[var(--color-neutro-150)]">
+          @for (hospital of filteredHospitals(); track hospital.id) {
+            <tr class="hover:bg-[var(--color-neutro-25)]">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-[var(--color-azul-primario)]/10 flex items-center justify-center">
+                    <svg lucideBuilding2 class="w-4 h-4 text-[var(--color-azul-primario)]"></svg>
+                  </div>
+                  <div>
+                    <div class="font-medium text-[var(--color-neutro-900)]">{{ hospital.name }}</div>
+                    <div class="text-sm text-[var(--color-neutro-500)]">ID: {{ hospital.id }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-[var(--color-neutro-900)]">
+                {{ hospital.cnpj }}
+              </td>
+              <td class="px-6 py-4 text-sm text-[var(--color-neutro-900)]">
+                <div>{{ hospital.city }}</div>
+                <div class="text-[var(--color-neutro-500)]">{{ hospital.state }}</div>
+              </td>
+              <td class="px-6 py-4 text-sm text-[var(--color-neutro-900)]">
+                <div>{{ hospital.email }}</div>
+                <div class="text-[var(--color-neutro-500)]">{{ hospital.phone }}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    (click)="viewHospital(hospital)"
+                    class="p-2 text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/10 rounded-[var(--radius-sm)] transition-colors"
+                    title="Visualizar"
+                  >
+                    <svg lucideEye class="w-4 h-4"></svg>
+                  </button>
+                  <button
+                    type="button"
+                    (click)="activateHospital(hospital)"
+                    class="p-2 text-[var(--color-neutro-500)] hover:text-[var(--color-sucesso)] hover:bg-[var(--color-sucesso-bg)] rounded-[var(--radius-sm)] transition-colors"
+                    title="Ativar"
+                  >
+                    <svg lucideCheck class="w-4 h-4"></svg>
+                  </button>
+                  <button
+                    type="button"
+                    (click)="deactivateHospital(hospital)"
+                    class="p-2 text-[var(--color-neutro-500)] hover:text-[var(--color-warning)] hover:bg-[var(--color-warning-bg)] rounded-[var(--radius-sm)] transition-colors"
+                    title="Inativar"
+                  >
+                    <svg lucideX class="w-4 h-4"></svg>
+                  </button>
+                  <button
+                    type="button"
+                    (click)="deleteHospital(hospital)"
+                    class="p-2 text-[var(--color-neutro-500)] hover:text-[var(--color-erro)] hover:bg-[var(--color-erro-bg)] rounded-[var(--radius-sm)] transition-colors"
+                    title="Excluir"
+                  >
+                    <svg lucideTrash2 class="w-4 h-4"></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!loading() && filteredHospitals().length === 0) {
+    <div class="text-center py-12">
+      <svg lucideBuilding2 class="w-12 h-12 text-[var(--color-neutro-300)] mx-auto mb-4"></svg>
+      <h3 class="text-lg font-medium text-[var(--color-neutro-900)] mb-2">
+        {{ searchTerm() ? 'Nenhum hospital encontrado' : 'Nenhum hospital cadastrado' }}
+      </h3>
+      <p class="text-[var(--color-neutro-500)] mb-6">
+        {{ searchTerm() ? 'Tente ajustar os filtros de busca.' : 'Comece cadastrando o primeiro hospital.' }}
+      </p>
+      @if (!searchTerm()) {
+        <button 
+          type="button"
+          (click)="openCreateModal()"
+          class="px-4 py-2 bg-[var(--color-azul-primario)] text-white rounded-[var(--radius-lg)] hover:bg-[var(--color-azul-primario)]/90 transition-colors"
+        >
+          Cadastrar Hospital
+        </button>
+      }
+    </div>
+  }
+</div>
+
+<!-- Modal de Criação -->
+@if (showCreateModal()) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-[var(--radius-lg)] w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b border-[var(--color-neutro-150)]">
+        <h2 class="text-xl font-semibold text-[var(--color-neutro-900)]">Cadastrar Novo Hospital</h2>
+      </div>
+      
+      <form [formGroup]="createForm" (ngSubmit)="onCreateSubmit()" class="p-6 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <app-input
+            label="Nome do Hospital"
+            type="text"
+            formControlName="name"
+            [error]="isFieldInvalid('name') ? 'Nome é obrigatório (mín. 3 caracteres)' : ''"
+            required
+          ></app-input>
+
+          <app-input
+            label="CNPJ"
+            type="text"
+            formControlName="cnpj"
+            (input)="onCnpjInput($event)"
+            placeholder="00.000.000/0000-00"
+            [error]="isFieldInvalid('cnpj') ? 'CNPJ inválido' : ''"
+            required
+          ></app-input>
+
+          <app-input
+            label="Email"
+            type="email"
+            formControlName="email"
+            [error]="isFieldInvalid('email') ? 'Email inválido' : ''"
+            required
+          ></app-input>
+
+          <app-input
+            label="Telefone"
+            type="tel"
+            formControlName="phone"
+            placeholder="(11) 99999-9999"
+            [error]="isFieldInvalid('phone') ? 'Telefone é obrigatório' : ''"
+            required
+          ></app-input>
+
+          <app-input
+            label="Endereço"
+            type="text"
+            formControlName="address"
+            class="md:col-span-2"
+            [error]="isFieldInvalid('address') ? 'Endereço é obrigatório' : ''"
+            required
+          ></app-input>
+
+          <app-input
+            label="Cidade"
+            type="text"
+            formControlName="city"
+            [error]="isFieldInvalid('city') ? 'Cidade é obrigatória' : ''"
+            required
+          ></app-input>
+
+          <app-input
+            label="Estado"
+            type="text"
+            formControlName="state"
+            placeholder="SP"
+            maxlength="2"
+            [error]="isFieldInvalid('state') ? 'Estado é obrigatório' : ''"
+            required
+          ></app-input>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4">
+          <button
+            type="button"
+            (click)="closeCreateModal()"
+            class="px-4 py-2 text-[var(--color-neutro-600)] border border-[var(--color-neutro-300)] rounded-[var(--radius-lg)] hover:bg-[var(--color-neutro-50)] transition-colors"
+            [disabled]="saving()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-[var(--color-azul-primario)] text-white rounded-[var(--radius-lg)] hover:bg-[var(--color-azul-primario)]/90 transition-colors disabled:opacity-50"
+            [disabled]="saving() || createForm.invalid"
+          >
+            @if (saving()) {
+              <span class="flex items-center gap-2">
+                <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Salvando...
+              </span>
+            } @else {
+              Cadastrar Hospital
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Modal de Visualização -->
+@if (showViewModal() && selectedHospital()) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-[var(--radius-lg)] w-full max-w-lg">
+      <div class="p-6 border-b border-[var(--color-neutro-150)]">
+        <h2 class="text-xl font-semibold text-[var(--color-neutro-900)]">{{ selectedHospital()!.name }}</h2>
+      </div>
+      
+      <div class="p-6 space-y-4">
+        <div class="grid grid-cols-1 gap-4">
+          <div>
+            <label class="text-sm font-medium text-[var(--color-neutro-700)]">CNPJ</label>
+            <div class="text-[var(--color-neutro-900)]">{{ selectedHospital()!.cnpj }}</div>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[var(--color-neutro-700)]">Email</label>
+            <div class="text-[var(--color-neutro-900)]">{{ selectedHospital()!.email }}</div>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[var(--color-neutro-700)]">Telefone</label>
+            <div class="text-[var(--color-neutro-900)]">{{ selectedHospital()!.phone }}</div>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[var(--color-neutro-700)]">Endereço</label>
+            <div class="text-[var(--color-neutro-900)]">{{ selectedHospital()!.address }}</div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium text-[var(--color-neutro-700)]">Cidade</label>
+              <div class="text-[var(--color-neutro-900)]">{{ selectedHospital()!.city }}</div>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-[var(--color-neutro-700)]">Estado</label>
+              <div class="text-[var(--color-neutro-900)]">{{ selectedHospital()!.state }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-4">
+          <button
+            type="button"
+            (click)="closeViewModal()"
+            class="px-4 py-2 bg-[var(--color-azul-primario)] text-white rounded-[var(--radius-lg)] hover:bg-[var(--color-azul-primario)]/90 transition-colors"
+          >
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
