@@ -87,20 +87,18 @@ export class LoginComponent implements OnInit {
   }
 
   sendRecovery(): void {
-    const emailToCheck = this.forgotEmail || this.forgotCpf;
-    if (!emailToCheck) { 
-      this.notify.error('Por favor, informe seu email ou CPF.');
+    if (!this.forgotEmail) { 
+      this.notify.error('Por favor, informe seu email.');
       return; 
     }
     
-    if (!this.isValidEmail(emailToCheck) && !this.isValidCPF(emailToCheck)) { 
-      this.notify.error('Por favor, informe um email válido ou CPF válido.');
+    if (!this.isValidEmail(this.forgotEmail)) { 
+      this.notify.error('Por favor, informe um email válido.');
       return; 
     }
     
     this.showSuccessMessage = true;
     this.forgotEmail = '';
-    this.forgotCpf = '';
     setTimeout(() => {
       this.showSuccessMessage = false;
       this.showForgotBox = false;
@@ -108,17 +106,13 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    // Suporte para CPF (legacy) ou Email
-    const loginEmail = this.email || this.cpf;
-    
-    if (!loginEmail || !this.password) { 
+    if (!this.email || !this.password) { 
       this.notify.error('Por favor, preencha todos os campos.');
       return; 
     }
     
-    // Validação: aceita email válido ou CPF válido
-    if (!this.isValidEmail(loginEmail) && !this.isValidCPF(loginEmail)) { 
-      this.notify.error('Por favor, informe um email válido ou CPF válido.');
+    if (!this.isValidEmail(this.email)) { 
+      this.notify.error('Por favor, informe um email válido.');
       return; 
     }
     
@@ -130,7 +124,7 @@ export class LoginComponent implements OnInit {
     this.loading.set(true);
 
     const loginRequest: LoginRequest = {
-      email: loginEmail,
+      email: this.email,
       password: this.password
     };
 

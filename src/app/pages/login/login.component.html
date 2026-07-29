@@ -36,9 +36,9 @@
       <div class="login-desc">Acesse sua conta para acompanhar sua recuperação</div>
 
       <div>
-        <div class="field-label">CPF</div>
-        <input type="text" class="field-input" [(ngModel)]="cpf" (input)="onCpfInput($event)"
-          placeholder="000.000.000-00" maxlength="14">
+        <div class="field-label">Email</div>
+        <input type="email" class="field-input" [(ngModel)]="email"
+          placeholder="seu@email.com">
 
         <div class="field-label">Senha</div>
         <input type="password" class="field-input" [(ngModel)]="password"
@@ -48,16 +48,22 @@
 
         <div class="forgot-box" [class.show]="showForgotBox">
           <div class="forgot-title">Recuperar senha</div>
-          <div class="forgot-text">Informe seu CPF cadastrado e enviaremos um link de redefinição para o seu e-mail.</div>
-          <input type="text" class="forgot-input" [(ngModel)]="forgotCpf" (input)="onForgotCpfInput($event)"
-            placeholder="000.000.000-00" maxlength="14">
+          <div class="forgot-text">Informe seu email cadastrado e enviaremos um link de redefinição.</div>
+          <input type="email" class="forgot-input" [(ngModel)]="forgotEmail"
+            placeholder="seu@email.com">
           <div class="success-message" [class.show]="showSuccessMessage">
             Link de recuperação enviado com sucesso para seu e-mail!
           </div>
           <button type="button" class="btn-send" (click)="sendRecovery()">Enviar link de recuperação</button>
         </div>
 
-        <button type="button" class="btn-login" (click)="onSubmit()">Entrar na minha conta</button>
+        <button type="button" class="btn-login" (click)="onSubmit()" [disabled]="loading()">
+          @if (loading()) {
+            <span>Entrando...</span>
+          } @else {
+            <span>Entrar na minha conta</span>
+          }
+        </button>
       </div>
 
       <div class="sep">
