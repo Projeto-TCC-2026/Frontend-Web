@@ -1,7 +1,7 @@
 export interface Doctor {
-  id: number;
-  userId: number;
-  hospitalId: number;
+  id: string;
+  userId?: string;
+  hospitalId?: string;
   fullName: string;
   cpf: string;
   crm: string;

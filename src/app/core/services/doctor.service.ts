@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
+import { AuthService } from './auth.service';
 import { Doctor } from '../models/entities/doctor.model';
 
 export interface DoctorPage {
@@ -12,8 +13,8 @@ export interface DoctorPage {
 }
 
 export interface SaveDoctorRequest {
-  userId: number;
-  hospitalId: number;
+  userId?: number;
+  hospitalId?: string;
   fullName: string;
   cpf: string;
   crm: string;
@@ -24,24 +25,60 @@ export interface SaveDoctorRequest {
 @Injectable({ providedIn: 'root' })
 export class DoctorService {
   private api = inject(ApiService);
+  private auth = inject(AuthService);
 
   getAll(page = 0, size = 20): Observable<DoctorPage> {
-    return this.api.get<DoctorPage>('/api/doctors', { page, size });
+    if (this.auth.getRole() === 'HOSPITAL') {
+      return this.api.get<any>('/api/hospital/doctors', { page, size }).pipe(
+        map(response => response.data ?? response)
+      );
+    }
+    return this.api.get<any>('/api/doctors', { page, size }).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
-  getById(id: number): Observable<Doctor> {
-    return this.api.get<Doctor>(`/api/doctors/${id}`);
+  getById(id: string): Observable<Doctor> {
+    if (this.auth.getRole() === 'HOSPITAL') {
+      return this.api.get<any>(`/api/hospital/doctors/${id}`).pipe(
+        map(response => response.data ?? response)
+      );
+    }
+    return this.api.get<any>(`/api/doctors/${id}`).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   create(body: SaveDoctorRequest): Observable<Doctor> {
-    return this.api.post<Doctor>('/api/doctors', body);
+    if (this.auth.getRole() === 'HOSPITAL') {
+      return this.api.post<any>('/api/hospital/doctors', body).pipe(
+        map(response => response.data ?? response)
+      );
+    }
+    return this.api.post<any>('/api/doctors', body).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
-  update(id: number, body: SaveDoctorRequest): Observable<Doctor> {
-    return this.api.put<Doctor>(`/api/doctors/${id}`, body);
+  update(id: string, body: SaveDoctorRequest): Observable<Doctor> {
+    if (this.auth.getRole() === 'HOSPITAL') {
+      return this.api.put<any>(`/api/hospital/doctors/${id}`, body).pipe(
+        map(response => response.data ?? response)
+      );
+    }
+    return this.api.put<any>(`/api/doctors/${id}`, body).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
-  delete(id: number): Observable<void> {
-    return this.api.delete<void>(`/api/doctors/${id}`);
+  delete(id: string): Observable<void> {
+    if (this.auth.getRole() === 'HOSPITAL') {
+      return this.api.delete<any>(`/api/hospital/doctors/${id}`).pipe(
+        map(response => response.data ?? response)
+      );
+    }
+    return this.api.delete<any>(`/api/doctors/${id}`).pipe(
+      map(response => response.data ?? response)
+    );
   }
 }

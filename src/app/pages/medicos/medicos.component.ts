@@ -48,7 +48,7 @@ export class MedicosComponent implements OnInit {
   protected formOpen = signal(false);
   protected formMode = signal<FormMode>('create');
   protected formLoading = signal(false);
-  protected editingId = signal<number | null>(null);
+  protected editingId = signal<string | null>(null);
 
   protected filteredDoctors = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
@@ -120,8 +120,7 @@ export class MedicosComponent implements OnInit {
     const user = this.authService.getCurrentUser();
 
     const body: SaveDoctorRequest = {
-      userId: 0,
-      hospitalId: user?.id ? Number(user.id) : 0,
+      hospitalId: user?.hospitalId ?? user?.id ?? '',
       fullName: raw.fullName!,
       cpf: raw.cpf!,
       crm: raw.crm!,
