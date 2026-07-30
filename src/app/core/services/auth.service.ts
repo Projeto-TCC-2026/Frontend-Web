@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { tap, catchError, switchMap } from 'rxjs/operators';
+import { tap, catchError, switchMap, map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { UserProfile, UserRole } from '../models/entities/user.model';
 import { LoginRequest, LoginResponse, RefreshTokenResponse } from '../models/dtos/auth.dto';
@@ -30,16 +30,17 @@ export class AuthService {
 
   /**
    * Login via POST /auth/login.
-   * Rejects PATIENT role (web is for ADMIN and DOCTOR only).
+   * Rejects PATIENT role (web is for ADMIN, HOSPITAL and DOCTOR only).
    * After successful login, fetches full profile via GET /auth/me.
    */
   public login(credentials: LoginRequest): Observable<UserProfile> {
-    return this.api.post<LoginResponse>('/auth/login', credentials).pipe(
-      tap(response => {
-        if (!ALLOWED_WEB_ROLES.includes(response.role)) {
+    return this.api.post<{ success: boolean; data: LoginResponse }>('/auth/login', credentials).pipe(
+      map(response => response.data),
+      tap(data => {
+        if (!ALLOWED_WEB_ROLES.includes(data.role)) {
           throw new Error('Acesso restrito ao aplicativo mobile');
         }
-        this.storeTokens(response.accessToken, response.refreshToken);
+        this.storeTokens(data.accessToken, data.refreshToken);
       }),
       switchMap(() => this.fetchProfile()),
       catchError(error => {
@@ -57,7 +58,8 @@ export class AuthService {
    * Used on login and on app initialization (page reload).
    */
   public fetchProfile(): Observable<UserProfile> {
-    return this.api.get<UserProfile>('/auth/me').pipe(
+    return this.api.get<{ success: boolean; data: UserProfile }>('/auth/me').pipe(
+      map(response => response.data),
       tap(user => {
         this.storeUser(user);
         this.currentUserSubject.next(user);
@@ -76,9 +78,10 @@ export class AuthService {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    return this.api.post<RefreshTokenResponse>('/auth/refresh', { refreshToken }).pipe(
-      tap(response => {
-        this.storeTokens(response.accessToken, response.refreshToken);
+    return this.api.post<{ success: boolean; data: RefreshTokenResponse }>('/auth/refresh', { refreshToken }).pipe(
+      map(response => response.data),
+      tap(data => {
+        this.storeTokens(data.accessToken, data.refreshToken);
       }),
       catchError(error => {
         this.logout();

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { Hospital } from '../models/entities/hospital.model';
 
@@ -35,24 +35,41 @@ export class HospitalService {
     return this.api.post<Hospital>('/api/admin/hospitals', body);
   }
 
-  activate(id: number): Observable<void> {
+  activate(id: string): Observable<void> {
     return this.api.patch<void>(`/api/admin/hospitals/${id}/activate`);
   }
 
-  deactivate(id: number): Observable<void> {
+  deactivate(id: string): Observable<void> {
     return this.api.patch<void>(`/api/admin/hospitals/${id}/deactivate`);
   }
 
-  deleteHospital(id: number): Observable<void> {
+  deleteHospital(id: string): Observable<void> {
     return this.api.delete<void>(`/api/admin/hospitals/${id}`);
   }
 
-  // Operações específicas (para hospital próprio)
-  getById(id: number): Observable<Hospital> {
-    return this.api.get<Hospital>(`/api/hospitals/${id}`);
+  // Operações por ID (admin)
+  getById(id: string): Observable<Hospital> {
+    return this.api.get<any>(`/api/hospitals/${id}`).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
-  update(id: number, body: UpdateHospitalRequest): Observable<Hospital> {
-    return this.api.put<Hospital>(`/api/hospitals/${id}`, body);
+  update(id: string, body: UpdateHospitalRequest): Observable<Hospital> {
+    return this.api.put<any>(`/api/hospitals/${id}`, body).pipe(
+      map(response => response.data ?? response)
+    );
+  }
+
+  // Portal do hospital (usa token para identificar o hospital)
+  getOwnProfile(): Observable<Hospital> {
+    return this.api.get<any>('/api/hospital/profile').pipe(
+      map(response => response.data ?? response)
+    );
+  }
+
+  updateOwnProfile(body: UpdateHospitalRequest): Observable<Hospital> {
+    return this.api.put<any>('/api/hospital/profile', body).pipe(
+      map(response => response.data ?? response)
+    );
   }
 }
