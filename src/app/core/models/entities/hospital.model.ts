@@ -1,5 +1,5 @@
 export interface Hospital {
-  id: number;
+  id: string;
   name: string;
   cnpj: string;
   phone: string;
@@ -7,4 +7,5 @@ export interface Hospital {
   address: string;
   city: string;
   state: string;
+  active?: boolean;
 }

@@ -9,4 +9,5 @@ export interface UserProfile {
   crm?: string;
   specialty?: string;
   hospitalName?: string;
+  hospitalId?: string;
 }
