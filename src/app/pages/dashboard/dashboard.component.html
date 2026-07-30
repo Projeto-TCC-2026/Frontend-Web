@@ -6,6 +6,64 @@
   @if (role() === 'HOSPITAL') {
     <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mb-8">
 
+      <!-- Total de Médicos -->
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Total de Médicos</span>
+          <span class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] bg-[var(--color-azul-primario)]/10 text-[var(--color-azul-primario)]">
+            <svg lucideUserRound class="w-4 h-4"></svg>
+          </span>
+        </div>
+        @if (loading()) {
+          <div class="h-8 w-16 rounded bg-[var(--color-neutro-150)] animate-pulse"></div>
+        } @else {
+          <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">
+            {{ hospitalDashboard()?.totalDoctors ?? '—' }}
+          </span>
+        }
+      </div>
+
+      <!-- Total de Pacientes -->
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Total de Pacientes</span>
+          <span class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] bg-[var(--color-info-bg)] text-[var(--color-info)]">
+            <svg lucideUsers class="w-4 h-4"></svg>
+          </span>
+        </div>
+        @if (loading()) {
+          <div class="h-8 w-16 rounded bg-[var(--color-neutro-150)] animate-pulse"></div>
+        } @else {
+          <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">
+            {{ hospitalDashboard()?.totalPatients ?? '—' }}
+          </span>
+        }
+      </div>
+
+      <!-- Total de Procedimentos -->
+      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Total de Procedimentos</span>
+          <span class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] bg-[var(--color-verde-primario)]/10 text-[var(--color-verde-primario)]">
+            <svg lucideClipboardList class="w-4 h-4"></svg>
+          </span>
+        </div>
+        @if (loading()) {
+          <div class="h-8 w-16 rounded bg-[var(--color-neutro-150)] animate-pulse"></div>
+        } @else {
+          <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">
+            {{ hospitalDashboard()?.totalProcedures ?? '—' }}
+          </span>
+        }
+      </div>
+
+    </div>
+  }
+
+  <!-- Dashboard do Admin -->
+  @if (role() === 'ADMIN') {
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mb-8">
+
       <!-- Total de Hospitais -->
       <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
         <div class="flex items-center justify-between">
@@ -61,7 +119,7 @@
   }
 
   <!-- Dashboard de outras roles (placeholder) -->
-  @if (role() !== 'HOSPITAL') {
+  @if (role() !== 'HOSPITAL' && role() !== 'ADMIN') {
     <div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mb-8">
       <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
         <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Pacientes ativos</span>
