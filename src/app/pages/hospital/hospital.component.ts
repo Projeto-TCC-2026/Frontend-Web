@@ -49,15 +49,28 @@ export class HospitalComponent implements OnInit {
 
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
-    if (!user?.id) return;
+    if (!user) return;
 
-    this.hospitalService.getById(Number(user.id)).subscribe({
-      next: (data) => {
-        this.hospital.set(data);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    // Hospital logado usa o endpoint do portal (resolve pelo token)
+    if (user.role === 'HOSPITAL') {
+      this.hospitalService.getOwnProfile().subscribe({
+        next: (data) => {
+          this.hospital.set(data);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
+    } else if (user.hospitalId) {
+      this.hospitalService.getById(user.hospitalId).subscribe({
+        next: (data) => {
+          this.hospital.set(data);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
+    } else {
+      this.loading.set(false);
+    }
   }
 
   protected startEditing(): void {
@@ -84,16 +97,23 @@ export class HospitalComponent implements OnInit {
 
     this.saving.set(true);
     const user = this.authService.getCurrentUser();
+    const h = this.hospital();
     const raw = this.form.getRawValue();
-
-    this.hospitalService.update(Number(user!.id), {
+    const body = {
       name:    raw.name!,
+      cnpj:    h?.cnpj ?? '',
       email:   raw.email!,
       phone:   raw.phone!,
       address: raw.address!,
       city:    raw.city!,
       state:   raw.state!,
-    }).subscribe({
+    };
+
+    const update$ = user?.role === 'HOSPITAL'
+      ? this.hospitalService.updateOwnProfile(body)
+      : this.hospitalService.update(user!.hospitalId!, body);
+
+    update$.subscribe({
       next: (updated) => {
         this.hospital.set(updated);
         this.saving.set(false);

@@ -67,7 +67,7 @@ export class HospitalService {
     );
   }
 
-  updateOwnProfile(body: UpdateHospitalRequest): Observable<Hospital> {
+  updateOwnProfile(body: CreateHospitalRequest | UpdateHospitalRequest): Observable<Hospital> {
     return this.api.put<any>('/api/hospital/profile', body).pipe(
       map(response => response.data ?? response)
     );
