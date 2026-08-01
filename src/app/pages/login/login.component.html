@@ -1,78 +1,81 @@
-<div class="screen">
-  <div class="body">
-    <div class="left">
-      <div class="logo-icon">
-        <div class="cross">
-          <div class="cv"></div>
-          <div class="ch"></div>
-        </div>
-      </div>
-      <div class="logo-name" (click)="goToHome()">Recupera Saúde</div>
-      <div class="logo-sub">Acompanhamento pós-operatório</div>
-      <div class="divider-left"></div>
-      <div class="tagline">
-        Monitoramento contínuo<br>
-        entre médico e paciente<br>
-        de forma simples e segura.
-      </div>
-      <div class="badges">
-        <div class="badge-item">
-          <div class="badge-dot"></div>
-          <div class="badge-text">Dados protegidos com criptografia</div>
-        </div>
-        <div class="badge-item">
-          <div class="badge-dot"></div>
-          <div class="badge-text">Profissionais verificados pelo CRM</div>
-        </div>
-        <div class="badge-item">
-          <div class="badge-dot"></div>
-          <div class="badge-text">Disponível 24h para emergências</div>
-        </div>
+<div
+  class="min-h-screen bg-[var(--color-neutro-100)] flex items-center justify-center px-4 py-8 lg:px-8">
+  <div
+    class="w-full max-w-5xl overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] bg-white shadow-[0_20px_60px_rgba(20,34,48,0.10)] mx-auto lg:grid lg:grid-cols-[1.05fr_0.95fr]">
+    <div
+      class="bg-[linear-gradient(135deg,_var(--color-azul-marinho)_0%,_var(--color-azul-primario)_100%)] p-8 lg:p-12 text-white hidden lg:flex flex-col transition duration-300">
+      <button
+        type="button"
+        class="w-fit rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/90 transition hover:bg-white/20 flex items-center gap-1"
+        (click)="goToHome()">
+        <svg lucideChevronLeft class="w-4 h-4"></svg> Voltar para a home
+      </button>
+
+      <div
+        class="h-full flex flex-col justify-center lg:gap-6">
+        <h1 class="font-heading lg:text-3xl font-bold leading-tight text-white">
+          Recupera Saúde
+        </h1>
+        <p class="max-w-md lg:text-sm leading-7 text-[var(--color-neutro-300)]">
+          Entre com sua conta para acompanhar pacientes, gerenciar processos e
+          manter tudo organizado em um único lugar.
+        </p>
       </div>
     </div>
 
-    <div class="right">
-      <div class="login-title">Bem-vindo de volta</div>
-      <div class="login-desc">Acesse sua conta para acompanhar sua recuperação</div>
+    <div class="p-8 lg:p-12">
+      <div class="mb-6">
+        <h2
+          class="mt-2 font-heading text-xl lg:text-2xl font-semibold text-[var(--color-neutro-900)]">
+          Bem-vindo de volta
+        </h2>
+        <p
+          class="mt-2 text-xs lg:text-sm leading-6 text-[var(--color-neutro-700)]">
+          Entre com seu e-mail e senha para continuar.
+        </p>
+      </div>
 
-      <div>
-        <div class="field-label">Email</div>
-        <input type="email" class="field-input" [(ngModel)]="email"
-          placeholder="seu@email.com">
+      <form class="space-y-4 flex flex-col" (ngSubmit)="onSubmit()">
+        <app-input
+          label="E-mail"
+          type="email"
+          placeholder="seu@email.com"
+          [required]="true"
+          [(ngModel)]="email"
+          name="email"></app-input>
 
-        <div class="field-label">Senha</div>
-        <input type="password" class="field-input" [(ngModel)]="password"
-          placeholder="Digite sua senha">
+        <app-input
+          label="Senha"
+          type="password"
+          placeholder="••••••••"
+          [required]="true"
+          [(ngModel)]="password"
+          name="password"></app-input>
 
-        <a href="#" class="forgot" (click)="toggleForgotBox($event)">Esqueci minha senha</a>
-
-        <div class="forgot-box" [class.show]="showForgotBox">
-          <div class="forgot-title">Recuperar senha</div>
-          <div class="forgot-text">Informe seu email cadastrado e enviaremos um link de redefinição.</div>
-          <input type="email" class="forgot-input" [(ngModel)]="forgotEmail"
-            placeholder="seu@email.com">
-          <div class="success-message" [class.show]="showSuccessMessage">
-            Link de recuperação enviado com sucesso para seu e-mail!
-          </div>
-          <button type="button" class="btn-send" (click)="sendRecovery()">Enviar link de recuperação</button>
+        <div class="flex flex-col gap-3 pt-1 sm:flex-row">
+          <app-button type="submit" [loading]="isSubmitting" [fullWidth]="true">
+            Entrar
+          </app-button>
+          <app-button variant="ghost" type="button" [fullWidth]="true"
+            (clicked)="goToForgotPassword()">
+            Esqueci a senha
+          </app-button>
         </div>
+      </form>
 
-        <button type="button" class="btn-login" (click)="onSubmit()" [disabled]="loading()">
-          @if (loading()) {
-            <span>Entrando...</span>
-          } @else {
-            <span>Entrar na minha conta</span>
-          }
-        </button>
+      <div
+        class="mt-6 rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] bg-[var(--color-neutro-100)] p-4">
+        <p class="text-sm text-[var(--color-neutro-700)]">
+          Ainda não tem conta? Para hospitais, você pode criar sua conta
+          diretamente aqui.
+        </p>
+        <div class="mt-3">
+          <app-button variant="secondary" type="button"
+            (clicked)="goToRegister()">
+            Criar conta de hospital
+          </app-button>
+        </div>
       </div>
-
-      <div class="sep">
-        <div class="sep-line"></div>
-        <div class="sep-text">ou</div>
-        <div class="sep-line"></div>
-      </div>
-
-      <button type="button" class="btn-register" (click)="goToRegister()">Criar nova conta</button>
     </div>
   </div>
 </div>
