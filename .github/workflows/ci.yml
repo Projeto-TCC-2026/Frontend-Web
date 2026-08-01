@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Baixar o código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Instalar Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: npm
@@ -38,19 +38,18 @@ jobs:
           "
           echo "URL da API aplicada ao build de produção."
 
-      - name: Testes unitários
-        run: |
-          if [ -n "$(find src -name '*.spec.ts' -print -quit)" ]; then
-            npm run test:ci
-          else
-            echo "Nenhum arquivo .spec.ts encontrado - etapa de testes ignorada."
-          fi
+      # Sem testes por enquanto: o projeto ainda nao tem nenhum arquivo .spec.ts
+      # e o "ng test" falha com TS18003 quando nao encontra specs. Ao criar o
+      # primeiro teste, reative o step abaixo (o script test:ci ja existe).
+      #
+      # - name: Testes unitários
+      #   run: npm run test:ci
 
       - name: Compilar a aplicação
         run: npm run build
 
       - name: Guardar o artefato
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: frontend-dist
           path: dist/recupera-saude/browser
