@@ -54,7 +54,13 @@ export const NAV_ITEMS: NavItem[] = [
     loadComponent: () => import('../../pages/hospital/hospital.component').then(m => m.HospitalComponent),
   },
   { label: 'Administração', path: 'admin',         icon: 'shield',         roles: ['ADMIN'] },
-  { label: 'Pacientes',     path: 'pacientes',     icon: 'users',          roles: ['ADMIN', 'DOCTOR'] },
+  { 
+    label: 'Pacientes', 
+    path: 'pacientes', 
+    icon: 'users', 
+    roles: ['ADMIN', 'DOCTOR'],
+    loadComponent: () => import('../../pages/patients/patients.component').then(m => m.PatientsComponent),
+  },
   { label: 'Configurações', path: 'configuracoes', icon: 'settings',       roles: ['ADMIN', 'DOCTOR'] },
   {
     label: 'Componentes',
