@@ -297,12 +297,12 @@
     <div class="text-center py-12">
       <svg lucideUsers class="w-12 h-12 text-[var(--color-neutro-300)] mx-auto mb-4"></svg>
       <h3 class="text-lg font-medium text-[var(--color-neutro-900)] mb-2">
-        {{ searchTerm() || Object.keys(activeFilters()).length ? 'Nenhum paciente encontrado' : 'Nenhum paciente cadastrado' }}
+        {{ hasSearchOrFilters() ? 'Nenhum paciente encontrado' : 'Nenhum paciente cadastrado' }}
       </h3>
       <p class="text-[var(--color-neutro-500)] mb-6">
-        {{ searchTerm() || Object.keys(activeFilters()).length ? 'Tente ajustar os critérios de busca.' : 'Comece cadastrando o primeiro paciente.' }}
+        {{ hasSearchOrFilters() ? 'Tente ajustar os critérios de busca.' : 'Comece cadastrando o primeiro paciente.' }}
       </p>
-      @if (canCreate() && !searchTerm() && !Object.keys(activeFilters()).length) {
+      @if (canCreate() && !hasSearchOrFilters()) {
         <button 
           type="button"
           (click)="openCreateModal()"

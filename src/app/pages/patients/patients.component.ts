@@ -76,6 +76,14 @@ export class PatientsComponent implements OnInit {
   // User role
   protected userRole = signal<UserRole | null>(null);
 
+  protected hasActiveFilters = computed(() => {
+    return Object.keys(this.activeFilters()).length > 0;
+  });
+
+  protected hasSearchOrFilters = computed(() => {
+    return this.searchTerm().length > 0 || this.hasActiveFilters();
+  });
+
   // ========================================
   // Computed Properties
   // ========================================
@@ -166,7 +174,7 @@ export class PatientsComponent implements OnInit {
           request = this.patientService.searchByPhone(searchTerm, page, this.pageSize());
           break;
       }
-    } else if (Object.keys(filters).length > 0) {
+    } else if (Object.keys(filters).length > 0 && filters.name || filters.gender || filters.city || filters.state) {
       // Apply filters
       request = this.patientService.filter({ 
         ...filters, 
