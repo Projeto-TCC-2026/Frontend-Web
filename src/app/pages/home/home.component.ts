@@ -31,9 +31,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/login']);
   }
 
-  goToRegister(type: string = 'paciente'): void {
+  goToRegister(): void {
     this.mobileMenuOpen = false;
-    this.router.navigate(['/cadastro'], { fragment: type });
+    this.router.navigate(['/cadastro']);
   }
 
   scrollToSection(sectionId: string): void {

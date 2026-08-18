@@ -1,160 +1,139 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
+import { LucideChevronLeft } from '@lucide/angular';
 
+import { HospitalService, HospitalRegisterRequest } from '../../core/services/hospital.service';
+import { NotificationService } from '../../core/services/notification.service';
+
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { InputComponent } from '../../shared/components/input/input.component';
+
+/** Garante que confirmPassword seja igual a password. */
+function passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
+  const password = group.get('password')?.value;
+  const confirmPassword = group.get('confirmPassword')?.value;
+  if (password && confirmPassword && password !== confirmPassword) {
+    group.get('confirmPassword')?.setErrors({ mismatch: true });
+    return { mismatch: true };
+  }
+  return null;
+}
+
+/** Cadastro público — exclusivo para hospitais. Demais perfis não têm auto-cadastro. */
 @Component({
   selector: 'app-cadastro',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, InputComponent, LucideChevronLeft],
   templateUrl: './cadastro.component.html',
-  styleUrls: ['./cadastro.component.scss']
 })
-export class CadastroComponent implements OnInit {
-  activeTab: string = 'medico';
+export class CadastroComponent {
+  private hospitalService = inject(HospitalService);
+  private notify = inject(NotificationService);
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
 
-  // Médico form fields
-  medicoNome = ''; medicoCpf = ''; medicoNascimento = ''; medicoEmail = '';
-  medicoCrm = ''; medicoEspecialidade = ''; medicoTelefone = ''; medicoHospital = '';
-  medicoSenha = ''; medicoConfirmarSenha = '';
-  medicoTermos = false; medicoVeracidade = false;
-  medicoEspecialidadeDropdownOpen = false;
+  protected submitting = signal(false);
 
-  // Paciente form fields
-  pacienteNome = ''; pacienteCpf = ''; pacienteNascimento = ''; pacienteTelefone = '';
-  pacienteGenero = ''; pacienteEmail = ''; pacienteCep = ''; pacienteEstado = '';
-  pacienteCidade = ''; pacienteBairro = ''; pacienteResponsavel = '';
-  pacienteTelefoneEmergencia = ''; pacienteParentesco = '';
-  pacienteSenha = ''; pacienteConfirmarSenha = '';
-  pacienteTermos = false; pacienteDados = false;
-  pacienteGeneroDropdownOpen = false;
-  pacienteEstadoDropdownOpen = false;
-  pacienteParentescoDropdownOpen = false;
+  protected form: FormGroup = this.fb.group(
+    {
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      cnpj: ['', [Validators.required, this.cnpjValidator]],
+      phone: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      address: ['', [Validators.required]],
+      city: ['', [Validators.required]],
+      state: ['', [Validators.required, Validators.pattern(/^[A-Za-z]{2}$/)]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
+    },
+    { validators: passwordsMatchValidator }
+  );
 
-  especialidades = ['Cirurgia Geral','Cardiologia','Ortopedia','Neurologia','Ginecologia','Urologia','Dermatologia','Pediatria'];
-  generos = ['Masculino','Feminino','Outro','Prefiro não informar'];
-  estados = ['Acre','Alagoas','Amapá','Amazonas','Bahia','Ceará','Distrito Federal','Espírito Santo','Goiás','Maranhão','Mato Grosso','Mato Grosso do Sul','Minas Gerais','Pará','Paraíba','Paraná','Pernambuco','Piauí','Rio de Janeiro','Rio Grande do Norte','Rio Grande do Sul','Rondônia','Roraima','Santa Catarina','São Paulo','Sergipe','Tocantins'];
-  parentescos = ['Cônjuge','Pai','Mãe','Filho(a)','Irmão(ã)','Outro'];
+  private cnpjValidator(control: AbstractControl): ValidationErrors | null {
+    const digits = (control.value ?? '').replace(/\D/g, '');
+    return digits.length === 14 ? null : { invalidCnpj: true };
+  }
 
-  errors: {[key: string]: string} = {};
+  protected onCnpjInput(event: Event): void {
+    const raw = (event.target as HTMLInputElement).value;
+    this.form.get('cnpj')?.setValue(this.formatCnpj(raw));
+  }
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  protected onPhoneInput(event: Event): void {
+    const raw = (event.target as HTMLInputElement).value;
+    this.form.get('phone')?.setValue(this.formatPhone(raw));
+  }
 
-  ngOnInit(): void {
-    this.route.fragment.subscribe(fragment => {
-      if (fragment === 'paciente' || fragment === 'medico') {
-        this.activeTab = fragment;
-      }
+  private formatCnpj(value: string): string {
+    return value
+      .replace(/\D/g, '')
+      .slice(0, 14)
+      .replace(/(\d{2})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1/$2')
+      .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+  }
+
+  private formatPhone(value: string): string {
+    return value
+      .replace(/\D/g, '')
+      .slice(0, 11)
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{5})(\d)/, '$1-$2');
+  }
+
+  protected isFieldInvalid(field: string): boolean {
+    const ctrl = this.form.get(field);
+    return !!(ctrl?.invalid && ctrl?.touched);
+  }
+
+  protected onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.submitting.set(true);
+    const raw = this.form.getRawValue();
+
+    const body: HospitalRegisterRequest = {
+      name: raw.name!,
+      cnpj: (raw.cnpj as string).replace(/\D/g, ''),
+      phone: raw.phone!,
+      email: raw.email!,
+      address: raw.address!,
+      city: raw.city!,
+      state: (raw.state as string).toUpperCase(),
+      password: raw.password!,
+    };
+
+    this.hospitalService.register(body).subscribe({
+      next: () => {
+        this.submitting.set(false);
+        this.notify.success('Cadastro realizado! Aguarde a aprovação de um administrador para acessar a plataforma.');
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        this.submitting.set(false);
+        this.notify.error(error.message || 'Não foi possível concluir o cadastro. Tente novamente.');
+      },
     });
   }
 
-  setTab(tab: string): void {
-    this.activeTab = tab;
-    this.router.navigate([], { fragment: tab, replaceUrl: true });
+  protected goToLogin(): void {
+    this.router.navigate(['/login']);
   }
 
-  formatCPF(value: string): string {
-    return value.replace(/\D/g,'').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})/,'$1-$2').replace(/(-\d{2})\d+?$/,'$1');
-  }
-  formatPhone(value: string): string {
-    return value.replace(/\D/g,'').replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2').replace(/(-\d{4})\d+?$/,'$1');
-  }
-  formatDate(value: string): string {
-    return value.replace(/\D/g,'').replace(/(\d{2})(\d)/,'$1/$2').replace(/(\d{2})(\d)/,'$1/$2').replace(/(\d{4})\d+?$/,'$1');
-  }
-  formatCEP(value: string): string {
-    return value.replace(/\D/g,'').replace(/(\d{5})(\d)/,'$1-$2').replace(/(-\d{3})\d+?$/,'$1');
-  }
-
-  isValidCPF(cpf: string): boolean {
-    cpf = cpf.replace(/[^\d]+/g,'');
-    if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/)) return false;
-    let sum = 0, remainder: number;
-    for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i-1,i))*(11-i);
-    remainder = (sum*10)%11; if(remainder===10||remainder===11) remainder=0;
-    if(remainder !== parseInt(cpf.substring(9,10))) return false;
-    sum = 0;
-    for (let i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i-1,i))*(12-i);
-    remainder = (sum*10)%11; if(remainder===10||remainder===11) remainder=0;
-    if(remainder !== parseInt(cpf.substring(10,11))) return false;
-    return true;
-  }
-  isValidEmail(email: string): boolean { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
-  isValidDate(date: string): boolean {
-    const match = date.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    if(!match) return false;
-    const [,d,m,y] = match.map(Number);
-    return m>=1&&m<=12&&d>=1&&d<=31&&y>=1900&&y<=new Date().getFullYear();
-  }
-
-  onInput(field: string, value: string, formatter?: (v: string) => string): void {
-    (this as any)[field] = formatter ? formatter(value) : value;
-    delete this.errors[field];
-  }
-
-  selectOption(field: string, value: string, dropdownField: string): void {
-    (this as any)[field] = value;
-    (this as any)[dropdownField] = false;
-    delete this.errors[field];
-  }
-
-  submitMedico(): void {
-    this.errors = {};
-    if (!this.medicoNome.trim()) this.errors['medicoNome'] = 'Nome completo é obrigatório';
-    if (!this.isValidCPF(this.medicoCpf)) this.errors['medicoCpf'] = 'CPF inválido';
-    if (!this.isValidDate(this.medicoNascimento)) this.errors['medicoNascimento'] = 'Data inválida';
-    if (!this.isValidEmail(this.medicoEmail)) this.errors['medicoEmail'] = 'E-mail inválido';
-    if (!this.medicoCrm.trim()) this.errors['medicoCrm'] = 'CRM é obrigatório';
-    if (!this.medicoEspecialidade.trim()) this.errors['medicoEspecialidade'] = 'Especialidade é obrigatória';
-    if (this.medicoTelefone.replace(/\D/g,'').length < 10) this.errors['medicoTelefone'] = 'Telefone inválido';
-    if (!this.medicoHospital.trim()) this.errors['medicoHospital'] = 'Hospital/Clínica é obrigatório';
-    if (this.medicoSenha.length < 8) this.errors['medicoSenha'] = 'Senha deve ter pelo menos 8 caracteres';
-    if (this.medicoSenha !== this.medicoConfirmarSenha) this.errors['medicoConfirmarSenha'] = 'Senhas não coincidem';
-    if (!this.medicoTermos || !this.medicoVeracidade) { alert('Por favor, aceite os termos e confirme a veracidade das informações.'); return; }
-    if (Object.keys(this.errors).length > 0) return;
-    alert('Cadastro enviado com sucesso! Você receberá um e-mail de confirmação em até 24 horas úteis.');
-  }
-
-  submitPaciente(): void {
-    this.errors = {};
-    if (!this.pacienteNome.trim()) this.errors['pacienteNome'] = 'Nome completo é obrigatório';
-    if (!this.isValidCPF(this.pacienteCpf)) this.errors['pacienteCpf'] = 'CPF inválido';
-    if (!this.isValidDate(this.pacienteNascimento)) this.errors['pacienteNascimento'] = 'Data inválida';
-    if (this.pacienteTelefone.replace(/\D/g,'').length < 10) this.errors['pacienteTelefone'] = 'Telefone inválido';
-    if (!this.pacienteGenero.trim()) this.errors['pacienteGenero'] = 'Gênero é obrigatório';
-    if (!this.isValidEmail(this.pacienteEmail)) this.errors['pacienteEmail'] = 'E-mail inválido';
-    if (this.pacienteCep.replace(/\D/g,'').length !== 8) this.errors['pacienteCep'] = 'CEP inválido';
-    if (!this.pacienteEstado.trim()) this.errors['pacienteEstado'] = 'Estado é obrigatório';
-    if (!this.pacienteCidade.trim()) this.errors['pacienteCidade'] = 'Cidade é obrigatória';
-    if (!this.pacienteBairro.trim()) this.errors['pacienteBairro'] = 'Bairro é obrigatório';
-    if (!this.pacienteResponsavel.trim()) this.errors['pacienteResponsavel'] = 'Nome do responsável é obrigatório';
-    if (this.pacienteTelefoneEmergencia.replace(/\D/g,'').length < 10) this.errors['pacienteTelefoneEmergencia'] = 'Telefone inválido';
-    if (!this.pacienteParentesco.trim()) this.errors['pacienteParentesco'] = 'Parentesco é obrigatório';
-    if (this.pacienteSenha.length < 8) this.errors['pacienteSenha'] = 'Senha deve ter pelo menos 8 caracteres';
-    if (this.pacienteSenha !== this.pacienteConfirmarSenha) this.errors['pacienteConfirmarSenha'] = 'Senhas não coincidem';
-    if (!this.pacienteTermos || !this.pacienteDados) { alert('Por favor, aceite os termos e autorize o compartilhamento de dados.'); return; }
-    if (Object.keys(this.errors).length > 0) return;
-    alert('Conta criada com sucesso! Bem-vindo ao Recupera Saúde!');
-  }
-
-  onCepBlur(): void {
-    const cep = this.pacienteCep.replace(/\D/g,'');
-    if (cep.length === 8) {
-      setTimeout(() => {
-        this.pacienteCidade = 'São Paulo';
-        this.pacienteBairro = 'Centro';
-        this.pacienteEstado = 'São Paulo';
-      }, 500);
-    }
-  }
-
-  goToLogin(): void { this.router.navigate(['/login']); }
-  goToHome(): void { this.router.navigate(['/']); }
-
-  closeDropdowns(): void {
-    this.medicoEspecialidadeDropdownOpen = false;
-    this.pacienteGeneroDropdownOpen = false;
-    this.pacienteEstadoDropdownOpen = false;
-    this.pacienteParentescoDropdownOpen = false;
+  protected goToHome(): void {
+    this.router.navigate(['/']);
   }
 }

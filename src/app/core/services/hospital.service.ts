@@ -22,9 +22,27 @@ export interface UpdateHospitalRequest {
   state: string;
 }
 
+export interface HospitalRegisterRequest {
+  name: string;
+  cnpj: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  password: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class HospitalService {
   private api = inject(ApiService);
+
+  // Auto-cadastro público de hospital
+  register(body: HospitalRegisterRequest): Observable<Hospital> {
+    return this.api.post<any>('/auth/register/hospital', body).pipe(
+      map(response => response.data ?? response)
+    );
+  }
 
   // Gestão completa de hospitais (para admin)
   getAll(): Observable<Hospital[]> {

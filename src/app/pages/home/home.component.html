@@ -120,13 +120,13 @@
         <div class="flex gap-3 mt-4 flex-wrap">
           <app-button
             customClass="!bg-[var(--color-laranja-primario)] !text-[var(--color-neutro-900)] hover:!bg-[#e5a35f]"
-            (clicked)="goToRegister('paciente')">
-            Criar conta gratuita
+            (clicked)="goToRegister()">
+            Cadastrar meu hospital
           </app-button>
           <app-button variant="secondary"
             customClass="text-white border-white/40 hover:bg-white/10"
-            (clicked)="goToRegister('medico')">
-            Sou médico
+            (clicked)="goToLogin()">
+            Já tenho conta
           </app-button>
         </div>
       </div>
@@ -415,10 +415,10 @@
       <div class="flex gap-3 flex-wrap">
         <app-button variant="secondary"
           customClass="text-white border-white/40 hover:bg-white/10"
-          (clicked)="goToRegister('paciente')">
+          (clicked)="goToRegister()">
           Criar conta para gerenciar seu hospital
         </app-button>
-        <app-button (clicked)="goToRegister('medico')">
+        <app-button (clicked)="goToLogin()">
           Já tenho uma conta
         </app-button>
       </div>
