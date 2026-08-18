@@ -40,10 +40,10 @@ describe('HospitalService', () => {
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(body);
 
-      req.flush({ success: true, data: { id: '1', ...body, active: false } });
+      req.flush({ success: true, data: { id: '1', ...body, active: true } });
 
       expect(result.id).toBe('1');
-      expect(result.active).toBeFalse();
+      expect(result.active).toBeTrue();
     });
 
     it('should unwrap the raw response when there is no data envelope', () => {

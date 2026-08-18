@@ -119,7 +119,7 @@ export class CadastroComponent {
     this.hospitalService.register(body).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.notify.success('Cadastro realizado! Aguarde a aprovação de um administrador para acessar a plataforma.');
+        this.notify.success('Cadastro realizado com sucesso! Faça login para continuar.');
         this.router.navigate(['/login']);
       },
       error: (error) => {
