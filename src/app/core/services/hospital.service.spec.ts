@@ -2,6 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { HospitalService, HospitalRegisterRequest } from './hospital.service';
+import { environment } from '../../../environments/environment';
+
+const REGISTER_URL = `${environment.apiUrl}/auth/register/hospital`;
 
 describe('HospitalService', () => {
   let service: HospitalService;
@@ -36,7 +39,7 @@ describe('HospitalService', () => {
       let result: any;
       service.register(body).subscribe((res) => (result = res));
 
-      const req = httpMock.expectOne('http://localhost:8081/auth/register/hospital');
+      const req = httpMock.expectOne(REGISTER_URL);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(body);
 
@@ -61,7 +64,7 @@ describe('HospitalService', () => {
       let result: any;
       service.register(body).subscribe((res) => (result = res));
 
-      const req = httpMock.expectOne('http://localhost:8081/auth/register/hospital');
+      const req = httpMock.expectOne(REGISTER_URL);
       req.flush({ id: '1', ...body });
 
       expect(result.id).toBe('1');
