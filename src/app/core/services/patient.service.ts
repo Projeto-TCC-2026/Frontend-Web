@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { Patient, PatientListItem, PatientCreateRequest, PatientUpdateRequest, PatientFilters } from '../models/entities/patient.model';
 
@@ -36,11 +36,13 @@ export class PatientService {
    * Acesso: DOCTOR, ADMIN
    */
   getAll(page = 0, size = 10, sort = 'fullName,asc'): Observable<PaginatedResponse<PatientListItem>> {
-    return this.api.get<PaginatedResponse<PatientListItem>>('/api/patients', { 
+    return this.api.get<any>('/api/patients', { 
       page: page.toString(), 
       size: size.toString(), 
       sort 
-    });
+    }).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   /**
@@ -48,7 +50,9 @@ export class PatientService {
    * Acesso: DOCTOR, ADMIN
    */
   getById(id: string): Observable<Patient> {
-    return this.api.get<Patient>(`/api/patients/${id}`);
+    return this.api.get<any>(`/api/patients/${id}`).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   /**
@@ -56,7 +60,9 @@ export class PatientService {
    * Acesso: DOCTOR, ADMIN
    */
   create(patient: PatientCreateRequest): Observable<Patient> {
-    return this.api.post<Patient>('/api/patients', patient);
+    return this.api.post<any>('/api/patients', patient).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   /**
@@ -64,7 +70,9 @@ export class PatientService {
    * Acesso: DOCTOR, ADMIN
    */
   update(id: string, patient: PatientUpdateRequest): Observable<Patient> {
-    return this.api.put<Patient>(`/api/patients/${id}`, patient);
+    return this.api.put<any>(`/api/patients/${id}`, patient).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   /**
@@ -91,45 +99,53 @@ export class PatientService {
    * Buscar pacientes por nome (paginado)
    */
   searchByName(name: string, page = 0, size = 10, sort = 'fullName,asc'): Observable<PaginatedResponse<PatientListItem>> {
-    return this.api.get<PaginatedResponse<PatientListItem>>('/api/patients/search/name', {
+    return this.api.get<any>('/api/patients/search/name', {
       name,
       page: page.toString(),
       size: size.toString(),
       sort
-    });
+    }).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   /**
    * Buscar pacientes por CPF (paginado)
    */
   searchByCpf(cpf: string, page = 0, size = 10): Observable<PaginatedResponse<PatientListItem>> {
-    return this.api.get<PaginatedResponse<PatientListItem>>('/api/patients/search/cpf', {
+    return this.api.get<any>('/api/patients/search/cpf', {
       cpf,
       page: page.toString(),
       size: size.toString()
-    });
+    }).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   /**
    * Buscar pacientes por email (paginado)
    */
   searchByEmail(email: string, page = 0, size = 10): Observable<PaginatedResponse<PatientListItem>> {
-    return this.api.get<PaginatedResponse<PatientListItem>>('/api/patients/search/email', {
+    return this.api.get<any>('/api/patients/search/email', {
       email,
       page: page.toString(),
       size: size.toString()
-    });
+    }).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   /**
    * Buscar pacientes por telefone (paginado)
    */
   searchByPhone(phone: string, page = 0, size = 10): Observable<PaginatedResponse<PatientListItem>> {
-    return this.api.get<PaginatedResponse<PatientListItem>>('/api/patients/search/phone', {
+    return this.api.get<any>('/api/patients/search/phone', {
       phone,
       page: page.toString(),
       size: size.toString()
-    });
+    }).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   /**
@@ -147,7 +163,9 @@ export class PatientService {
     if (filters.state) params['state'] = filters.state;
     if (filters.sort) params['sort'] = filters.sort;
 
-    return this.api.get<PaginatedResponse<PatientListItem>>('/api/patients/filter', params);
+    return this.api.get<any>('/api/patients/filter', params).pipe(
+      map(response => response.data ?? response)
+    );
   }
 
   // ========================================

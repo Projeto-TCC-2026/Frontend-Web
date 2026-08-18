@@ -1,3 +1,7 @@
+import { DialogComponent } from '../../shared/components/dialog/dialog.component';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { InputComponent } from '../../shared/components/input/input.component';
+
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -21,6 +25,7 @@ import { Patient, PatientListItem, PatientCreateRequest, PatientFilters, Gender,
 import { UserRole } from '../../core/models/entities/user.model';
 
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
+type FormMode = 'create' | 'edit';
 
 @Component({
   selector: 'app-patients',
@@ -29,6 +34,9 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
     CommonModule,
     ReactiveFormsModule,
     LoadingComponent,
+    DialogComponent,
+    ButtonComponent,
+    InputComponent,
     LucidePlus,
     LucidePencil,
     LucideTrash2,
@@ -57,9 +65,11 @@ export class PatientsComponent implements OnInit {
   protected selectedPatient = signal<Patient | null>(null);
 
   // Modals
-  protected showCreateModal = signal(false);
   protected showViewModal = signal(false);
-  protected showEditModal = signal(false);
+  protected formOpen = signal(false);
+  protected formMode = signal<FormMode>('create');
+  protected editingId = signal<string | null>(null);
+  
 
   // Pagination
   protected currentPage = signal(0);
@@ -126,8 +136,8 @@ export class PatientsComponent implements OnInit {
     city: [''],
     state: ['', Validators.pattern(/^[A-Z]{2}$/)],
     zipCode: ['', Validators.pattern(/^\d{8}$/)],
-    weight: [null, [Validators.min(1), Validators.max(500)]],
-    height: [null, [Validators.min(0.5), Validators.max(3.0)]],
+    weight: [null as number | null, [Validators.min(1), Validators.max(500)]],
+    height: [null as number | null, [Validators.min(0.5), Validators.max(3.0)]],
   });
 
   protected filterForm = this.fb.group({
@@ -268,17 +278,48 @@ export class PatientsComponent implements OnInit {
   // ========================================
   // CRUD Operations
   // ========================================
-  protected openCreateModal(): void {
+  protected openCreate(): void {
+    this.formMode.set('create');
+    this.editingId.set(null);
     this.patientForm.reset();
-    this.showCreateModal.set(true);
+    this.formOpen.set(true);
   }
 
-  protected closeCreateModal(): void {
-    this.showCreateModal.set(false);
+  protected openEdit(patient: PatientListItem): void {
+  this.patientService.getById(patient.id).subscribe({
+    next: (full) => {
+      this.formMode.set('edit');
+      this.editingId.set(full.id);
+      this.patientForm.patchValue({
+        userId: full.userId ?? '',
+        fullName: full.fullName,
+        cpf: full.cpf,
+        birthDate: full.birthDate?.substring(0, 10) ?? '',
+        gender: full.gender ?? '',
+        bloodType: full.bloodType ?? '',
+        phone: full.phone ?? '',
+        email: full.email ?? '',
+        address: full.address ?? '',
+        city: full.city ?? '',
+        state: full.state ?? '',
+        zipCode: full.zipCode ?? '',
+        weight: full.weight ?? null,
+        height: full.height ?? null,
+        });
+        this.formOpen.set(true);
+      },
+      error: (error) => {
+        this.notify.error('Erro ao carregar paciente: ' + (error.message || 'Erro desconhecido'));
+      },
+    });
+  }
+
+  protected closeForm(): void {
+    this.formOpen.set(false);
     this.patientForm.reset();
   }
 
-  protected onCreateSubmit(): void {
+  protected onSubmit(): void {
     if (this.patientForm.invalid) {
       this.patientForm.markAllAsTouched();
       return;
@@ -292,28 +333,33 @@ export class PatientsComponent implements OnInit {
       fullName: formValue.fullName!,
       cpf: formValue.cpf!,
       birthDate: formValue.birthDate!,
-      gender: formValue.gender as Gender,
-      bloodType: formValue.bloodType as BloodType,
+      gender: (formValue.gender as Gender) || undefined,
+      bloodType: (formValue.bloodType as BloodType) || undefined,
       phone: formValue.phone || undefined,
       email: formValue.email || undefined,
       address: formValue.address || undefined,
       city: formValue.city || undefined,
       state: formValue.state || undefined,
       zipCode: formValue.zipCode || undefined,
-      weight: formValue.weight || undefined,
-      height: formValue.height || undefined,
+      weight: formValue.weight ? Number(formValue.weight) : undefined,
+      height: formValue.height ? Number(formValue.height) : undefined,
     };
 
-    this.patientService.create(request).subscribe({
+    const isEdit = this.formMode() === 'edit';
+    const call = isEdit
+      ? this.patientService.update(this.editingId()!, request)
+      : this.patientService.create(request);
+
+    call.subscribe({
       next: () => {
         this.saving.set(false);
-        this.closeCreateModal();
-        this.notify.success('Paciente cadastrado com sucesso!');
-        this.loadPatients(0);
+        this.closeForm();
+        this.notify.success(isEdit ? 'Paciente atualizado com sucesso!' : 'Paciente cadastrado com sucesso!');
+        this.loadPatients(isEdit ? this.currentPage() : 0);
       },
       error: (error) => {
         this.saving.set(false);
-        this.notify.error('Erro ao cadastrar paciente: ' + (error.message || 'Erro desconhecido'));
+        this.notify.error(`Erro ao ${isEdit ? 'atualizar' : 'cadastrar'} paciente: ` + (error.message || 'Erro desconhecido'));
       },
     });
   }

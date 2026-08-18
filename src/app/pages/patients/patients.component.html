@@ -12,7 +12,7 @@
     @if (canCreate()) {
       <button 
         type="button"
-        (click)="openCreateModal()"
+        (click)="openCreate()"
         class="flex items-center gap-2 px-4 py-2 bg-[var(--color-azul-primario)] text-white rounded-[var(--radius-lg)] hover:bg-[var(--color-azul-primario)]/90 transition-colors"
       >
         <svg lucidePlus class="w-4 h-4"></svg>
@@ -220,6 +220,17 @@
                     <svg lucideEye class="w-4 h-4"></svg>
                   </button>
                   
+                  @if (canEdit()) {
+                    <button
+                      type="button"
+                      (click)="openEdit(patient)"
+                      class="p-2 text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/10 rounded-[var(--radius-sm)] transition-colors"
+                      title="Editar"
+                    >
+                      <svg lucidePencil class="w-4 h-4"></svg>
+                    </button>
+                  }
+
                   @if (canDeactivate() && patient.active) {
                     <button
                       type="button"
@@ -305,7 +316,7 @@
       @if (canCreate() && !hasSearchOrFilters()) {
         <button 
           type="button"
-          (click)="openCreateModal()"
+          (click)="openCreate()"
           class="px-4 py-2 bg-[var(--color-azul-primario)] text-white rounded-[var(--radius-lg)] hover:bg-[var(--color-azul-primario)]/90 transition-colors"
         >
           Cadastrar Paciente
@@ -314,6 +325,176 @@
     </div>
   }
 </div>
+
+<app-dialog
+  [open]="formOpen()"
+  [title]="formMode() === 'create' ? 'Novo Paciente' : 'Editar Paciente'"
+  size="lg"
+  (closed)="closeForm()"
+>
+  <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-4">
+
+    <app-input
+      label="Nome completo"
+      placeholder="Maria da Silva"
+      formControlName="fullName"
+      [required]="true"
+      [state]="isFieldInvalid('fullName') ? 'error' : 'default'"
+      [helperText]="isFieldInvalid('fullName') ? 'Informe ao menos 3 caracteres' : ''"
+    ></app-input>
+
+    <div class="grid grid-cols-2 gap-4">
+      <app-input
+        label="CPF"
+        placeholder="Somente números"
+        formControlName="cpf"
+        [required]="true"
+        [state]="isFieldInvalid('cpf') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('cpf') ? 'CPF deve ter 11 dígitos' : ''"
+      ></app-input>
+
+      <div class="flex flex-col gap-1.5">
+        <label for="birthDate" class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">
+          Data de nascimento <span class="text-[var(--color-critico)]">*</span>
+        </label>
+        <input
+          id="birthDate"
+          type="date"
+          formControlName="birthDate"
+          class="w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white outline-none focus:border-[var(--color-azul-primario)]"
+        />
+        @if (isFieldInvalid('birthDate')) {
+          <span class="text-xs text-[var(--color-critico)]">Data de nascimento é obrigatória</span>
+        }
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label for="gender" class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">
+          Gênero
+        </label>
+        <select
+          id="gender"
+          formControlName="gender"
+          class="w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white outline-none focus:border-[var(--color-azul-primario)]"
+        >
+          <option value="">Não informado</option>
+          <option value="MALE">Masculino</option>
+          <option value="FEMALE">Feminino</option>
+          <option value="OTHER">Outro</option>
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label for="bloodType" class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">
+          Tipo sanguíneo
+        </label>
+        <select
+          id="bloodType"
+          formControlName="bloodType"
+          class="w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white outline-none focus:border-[var(--color-azul-primario)]"
+        >
+          <option value="">Não informado</option>
+          <option value="A_POSITIVE">A+</option>
+          <option value="A_NEGATIVE">A-</option>
+          <option value="B_POSITIVE">B+</option>
+          <option value="B_NEGATIVE">B-</option>
+          <option value="AB_POSITIVE">AB+</option>
+          <option value="AB_NEGATIVE">AB-</option>
+          <option value="O_POSITIVE">O+</option>
+          <option value="O_NEGATIVE">O-</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <app-input
+        label="Telefone"
+        type="tel"
+        placeholder="Somente números"
+        formControlName="phone"
+      ></app-input>
+
+      <app-input
+        label="Email"
+        type="email"
+        placeholder="maria@exemplo.com"
+        formControlName="email"
+        [state]="isFieldInvalid('email') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('email') ? 'Email inválido' : ''"
+      ></app-input>
+    </div>
+
+    <app-input
+      label="Endereço"
+      placeholder="Rua das Flores, 123"
+      formControlName="address"
+    ></app-input>
+
+    <div class="grid grid-cols-3 gap-4">
+      <app-input
+        label="Cidade"
+        placeholder="São Paulo"
+        formControlName="city"
+      ></app-input>
+
+      <app-input
+        label="Estado"
+        placeholder="SP"
+        formControlName="state"
+        [state]="isFieldInvalid('state') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('state') ? 'Use 2 letras maiúsculas' : ''"
+      ></app-input>
+
+      <app-input
+        label="CEP"
+        placeholder="Somente números"
+        formControlName="zipCode"
+        [state]="isFieldInvalid('zipCode') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('zipCode') ? 'CEP deve ter 8 dígitos' : ''"
+      ></app-input>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <app-input
+        label="Peso (kg)"
+        type="number"
+        placeholder="70"
+        formControlName="weight"
+        [state]="isFieldInvalid('weight') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('weight') ? 'Peso entre 1 e 500 kg' : ''"
+      ></app-input>
+
+      <app-input
+        label="Altura (m)"
+        type="number"
+        placeholder="1.70"
+        formControlName="height"
+        [state]="isFieldInvalid('height') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('height') ? 'Altura entre 0.5 e 3.0 m' : ''"
+      ></app-input>
+    </div>
+
+    <!-- TODO: remover quando o backend definir como vincular o usuário ao paciente -->
+    <app-input
+      label="User ID (temporário)"
+      placeholder="UUID do usuário"
+      formControlName="userId"
+      [required]="true"
+      helperText="Campo provisório até o backend definir o vínculo."
+    ></app-input>
+
+    <div dialogActions>
+      <app-button variant="ghost" size="sm" type="button" (clicked)="closeForm()">Cancelar</app-button>
+      <app-button variant="primary" size="sm" type="submit" [loading]="saving()">
+        {{ formMode() === 'create' ? 'Cadastrar' : 'Salvar alterações' }}
+      </app-button>
+    </div>
+
+  </form>
+</app-dialog>
+
 
 <!-- Modal de Visualização -->
 @if (showViewModal() && selectedPatient()) {
