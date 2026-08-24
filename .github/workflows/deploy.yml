@@ -1,0 +1,45 @@
+name: Deploy Frontend to S3
+
+on:
+  push:
+    branches:
+      - main
+
+# Necessário para o OIDC: dá ao workflow permissão de pedir o token JWT
+permissions:
+  id-token: write   # gera o crachá OIDC
+  contents: read    # lê o código do repo
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Baixa o código do repo para a máquina do Actions
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Instala o Node
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Instala dependências de forma limpa e reproduzível
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Gera os arquivos estáticos em dist/recupera-saude
+      - name: Build
+        run: npm run build
+
+      # 5. Troca o crachá OIDC por credenciais temporárias da AWS
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::919446725618:role/github-actions-frontend-deploy
+          aws-region: us-east-1
+
+      # 6. Sincroniza o build com o bucket
+      - name: Deploy to S3
+        run: aws s3 sync dist/recupera-saude s3://tcc-frontend-2026 --delete
