@@ -42,4 +42,4 @@ jobs:
 
       # 6. Sincroniza o build com o bucket
       - name: Deploy to S3
-        run: aws s3 sync dist/recupera-saude s3://tcc-frontend-2026 --delete
+        run: aws s3 sync dist/recupera-saude/browser s3://tcc-frontend-2026 --delete
