@@ -1,10 +1,13 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { LucidePlus, LucideSearch, LucidePencil, LucideTrash2 } from '@lucide/angular';
+import { LucidePlus, LucideSearch, LucidePencil, LucideTrash2, LucideChevronLeft, LucideChevronRight, LucideCopy } from '@lucide/angular';
 
-import { DoctorService, SaveDoctorRequest } from '../../core/services/doctor.service';
+import { DoctorService, DoctorRegistrationResponse, RegisterDoctorRequest, SaveDoctorRequest } from '../../core/services/doctor.service';
+import { HospitalService } from '../../core/services/hospital.service';
 import { Doctor } from '../../core/models/entities/doctor.model';
+import { Hospital } from '../../core/models/entities/hospital.model';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { DialogService } from '../../core/services/dialog.service';
@@ -32,23 +35,42 @@ type FormMode = 'create' | 'edit';
     LucideSearch,
     LucidePencil,
     LucideTrash2,
+    LucideChevronLeft,
+    LucideChevronRight,
+    LucideCopy,
   ],
   templateUrl: './medicos.component.html',
 })
 export class MedicosComponent implements OnInit {
   private doctorService = inject(DoctorService);
+  private hospitalService = inject(HospitalService);
   private authService = inject(AuthService);
   private notify = inject(NotificationService);
   private dialogService = inject(DialogService);
   private fb = inject(FormBuilder);
 
+  /** ADMIN sees doctors from every hospital (with a hospital picker); HOSPITAL only sees its own. */
+  protected isAdmin = computed(() => this.authService.getRole() === 'ADMIN');
+
   protected doctors = signal<Doctor[]>([]);
+  protected hospitals = signal<Hospital[]>([]);
   protected loading = signal(true);
   protected searchTerm = signal('');
+
+  // Paginação vinda do backend — evita carregar todos os médicos da plataforma de uma vez.
+  protected pageIndex = signal(0);
+  protected pageSize = signal(10);
+  protected totalPages = signal(0);
+  protected totalElements = signal(0);
+
   protected formOpen = signal(false);
   protected formMode = signal<FormMode>('create');
   protected formLoading = signal(false);
   protected editingId = signal<string | null>(null);
+  protected accessLinkOpen = signal(false);
+  protected accessLink = signal('');
+  protected accessLinkDoctorName = signal('');
+  protected accessLinkCopied = signal(false);
 
   protected filteredDoctors = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
@@ -56,31 +78,54 @@ export class MedicosComponent implements OnInit {
     return this.doctors().filter(d =>
       d.fullName.toLowerCase().includes(term) ||
       d.crm.toLowerCase().includes(term) ||
-      d.specialty.toLowerCase().includes(term)
+      d.specialty.toLowerCase().includes(term) ||
+      (d.hospital?.name ?? '').toLowerCase().includes(term)
     );
   });
 
   protected form = this.fb.group({
-    fullName:  ['', [Validators.required, Validators.minLength(3)]],
-    cpf:       ['', [Validators.required]],
-    crm:       ['', [Validators.required]],
-    specialty: ['', [Validators.required]],
-    phone:     ['', [Validators.required]],
+    hospitalId: ['', []],
+    // Preenchido apenas ao editar (usuário já existente); no cadastro a conta é criada pelo backend a partir do e-mail.
+    userId:     ['', []],
+    email:      ['', []],
+    fullName:   ['', [Validators.required, Validators.minLength(3)]],
+    cpf:        ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+    crm:        ['', [Validators.required]],
+    specialty:  ['', [Validators.required]],
+    phone:      ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
   });
 
   ngOnInit(): void {
+    if (this.isAdmin()) {
+      this.form.get('hospitalId')?.addValidators(Validators.required);
+      this.loadHospitals();
+    }
     this.loadDoctors();
   }
 
-  private loadDoctors(): void {
+  private loadHospitals(): void {
+    this.hospitalService.listAllForSelect().subscribe({
+      next: (hospitals) => this.hospitals.set(hospitals),
+    });
+  }
+
+  private loadDoctors(page = this.pageIndex()): void {
     this.loading.set(true);
-    this.doctorService.getAll().subscribe({
-      next: (page) => {
-        this.doctors.set(page.content);
+    this.doctorService.getAll(page, this.pageSize()).subscribe({
+      next: (result) => {
+        this.doctors.set(result.content);
+        this.pageIndex.set(result.number);
+        this.totalPages.set(result.totalPages);
+        this.totalElements.set(result.totalElements);
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  protected goToPage(page: number): void {
+    if (page < 0 || page >= this.totalPages() || page === this.pageIndex()) return;
+    this.loadDoctors(page);
   }
 
   protected openCreate(): void {
@@ -89,6 +134,9 @@ export class MedicosComponent implements OnInit {
     this.form.reset();
     this.form.get('cpf')?.enable();
     this.form.get('crm')?.enable();
+    this.form.get('email')?.enable();
+    this.form.get('email')?.setValidators([Validators.required, Validators.email]);
+    this.form.get('email')?.updateValueAndValidity();
     this.formOpen.set(true);
   }
 
@@ -96,6 +144,9 @@ export class MedicosComponent implements OnInit {
     this.formMode.set('edit');
     this.editingId.set(doctor.id);
     this.form.patchValue({
+      hospitalId: doctor.hospital?.id ?? doctor.hospitalId ?? '',
+      userId: doctor.user?.id ?? doctor.userId ?? '',
+      email: doctor.user?.email ?? '',
       fullName: doctor.fullName,
       cpf: doctor.cpf,
       crm: doctor.crm,
@@ -104,11 +155,35 @@ export class MedicosComponent implements OnInit {
     });
     this.form.get('cpf')?.disable();
     this.form.get('crm')?.disable();
+    this.form.get('email')?.clearValidators();
+    this.form.get('email')?.disable();
+    this.form.get('email')?.updateValueAndValidity();
     this.formOpen.set(true);
   }
 
   protected closeForm(): void {
     this.formOpen.set(false);
+  }
+
+  protected closeAccessLinkModal(): void {
+    this.accessLinkOpen.set(false);
+    this.accessLink.set('');
+    this.accessLinkDoctorName.set('');
+    this.accessLinkCopied.set(false);
+  }
+
+  protected async copyAccessLink(): Promise<void> {
+    const link = this.accessLink();
+    if (!link) return;
+
+    try {
+      await navigator.clipboard.writeText(link);
+      this.accessLinkCopied.set(true);
+      this.notify.success('Link de acesso copiado!');
+      setTimeout(() => this.accessLinkCopied.set(false), 1800);
+    } catch {
+      this.notify.warning('Não foi possível copiar automaticamente. Copie o link manualmente.');
+    }
   }
 
   protected onSubmit(): void {
@@ -118,27 +193,48 @@ export class MedicosComponent implements OnInit {
 
     const raw = this.form.getRawValue();
     const user = this.authService.getCurrentUser();
-
-    const body: SaveDoctorRequest = {
-      hospitalId: user?.hospitalId ?? user?.id ?? '',
-      fullName: raw.fullName!,
-      cpf: raw.cpf!,
-      crm: raw.crm!,
-      specialty: raw.specialty!,
-      phone: raw.phone!,
-    };
+    const hospitalId = this.isAdmin() ? raw.hospitalId! : (user?.hospitalId ?? '');
 
     if (this.formMode() === 'create') {
-      this.doctorService.create(body).subscribe({
-        next: (doctor) => {
-          this.doctors.update(list => [...list, doctor]);
-          this.notify.success('Médico cadastrado com sucesso!');
+      const body: RegisterDoctorRequest = {
+        email: raw.email!,
+        hospitalId,
+        fullName: raw.fullName!,
+        cpf: raw.cpf!,
+        crm: raw.crm!,
+        specialty: raw.specialty!,
+        phone: raw.phone!,
+      };
+
+      this.doctorService.register(body).subscribe({
+        next: (created: DoctorRegistrationResponse) => {
+          const activationLink = created?.activationLink ?? '';
+          this.accessLink.set(activationLink);
+          this.accessLinkDoctorName.set(created?.doctor?.fullName ?? raw.fullName!);
+          this.notify.success('Médico cadastrado! Enviamos um e-mail de boas-vindas para ele definir a senha.');
           this.formLoading.set(false);
           this.formOpen.set(false);
+          if (activationLink) {
+            this.accessLinkOpen.set(true);
+          }
+          this.loadDoctors(0);
         },
-        error: () => this.formLoading.set(false),
+        error: (err) => {
+          this.formLoading.set(false);
+          this.notify.error(this.extractErrorMessage(err, 'Não foi possível cadastrar o médico.'));
+        },
       });
     } else {
+      const body: SaveDoctorRequest = {
+        userId: raw.userId!,
+        hospitalId,
+        fullName: raw.fullName!,
+        cpf: raw.cpf!,
+        crm: raw.crm!,
+        specialty: raw.specialty!,
+        phone: raw.phone!,
+      };
+
       this.doctorService.update(this.editingId()!, body).subscribe({
         next: (updated) => {
           this.doctors.update(list => list.map(d => d.id === updated.id ? updated : d));
@@ -146,9 +242,23 @@ export class MedicosComponent implements OnInit {
           this.formLoading.set(false);
           this.formOpen.set(false);
         },
-        error: () => this.formLoading.set(false),
+        error: (err) => {
+          this.formLoading.set(false);
+          this.notify.error(this.extractErrorMessage(err, 'Não foi possível atualizar o médico.'));
+        },
       });
     }
+  }
+
+  /** 400/422 não geram toast automático (ver error.interceptor) — o formulário precisa exibi-los. */
+  private extractErrorMessage(err: unknown, fallback: string): string {
+    if (err instanceof HttpErrorResponse) {
+      const message = err.error?.message;
+      if (typeof message === 'string' && message.trim()) {
+        return message;
+      }
+    }
+    return fallback;
   }
 
   protected async onDelete(doctor: Doctor): Promise<void> {
@@ -164,8 +274,11 @@ export class MedicosComponent implements OnInit {
 
     this.doctorService.delete(doctor.id).subscribe({
       next: () => {
-        this.doctors.update(list => list.filter(d => d.id !== doctor.id));
         this.notify.success('Médico excluído com sucesso!');
+        this.loadDoctors(this.doctors().length === 1 && this.pageIndex() > 0 ? this.pageIndex() - 1 : this.pageIndex());
+      },
+      error: (err) => {
+        this.notify.error(this.extractErrorMessage(err, 'Não foi possível excluir o médico.'));
       },
     });
   }

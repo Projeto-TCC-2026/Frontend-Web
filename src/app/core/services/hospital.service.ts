@@ -49,6 +49,13 @@ export class HospitalService {
     return this.api.get<Hospital[]>('/api/admin/hospitals');
   }
 
+  /** Lista enxuta de hospitais para preencher selects (ex.: modal de médicos do ADMIN). */
+  listAllForSelect(): Observable<Hospital[]> {
+    return this.api.get<any>('/api/admin/hospitals', { page: 0, size: 200, sort: 'name,asc' }).pipe(
+      map(response => response.data?.content ?? response.data ?? response)
+    );
+  }
+
   create(body: CreateHospitalRequest): Observable<Hospital> {
     return this.api.post<Hospital>('/api/admin/hospitals', body);
   }

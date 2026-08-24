@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
 export type InputState = 'default' | 'error' | 'success';
+export type InputMask = 'cpf' | 'phone' | 'none';
 
 @Component({
   selector: 'app-input',
@@ -25,6 +26,9 @@ export class InputComponent implements ControlValueAccessor {
   @Input() state: InputState = 'default';
   @Input() helperText = '';
   @Input() required = false;
+  @Input() maxLength: number | null = null;
+  @Input() mask: InputMask = 'none';
+  @Input() inputMode: string | null = null;
 
   @Input() set disabled(val: boolean) {
     this.isDisabled.set(val);
@@ -38,7 +42,8 @@ export class InputComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
 
   writeValue(val: string): void {
-    this.value.set(val ?? '');
+    const value = val ?? '';
+    this.value.set(this.mask === 'none' ? value : this.applyMask(this.normalizeValue(value)));
   }
 
   registerOnChange(fn: (value: string) => void): void {
@@ -54,9 +59,13 @@ export class InputComponent implements ControlValueAccessor {
   }
 
   protected onInput(event: Event): void {
-    const val = (event.target as HTMLInputElement).value;
-    this.value.set(val);
-    this.onChange(val);
+    const input = event.target as HTMLInputElement;
+    const rawValue = this.mask === 'none' ? input.value : this.normalizeValue(input.value);
+    const maskedValue = this.mask === 'none' ? rawValue : this.applyMask(rawValue);
+
+    input.value = maskedValue;
+    this.value.set(maskedValue);
+    this.onChange(rawValue);
   }
 
   protected onBlur(): void {
@@ -64,6 +73,31 @@ export class InputComponent implements ControlValueAccessor {
       this.touched = true;
       this.onTouched();
     }
+  }
+
+  private normalizeValue(value: string): string {
+    return value.replace(/\D/g, '');
+  }
+
+  private applyMask(value: string): string {
+    if (this.mask === 'cpf') {
+      return value
+        .replace(/\D/g, '')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+        .slice(0, 14);
+    }
+
+    if (this.mask === 'phone') {
+      return value
+        .replace(/\D/g, '')
+        .replace(/(\d{2})(\d)/, '($1) $2')
+        .replace(/(\d{5})(\d{4})$/, '$1-$2')
+        .slice(0, 15);
+    }
+
+    return value;
   }
 
   protected get inputClasses(): string {

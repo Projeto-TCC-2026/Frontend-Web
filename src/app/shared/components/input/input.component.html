@@ -18,6 +18,8 @@
     [disabled]="isDisabled()"
     [class]="inputClasses"
     [value]="value()"
+    [attr.maxlength]="maxLength ?? null"
+    [attr.inputmode]="inputMode ?? null"
     (input)="onInput($event)"
     (blur)="onBlur()"
   />

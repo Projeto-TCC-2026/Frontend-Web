@@ -3,6 +3,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { CadastroComponent } from './pages/cadastro/cadastro.component';
 import { ForbiddenComponent } from './pages/forbidden/forbidden.component';
 import { authGuard } from './core/guards/auth.guard';
@@ -25,6 +26,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'welcome', component: WelcomeComponent },
   { path: 'cadastro', component: CadastroComponent },
   { path: '403', component: ForbiddenComponent },
 

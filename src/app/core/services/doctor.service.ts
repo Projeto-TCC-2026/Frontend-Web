@@ -13,13 +13,29 @@ export interface DoctorPage {
 }
 
 export interface SaveDoctorRequest {
-  userId?: number;
-  hospitalId?: string;
+  userId: string;
+  hospitalId: string;
   fullName: string;
   cpf: string;
   crm: string;
   specialty: string;
   phone: string;
+}
+
+/** Cadastro sem userId/senha: o backend cria a conta e envia o e-mail de boas-vindas. */
+export interface RegisterDoctorRequest {
+  email: string;
+  hospitalId: string;
+  fullName: string;
+  cpf: string;
+  crm: string;
+  specialty: string;
+  phone: string;
+}
+
+export interface DoctorRegistrationResponse {
+  doctor: Doctor;
+  activationLink: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -56,6 +72,18 @@ export class DoctorService {
       );
     }
     return this.api.post<any>('/api/doctors', body).pipe(
+      map(response => response.data ?? response)
+    );
+  }
+
+  /** Cria o médico e a conta de acesso dele; dispara o e-mail de boas-vindas para definir a senha. */
+  register(body: RegisterDoctorRequest): Observable<DoctorRegistrationResponse> {
+    if (this.auth.getRole() === 'HOSPITAL') {
+      return this.api.post<any>('/api/hospital/doctors/register', body).pipe(
+        map(response => response.data ?? response)
+      );
+    }
+    return this.api.post<any>('/api/doctors/register', body).pipe(
       map(response => response.data ?? response)
     );
   }
