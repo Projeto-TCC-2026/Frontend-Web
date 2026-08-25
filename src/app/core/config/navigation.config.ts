@@ -47,6 +47,13 @@ export const NAV_ITEMS: NavItem[] = [
     loadComponent: () => import('../../pages/medicos/medicos.component').then(m => m.MedicosComponent),
   },
   {
+    label: 'Procedimentos',
+    path: 'procedimentos',
+    icon: 'clipboard-list',
+    roles: ['ADMIN', 'HOSPITAL'],
+    loadComponent: () => import('../../pages/procedimentos/procedimentos.component').then(m => m.ProcedimentosComponent),
+  },
+  {
     label: 'Hospital',
     path: 'hospital',
     icon: 'building-2',

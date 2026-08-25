@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { forkJoin, Observable, of } from 'rxjs';
 import { LucidePlus, LucideSearch, LucidePencil, LucideTrash2, LucideChevronLeft, LucideChevronRight, LucideCopy } from '@lucide/angular';
 
 import { DoctorService, DoctorRegistrationResponse, RegisterDoctorRequest, SaveDoctorRequest } from '../../core/services/doctor.service';
@@ -11,6 +12,7 @@ import { Hospital } from '../../core/models/entities/hospital.model';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { DialogService } from '../../core/services/dialog.service';
+import { Procedure, ProcedureService } from '../../core/services/procedure.service';
 
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
@@ -47,6 +49,7 @@ export class MedicosComponent implements OnInit {
   private authService = inject(AuthService);
   private notify = inject(NotificationService);
   private dialogService = inject(DialogService);
+  private procedureService = inject(ProcedureService);
   private fb = inject(FormBuilder);
 
   /** ADMIN sees doctors from every hospital (with a hospital picker); HOSPITAL only sees its own. */
@@ -71,6 +74,21 @@ export class MedicosComponent implements OnInit {
   protected accessLink = signal('');
   protected accessLinkDoctorName = signal('');
   protected accessLinkCopied = signal(false);
+  protected availableProcedures = signal<Procedure[]>([]);
+  protected selectedProcedureIds = signal<string[]>([]);
+  protected procedurePickerOpen = signal(false);
+  protected procedureSearchTerm = signal('');
+  protected draftProcedureIds = signal<string[]>([]);
+  private assignedProcedureIds = signal<string[]>([]);
+
+  protected filteredProcedures = computed(() => {
+    const term = this.procedureSearchTerm().toLowerCase().trim();
+    if (!term) return this.availableProcedures();
+    return this.availableProcedures().filter(procedure =>
+      procedure.title.toLowerCase().includes(term) ||
+      (procedure.description ?? '').toLowerCase().includes(term)
+    );
+  });
 
   protected filteredDoctors = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
@@ -99,6 +117,8 @@ export class MedicosComponent implements OnInit {
     if (this.isAdmin()) {
       this.form.get('hospitalId')?.addValidators(Validators.required);
       this.loadHospitals();
+    } else {
+      this.loadProcedureOptions(this.authService.getCurrentUser()?.hospitalId ?? null);
     }
     this.loadDoctors();
   }
@@ -137,6 +157,9 @@ export class MedicosComponent implements OnInit {
     this.form.get('email')?.enable();
     this.form.get('email')?.setValidators([Validators.required, Validators.email]);
     this.form.get('email')?.updateValueAndValidity();
+    this.selectedProcedureIds.set([]);
+    this.assignedProcedureIds.set([]);
+    this.loadProcedureOptions(this.form.get('hospitalId')?.value || (this.authService.getCurrentUser()?.hospitalId ?? null));
     this.formOpen.set(true);
   }
 
@@ -158,7 +181,87 @@ export class MedicosComponent implements OnInit {
     this.form.get('email')?.clearValidators();
     this.form.get('email')?.disable();
     this.form.get('email')?.updateValueAndValidity();
+    const hospitalId = doctor.hospital?.id ?? doctor.hospitalId ?? '';
+    this.selectedProcedureIds.set([]);
+    this.loadProcedureOptions(hospitalId, doctor.id);
     this.formOpen.set(true);
+  }
+
+  protected onHospitalChange(): void {
+    const hospitalId = this.form.get('hospitalId')?.value ?? '';
+    this.selectedProcedureIds.set([]);
+    this.assignedProcedureIds.set([]);
+    this.loadProcedureOptions(hospitalId);
+  }
+
+  protected openProcedurePicker(): void {
+    this.draftProcedureIds.set([...this.selectedProcedureIds()]);
+    this.procedureSearchTerm.set('');
+    this.procedurePickerOpen.set(true);
+  }
+
+  protected closeProcedurePicker(): void {
+    this.procedurePickerOpen.set(false);
+    this.procedureSearchTerm.set('');
+  }
+
+  protected confirmProcedurePicker(): void {
+    this.selectedProcedureIds.set([...this.draftProcedureIds()]);
+    this.procedurePickerOpen.set(false);
+    this.procedureSearchTerm.set('');
+  }
+
+  protected isDraftProcedureSelected(procedureId: string): boolean {
+    return this.draftProcedureIds().includes(procedureId);
+  }
+
+  protected toggleDraftProcedure(procedureId: string, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.draftProcedureIds.update(ids => checked
+      ? [...ids, procedureId]
+      : ids.filter(id => id !== procedureId));
+  }
+
+  protected onProcedureSearch(event: Event): void {
+    this.procedureSearchTerm.set((event.target as HTMLInputElement).value);
+  }
+
+  private loadProcedureOptions(hospitalId: string | null, doctorId?: string): void {
+    if (!hospitalId) {
+      this.availableProcedures.set([]);
+      return;
+    }
+
+    this.procedureService.list(this.isAdmin() ? hospitalId : null).subscribe({
+      next: page => {
+        this.availableProcedures.set(page.content);
+        if (doctorId) {
+          this.procedureService.listDoctorProcedures(doctorId, this.isAdmin()).subscribe({
+            next: assignments => {
+              const ids = assignments.map(assignment => assignment.procedure.id);
+              this.assignedProcedureIds.set(ids);
+              this.selectedProcedureIds.set(ids);
+            },
+          });
+        }
+      },
+      error: () => this.availableProcedures.set([]),
+    });
+  }
+
+  protected isProcedureSelected(procedureId: string): boolean {
+    return this.selectedProcedureIds().includes(procedureId);
+  }
+
+  private syncDoctorProcedures(doctorId: string): Observable<unknown[]> {
+    const selected = new Set(this.selectedProcedureIds());
+    const assigned = new Set(this.assignedProcedureIds());
+    const admin = this.isAdmin();
+    const operations = [
+      ...[...selected].filter(id => !assigned.has(id)).map(id => this.procedureService.assignDoctor(id, doctorId, admin)),
+      ...[...assigned].filter(id => !selected.has(id)).map(id => this.procedureService.unassignDoctor(id, doctorId, admin)),
+    ];
+    return operations.length ? forkJoin(operations) : of([]);
   }
 
   protected closeForm(): void {
@@ -208,16 +311,22 @@ export class MedicosComponent implements OnInit {
 
       this.doctorService.register(body).subscribe({
         next: (created: DoctorRegistrationResponse) => {
-          const activationLink = created?.activationLink ?? '';
-          this.accessLink.set(activationLink);
-          this.accessLinkDoctorName.set(created?.doctor?.fullName ?? raw.fullName!);
-          this.notify.success('Médico cadastrado! Enviamos um e-mail de boas-vindas para ele definir a senha.');
-          this.formLoading.set(false);
-          this.formOpen.set(false);
-          if (activationLink) {
-            this.accessLinkOpen.set(true);
-          }
-          this.loadDoctors(0);
+          this.syncDoctorProcedures(created.doctor.id).subscribe({
+            next: () => {
+              const activationLink = created?.activationLink ?? '';
+              this.accessLink.set(activationLink);
+              this.accessLinkDoctorName.set(created?.doctor?.fullName ?? raw.fullName!);
+              this.notify.success('Médico cadastrado! Enviamos um e-mail de boas-vindas para ele definir a senha.');
+              this.formLoading.set(false);
+              this.formOpen.set(false);
+              if (activationLink) this.accessLinkOpen.set(true);
+              this.loadDoctors(0);
+            },
+            error: () => {
+              this.formLoading.set(false);
+              this.notify.error('Médico cadastrado, mas não foi possível salvar os procedimentos vinculados.');
+            },
+          });
         },
         error: (err) => {
           this.formLoading.set(false);
@@ -237,10 +346,18 @@ export class MedicosComponent implements OnInit {
 
       this.doctorService.update(this.editingId()!, body).subscribe({
         next: (updated) => {
-          this.doctors.update(list => list.map(d => d.id === updated.id ? updated : d));
-          this.notify.success('Médico atualizado com sucesso!');
-          this.formLoading.set(false);
-          this.formOpen.set(false);
+          this.syncDoctorProcedures(updated.id).subscribe({
+            next: () => {
+              this.doctors.update(list => list.map(d => d.id === updated.id ? updated : d));
+              this.notify.success('Médico atualizado com sucesso!');
+              this.formLoading.set(false);
+              this.formOpen.set(false);
+            },
+            error: () => {
+              this.formLoading.set(false);
+              this.notify.error('Médico atualizado, mas não foi possível salvar os procedimentos vinculados.');
+            },
+          });
         },
         error: (err) => {
           this.formLoading.set(false);
