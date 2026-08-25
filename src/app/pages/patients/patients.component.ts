@@ -1,6 +1,7 @@
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
+import { SelectComponent } from '../../shared/components/select/select.component';
 
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -37,6 +38,7 @@ type FormMode = 'create' | 'edit';
     DialogComponent,
     ButtonComponent,
     InputComponent,
+    SelectComponent,
     LucidePlus,
     LucidePencil,
     LucideTrash2,

@@ -13,6 +13,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
 
 @Component({
   selector: 'app-procedimentos',
@@ -24,6 +25,7 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
     DialogComponent,
     EmptyStateComponent,
     LoadingComponent,
+    SelectComponent,
     LucidePencil,
     LucidePlus,
     LucideTrash2,
@@ -48,6 +50,7 @@ export class ProcedimentosComponent implements OnInit {
   protected editingProcedure = signal<Procedure | null>(null);
   protected searchTerm = signal('');
   protected selectedHospitalId = signal<string | null>(null);
+  protected hospitalOptions = computed<SelectOption[]>(() => this.hospitals().map(hospital => ({ value: hospital.id, label: hospital.name })));
 
   protected filteredProcedures = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();

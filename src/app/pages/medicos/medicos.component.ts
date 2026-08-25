@@ -19,6 +19,7 @@ import { InputComponent } from '../../shared/components/input/input.component';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
 
 type FormMode = 'create' | 'edit';
 
@@ -33,6 +34,7 @@ type FormMode = 'create' | 'edit';
     DialogComponent,
     LoadingComponent,
     EmptyStateComponent,
+    SelectComponent,
     LucidePlus,
     LucideSearch,
     LucidePencil,
@@ -75,6 +77,7 @@ export class MedicosComponent implements OnInit {
   protected accessLinkDoctorName = signal('');
   protected accessLinkCopied = signal(false);
   protected availableProcedures = signal<Procedure[]>([]);
+  protected hospitalOptions = computed<SelectOption[]>(() => this.hospitals().map(hospital => ({ value: hospital.id, label: hospital.name })));
   protected selectedProcedureIds = signal<string[]>([]);
   protected procedurePickerOpen = signal(false);
   protected procedureSearchTerm = signal('');

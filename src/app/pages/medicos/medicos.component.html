@@ -159,24 +159,16 @@
 
       @if (isAdmin()) {
       <div>
-        <label
-          class="block text-sm font-medium text-[var(--color-neutro-700)] mb-1">
-          Hospital <span class="text-[var(--color-critico)]">*</span>
-        </label>
-        <select
+        <app-select
+          label="Hospital"
+          [options]="hospitalOptions()"
+          placeholder="Selecione um hospital"
+          [required]="true"
           formControlName="hospitalId"
-          (change)="onHospitalChange()"
-          class="w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] bg-white text-[var(--color-neutro-900)] outline-none transition-all duration-150"
-          [class]="isFieldInvalid('hospitalId') ? 'border-[var(--color-critico)]' : 'border-[var(--color-neutro-300)] focus:border-[var(--color-azul-primario)]'">
-          <option value disabled>Selecione um hospital</option>
-          @for (hospital of hospitals(); track hospital.id) {
-          <option [value]="hospital.id">{{ hospital.name }}</option>
-          }
-        </select>
-        @if (isFieldInvalid('hospitalId')) {
-        <div class="text-xs text-[var(--color-critico)] mt-1">Selecione o
-          hospital do médico</div>
-        }
+          (changed)="onHospitalChange()"
+          [state]="isFieldInvalid('hospitalId') ? 'error' : 'default'"
+          helperText="Selecione o hospital do médico"
+        ></app-select>
       </div>
       }
 
