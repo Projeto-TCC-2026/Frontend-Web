@@ -8,4 +8,8 @@ export interface Hospital {
   city: string;
   state: string;
   active?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  /** Disponível quando a resposta vem do endpoint /summary */
+  totalDoctors?: number;
 }
