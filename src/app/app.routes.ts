@@ -37,6 +37,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       ...buildChildRoutes(),
+      {
+        path: 'configuracoes/termos-privacidade',
+        data: { breadcrumb: 'Termos de Privacidade' },
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./pages/settings/privacy-terms/privacy-terms.component').then(
+            m => m.PrivacyTermsComponent
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

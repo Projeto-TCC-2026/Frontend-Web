@@ -1,0 +1,145 @@
+<div>
+  <!-- Cabeçalho -->
+  <div class="flex items-center gap-3 mb-1">
+    <button
+      type="button"
+      (click)="goBack()"
+      class="p-1.5 rounded-md text-[var(--color-neutro-500)] hover:bg-[var(--color-neutro-100)] transition-all duration-150">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+    </button>
+    <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)]">
+      Termos de Privacidade
+    </h1>
+  </div>
+
+  <p class="text-sm text-[var(--color-neutro-500)] mb-8 ml-10">
+    Última atualização: janeiro de 2025.
+  </p>
+
+  <div class="space-y-4">
+
+    <!-- 1. Introdução -->
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
+      <h2 class="font-heading font-semibold text-base text-[var(--color-neutro-900)] mb-3">
+        1. Introdução
+      </h2>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6">
+        A plataforma <strong>Recupera Saúde</strong> é um sistema de gestão voltado para hospitais, médicos e
+        administradores, com o objetivo de organizar e acompanhar procedimentos de reabilitação de pacientes.
+        Ao utilizar esta plataforma, você concorda com os termos descritos neste documento.
+      </p>
+    </section>
+
+    <!-- 2. Coleta de dados -->
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
+      <h2 class="font-heading font-semibold text-base text-[var(--color-neutro-900)] mb-3">
+        2. Coleta e uso de dados
+      </h2>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6 mb-3">
+        Coletamos apenas os dados necessários para o funcionamento da plataforma, incluindo:
+      </p>
+      <ul class="list-disc list-inside space-y-1.5 text-sm text-[var(--color-neutro-700)]">
+        <li>Dados de identificação do profissional (nome, e-mail, CRM/cargo);</li>
+        <li>Dados do hospital ou instituição vinculada;</li>
+        <li>Informações clínicas dos pacientes cadastrados para fins de acompanhamento;</li>
+        <li>Registros de acesso e atividade para fins de segurança e auditoria.</li>
+      </ul>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6 mt-3">
+        Os dados são utilizados exclusivamente para as funcionalidades da plataforma e não são
+        compartilhados com terceiros sem consentimento expresso, salvo obrigação legal.
+      </p>
+    </section>
+
+    <!-- 3. Limitação de responsabilidade — alertas clínicos -->
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6 border-l-4 border-l-[var(--color-azul-primario)]">
+      <h2 class="font-heading font-semibold text-base text-[var(--color-neutro-900)] mb-3">
+        3. Limitação de responsabilidade sobre alertas clínicos
+      </h2>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6 mb-3">
+        A plataforma <strong>Recupera Saúde não se responsabiliza pela definição, configuração ou
+        interpretação de alertas clínicos</strong>. Toda e qualquer métrica de alerta — como limites de
+        frequência cardíaca, pressão arterial, saturação de oxigênio ou qualquer outro indicador de saúde —
+        é de <strong>responsabilidade exclusiva do médico responsável pelo paciente</strong>.
+      </p>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6 mb-3">
+        O sistema apenas notifica com base nos parâmetros previamente configurados pelo profissional de saúde.
+        Alertas gerados pela plataforma <strong>não substituem a avaliação clínica</strong> e não devem ser
+        interpretados como diagnóstico ou conduta médica.
+      </p>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6">
+        Ao definir métricas de monitoramento, o médico assume inteira responsabilidade pela adequação
+        desses parâmetros ao perfil clínico de cada paciente.
+      </p>
+    </section>
+
+    <!-- 4. Segurança -->
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
+      <h2 class="font-heading font-semibold text-base text-[var(--color-neutro-900)] mb-3">
+        4. Segurança das informações
+      </h2>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6">
+        Adotamos medidas técnicas e organizacionais para proteger os dados armazenados, incluindo
+        criptografia de senhas, controle de acesso por perfil (ADMIN, HOSPITAL, DOCTOR) e registro
+        de auditoria. Nenhum sistema é 100% seguro, portanto recomendamos que os usuários mantenham
+        suas credenciais protegidas e não as compartilhem.
+      </p>
+    </section>
+
+    <!-- 5. Acesso e perfis -->
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
+      <h2 class="font-heading font-semibold text-base text-[var(--color-neutro-900)] mb-3">
+        5. Controle de acesso e perfis de usuário
+      </h2>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6 mb-3">
+        O acesso à plataforma é restrito a profissionais cadastrados e vinculados a instituições de saúde.
+        Existem três perfis de acesso:
+      </p>
+      <ul class="list-disc list-inside space-y-1.5 text-sm text-[var(--color-neutro-700)]">
+        <li><strong>Administrador:</strong> acesso total ao sistema e gestão de hospitais e usuários;</li>
+        <li><strong>Hospital:</strong> gerenciamento de médicos, pacientes e procedimentos da instituição;</li>
+        <li><strong>Médico:</strong> acompanhamento dos próprios pacientes e procedimentos vinculados.</li>
+      </ul>
+    </section>
+
+    <!-- 6. Responsabilidade do usuário -->
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
+      <h2 class="font-heading font-semibold text-base text-[var(--color-neutro-900)] mb-3">
+        6. Responsabilidade do usuário
+      </h2>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6">
+        O usuário é responsável pela veracidade das informações cadastradas, pelo uso ético da plataforma
+        e pela confidencialidade de suas credenciais de acesso. Qualquer uso indevido dos dados de
+        pacientes pode implicar em sanções conforme a Lei Geral de Proteção de Dados (LGPD — Lei nº
+        13.709/2018) e demais legislações aplicáveis.
+      </p>
+    </section>
+
+    <!-- 7. LGPD -->
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
+      <h2 class="font-heading font-semibold text-base text-[var(--color-neutro-900)] mb-3">
+        7. Conformidade com a LGPD
+      </h2>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6">
+        A plataforma opera em conformidade com a Lei Geral de Proteção de Dados (LGPD). Os titulares
+        dos dados têm direito à consulta, correção e exclusão de suas informações mediante solicitação
+        formal pelo canal de contato disponível nas configurações da plataforma.
+      </p>
+    </section>
+
+    <!-- 8. Alterações -->
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
+      <h2 class="font-heading font-semibold text-base text-[var(--color-neutro-900)] mb-3">
+        8. Alterações nestes termos
+      </h2>
+      <p class="text-sm text-[var(--color-neutro-700)] leading-6">
+        Estes termos podem ser atualizados periodicamente. Alterações relevantes serão comunicadas
+        aos usuários por meio da plataforma. O uso continuado após a publicação de alterações implica
+        na aceitação dos novos termos.
+      </p>
+    </section>
+
+  </div>
+</div>
