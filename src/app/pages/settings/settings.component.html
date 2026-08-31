@@ -1,0 +1,85 @@
+<div>
+  <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">
+    Configurações
+  </h1>
+
+  <p class="text-sm text-[var(--color-neutro-500)] mb-8">
+    Gerencie as configurações da sua conta e acesse outras informações.
+  </p>
+
+  <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
+    <h2 class="font-heading font-extrabold text-[20px] leading-8 text-[var(--color-neutro-900)] mb-2">
+      Configurações
+    </h2>
+
+    <p class="text-sm text-[var(--color-neutro-500)] mb-6">
+      Selecione uma opção para continuar.
+    </p>
+
+    <div class="space-y-2">
+      <!-- Editar conta -->
+      <a routerLink="/configuracoes/editar-conta"
+        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+        <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
+          Editar conta
+        </h3>
+        <p class="text-sm text-[var(--color-neutro-500)] mt-1">
+          Edite as informações da sua conta.
+        </p>
+      </a>
+
+      <hr class="border-[var(--color-neutro-150)]" />
+
+      <!-- Termos de privacidade -->
+      <a routerLink="/configuracoes/termos-privacidade"
+        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+        <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
+          Termos de privacidade
+        </h3>
+        <p class="text-sm text-[var(--color-neutro-500)] mt-1">
+          Consulte os termos de privacidade e informações importantes
+          sobre o uso da plataforma.
+        </p>
+      </a>
+
+      <hr class="border-[var(--color-neutro-150)]" />
+
+      <!-- Sobre nós -->
+      <a routerLink="/configuracoes/sobre-nos"
+        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+        <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
+          Sobre nós
+        </h3>
+        <p class="text-sm text-[var(--color-neutro-500)] mt-1">
+          Conheça nossa equipe e saiba mais sobre o projeto.
+        </p>
+      </a>
+
+      <hr class="border-[var(--color-neutro-150)]" />
+
+      <!-- Contate-nos -->
+      <a href="mailto:contato@seudominio.com"
+        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+        <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
+          Contate-nos
+        </h3>
+        <p class="text-sm text-[var(--color-neutro-500)] mt-1">
+          Entre em contato conosco por e-mail.
+        </p>
+      </a>
+
+      <hr class="border-[var(--color-neutro-150)]" />
+
+      <!-- Redefinir senha -->
+      <a routerLink="/configuracoes/redefinir-senha"
+        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+        <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
+          Redefinir senha
+        </h3>
+        <p class="text-sm text-[var(--color-neutro-500)] mt-1">
+          Altere a senha de acesso à sua conta.
+        </p>
+      </a>
+    </div>
+  </section>
+</div>
