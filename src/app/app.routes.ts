@@ -46,6 +46,15 @@ export const routes: Routes = [
             m => m.PrivacyTermsComponent
           ),
       },
+      {
+        path: 'configuracoes/sobre-nos',
+        data: { breadcrumb: 'Sobre nós' },
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./pages/settings/about-us/about-us.component').then(
+            m => m.AboutUsComponent
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
