@@ -21,7 +21,7 @@ export type InputMask = 'cpf' | 'phone' | 'none';
 export class InputComponent implements ControlValueAccessor {
   @Input() label = '';
   @Input() placeholder = '';
-  @Input() type: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' = 'text';
+  @Input() type: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'date' | 'week' | 'month' = 'text';
   @Input() inputId = `input-${Math.random().toString(36).slice(2, 8)}`;
   @Input() state: InputState = 'default';
   @Input() helperText = '';

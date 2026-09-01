@@ -27,6 +27,13 @@ export class ApiService {
     return this.http.get<T>(this.url(path), { params: this.buildParams(params) });
   }
 
+  public getBlob(path: string, params?: QueryParams): Observable<Blob> {
+    return this.http.get(this.url(path), {
+      params: this.buildParams(params),
+      responseType: 'blob',
+    });
+  }
+
   public post<T>(path: string, body?: unknown): Observable<T> {
     return this.http.post<T>(this.url(path), body ?? null);
   }

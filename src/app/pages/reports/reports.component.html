@@ -1,0 +1,79 @@
+<div>
+  <div class="mb-8">
+    <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Relatórios</h1>
+    <p class="text-sm text-[var(--color-neutro-500)]">{{ pageSubtitle() }}</p>
+  </div>
+
+  <div class="mb-6 flex gap-3 rounded-[var(--radius-lg)] border border-[var(--color-azul-primario)]/20 bg-[var(--color-azul-primario)]/5 p-4">
+    <svg lucideInfo class="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-azul-primario)]"></svg>
+    <p class="text-sm text-[var(--color-neutro-700)]">
+      Escolha o tipo de relatório, informe a data e, se necessário, restrinja o resultado por um único filtro. Sem filtro, o arquivo inclui todos os dados do seu escopo.
+    </p>
+  </div>
+
+  @if (loadingFilters()) {
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+      @for (report of reports; track report.id) {
+        <app-card [title]="report.title" [subtitle]="report.description">
+          <p class="py-6 text-sm text-[var(--color-neutro-500)]">Carregando filtros...</p>
+        </app-card>
+      }
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      @for (report of reports; track report.id) {
+        <button
+          type="button"
+          class="rounded-[var(--radius-lg)] border p-5 text-left transition-colors"
+          [class]="activeReport() === report.id
+            ? 'border-[var(--color-azul-primario)] bg-[var(--color-azul-primario)]/5'
+            : 'border-[var(--color-neutro-150)] bg-white hover:border-[var(--color-neutro-300)]'"
+          (click)="selectReport(report.id)">
+          <h2 class="font-heading font-bold text-base text-[var(--color-neutro-900)]">{{ report.title }}</h2>
+          <p class="mt-1 text-sm text-[var(--color-neutro-500)]">{{ report.description }}</p>
+        </button>
+      }
+    </div>
+
+    @if (selectedReport(); as report) {
+      <section class="mt-6" [attr.aria-labelledby]="'report-' + report.id">
+        <app-card [title]="report.title" subtitle="Informe a data e escolha, no máximo, um filtro adicional.">
+          <form [formGroup]="filters" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" (submit)="$event.preventDefault(); export(report)">
+            @for (filter of report.filters; track filter.name) {
+              @if (showFilter(filter)) {
+                @if (filter.type === 'input') {
+                  <app-input
+                    [label]="filter.label"
+                    [type]="filter.inputType!"
+                    [required]="filter.required ?? false"
+                    [helperText]="filter.helperText ?? ''"
+                    [formControlName]="filter.name"></app-input>
+                } @else {
+                  <app-select
+                    [label]="filter.label"
+                    [required]="filter.required ?? false"
+                    [helperText]="filter.helperText ?? ''"
+                    [options]="optionsFor(filter)"
+                    (changed)="onOptionalFilterChanged(filter.name, $event)"
+                    [formControlName]="filter.name"></app-select>
+                }
+              }
+            }
+          </form>
+
+          <div class="mt-6 flex justify-end border-t border-[var(--color-neutro-150)] pt-4">
+            <app-button
+              variant="primary"
+              size="sm"
+              [loading]="exportingReport() === report.id"
+              loadingText="Gerando arquivo..."
+              (clicked)="export(report)">
+              <svg lucideDownload class="h-4 w-4"></svg>
+              Exportar planilha
+            </app-button>
+          </div>
+        </app-card>
+      </section>
+    }
+  }
+</div>
