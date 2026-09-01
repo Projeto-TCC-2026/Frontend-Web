@@ -19,9 +19,9 @@ export interface HospitalDashboard {
 export class DashboardService {
   private api = inject(ApiService);
 
-  /** Dashboard do ADMIN — GET /api/dashboard */
+   /** Dashboard do ADMIN — GET /api/dashboard/admin */
   getAdminSummary(): Observable<DashboardSummary> {
-    return this.api.get<any>('/api/dashboard').pipe(
+    return this.api.get<any>('/api/dashboard/admin').pipe(
       map(response => response.data)
     );
   }
