@@ -22,3 +22,18 @@ export interface ChangePasswordRequest {
   newPassword: string;
   confirmNewPassword: string;
 }
+
+export interface UpdateHospitalProfileRequest {
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+}
+
+export interface UpdateDoctorProfileRequest {
+  fullName: string;
+  specialty: string;
+  phone: string;
+}

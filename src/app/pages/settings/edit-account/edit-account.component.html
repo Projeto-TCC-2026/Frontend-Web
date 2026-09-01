@@ -1,0 +1,148 @@
+<div>
+  <!-- Cabeçalho -->
+  <div class="flex items-center gap-3 mb-1">
+    <button
+      type="button"
+      (click)="goBack()"
+      class="p-1.5 rounded-md text-[var(--color-neutro-500)] hover:bg-[var(--color-neutro-100)] transition-all duration-150">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+    </button>
+    <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)]">
+      Editar conta
+    </h1>
+  </div>
+
+  <p class="text-sm text-[var(--color-neutro-500)] mb-8 ml-10">
+    Atualize as informações da sua conta.
+  </p>
+
+  <!-- Formulário Hospital -->
+  @if (isHospital) {
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6 max-w-lg">
+      <form class="flex flex-col gap-4" (ngSubmit)="onSubmit()">
+
+        <app-input
+          label="Nome do hospital"
+          placeholder="Hospital Santa Clara"
+          [required]="true"
+          [(ngModel)]="hospitalName"
+          name="hospitalName">
+        </app-input>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <app-input
+            label="Telefone"
+            type="tel"
+            placeholder="(11) 99999-9999"
+            [required]="true"
+            [(ngModel)]="hospitalPhone"
+            name="hospitalPhone"
+            mask="phone">
+          </app-input>
+
+          <app-input
+            label="E-mail"
+            type="email"
+            placeholder="contato@hospital.com"
+            [required]="true"
+            [(ngModel)]="hospitalEmail"
+            name="hospitalEmail">
+          </app-input>
+        </div>
+
+        <app-input
+          label="Endereço"
+          placeholder="Av. Paulista, 1000"
+          [required]="true"
+          [(ngModel)]="hospitalAddress"
+          name="hospitalAddress">
+        </app-input>
+
+        <div class="grid grid-cols-2 gap-4">
+          <app-input
+            label="Cidade"
+            placeholder="São Paulo"
+            [required]="true"
+            [(ngModel)]="hospitalCity"
+            name="hospitalCity">
+          </app-input>
+
+          <app-input
+            label="Estado (UF)"
+            placeholder="SP"
+            [required]="true"
+            [(ngModel)]="hospitalState"
+            name="hospitalState"
+            [maxLength]="2">
+          </app-input>
+        </div>
+
+        <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+          <app-button type="submit" [loading]="isSubmitting" [fullWidth]="true">
+            Salvar alterações
+          </app-button>
+          <app-button variant="ghost" type="button" [fullWidth]="true" (clicked)="goBack()">
+            Cancelar
+          </app-button>
+        </div>
+
+      </form>
+    </section>
+  }
+
+  <!-- Formulário Doctor -->
+  @if (isDoctor) {
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6 max-w-lg">
+      <form class="flex flex-col gap-4" (ngSubmit)="onSubmit()">
+
+        <app-input
+          label="Nome completo"
+          placeholder="Dr. João Silva"
+          [required]="true"
+          [(ngModel)]="doctorFullName"
+          name="doctorFullName">
+        </app-input>
+
+        <app-input
+          label="Especialidade"
+          placeholder="Cardiologia"
+          [required]="true"
+          [(ngModel)]="doctorSpecialty"
+          name="doctorSpecialty">
+        </app-input>
+
+        <app-input
+          label="Telefone"
+          type="tel"
+          placeholder="(11) 99999-9999"
+          [required]="true"
+          [(ngModel)]="doctorPhone"
+          name="doctorPhone"
+          mask="phone">
+        </app-input>
+
+        <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+          <app-button type="submit" [loading]="isSubmitting" [fullWidth]="true">
+            Salvar alterações
+          </app-button>
+          <app-button variant="ghost" type="button" [fullWidth]="true" (clicked)="goBack()">
+            Cancelar
+          </app-button>
+        </div>
+
+      </form>
+    </section>
+  }
+
+  <!-- Admin: sem edição disponível -->
+  @if (!isHospital && !isDoctor) {
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6 max-w-lg">
+      <p class="text-sm text-[var(--color-neutro-500)]">
+        Edição de conta não disponível para este perfil.
+      </p>
+    </section>
+  }
+</div>

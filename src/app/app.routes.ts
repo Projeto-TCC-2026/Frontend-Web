@@ -38,6 +38,15 @@ export const routes: Routes = [
     children: [
       ...buildChildRoutes(),
       {
+        path: 'configuracoes/editar-conta',
+        data: { breadcrumb: 'Editar conta' },
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./pages/settings/edit-account/edit-account.component').then(
+            m => m.EditAccountComponent
+          ),
+      },
+      {
         path: 'configuracoes/termos-privacidade',
         data: { breadcrumb: 'Termos de Privacidade' },
         canActivate: [authGuard],
