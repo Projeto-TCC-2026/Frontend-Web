@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError, switchMap, map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { UserProfile, UserRole } from '../models/entities/user.model';
-import { LoginRequest, LoginResponse, RefreshTokenResponse } from '../models/dtos/auth.dto';
+import { LoginRequest, LoginResponse, RefreshTokenResponse, ChangePasswordRequest } from '../models/dtos/auth.dto';
 
 const STORAGE_KEYS = {
   ACCESS_TOKEN: 'access_token',
@@ -129,6 +129,10 @@ export class AuthService {
         });
       })
     );
+  }
+
+  public changePassword(dto: ChangePasswordRequest): Observable<void> {
+    return this.api.patch<void>('/auth/change-password', dto);
   }
 
   // --- Accessors ---

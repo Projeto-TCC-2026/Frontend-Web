@@ -55,6 +55,15 @@ export const routes: Routes = [
             m => m.AboutUsComponent
           ),
       },
+      {
+        path: 'configuracoes/redefinir-senha',
+        data: { breadcrumb: 'Redefinir senha' },
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./pages/settings/change-password/change-password.component').then(
+            m => m.ChangePasswordComponent
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
