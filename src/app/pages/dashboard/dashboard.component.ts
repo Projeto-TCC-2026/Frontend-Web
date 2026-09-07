@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideUserRound, LucideUsers, LucideClipboardList } from '@lucide/angular';
 import { AuthService } from '../../core/services/auth.service';
-import { DashboardService, DashboardSummary, HospitalDashboard } from '../../core/services/dashboard.service';
+import { DashboardService, DashboardSummary, HospitalDashboard, DoctorDashboard } from '../../core/services/dashboard.service';
 import { UserRole } from '../../core/models/entities/user.model';
 
 @Component({
@@ -18,6 +18,7 @@ export class DashboardComponent implements OnInit {
   protected role = signal<UserRole | null>(null);
   protected summary = signal<DashboardSummary | null>(null);
   protected hospitalDashboard = signal<HospitalDashboard | null>(null);
+  protected doctorDashboard = signal<DoctorDashboard | null>(null);
   protected loading = signal(false);
 
   ngOnInit(): void {
@@ -27,6 +28,8 @@ export class DashboardComponent implements OnInit {
       this.loadHospitalDashboard();
     } else if (this.role() === 'ADMIN') {
       this.loadAdminSummary();
+    } else if (this.role() === 'DOCTOR') {
+      this.loadDoctorDashboard();
     }
   }
 
@@ -48,6 +51,19 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getAdminSummary().subscribe({
       next: (data) => {
         this.summary.set(data);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+      },
+    });
+  }
+
+  private loadDoctorDashboard(): void {
+    this.loading.set(true);
+    this.dashboardService.getDoctorDashboard().subscribe({
+      next: (data) => {
+        this.doctorDashboard.set(data);
         this.loading.set(false);
       },
       error: () => {
