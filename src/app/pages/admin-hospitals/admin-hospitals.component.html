@@ -1,4 +1,4 @@
-<div>
+<div class="max-w-7xl">
   <!-- Header -->
   <div class="flex items-start justify-between mb-8 gap-4 flex-wrap">
     <div>
@@ -110,7 +110,7 @@
                   <td class="px-4 py-3">
                     @if (hospital.active) {
                       <span
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-sucesso-bg,#d1fae5)] text-[var(--color-sucesso,#065f46)]">
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-sucesso-bg)] text-[var(--color-sucesso)]">
                         Ativo
                       </span>
                     } @else {
@@ -132,14 +132,14 @@
                       <!-- Ativar / Inativar -->
                       @if (hospital.active) {
                         <button
-                          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-warning,#b45309)] hover:bg-[var(--color-warning-bg,#fef3c7)] transition-all duration-150"
+                          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-atencao)] hover:bg-[var(--color-atencao-bg)] transition-all duration-150"
                           title="Inativar hospital"
                           (click)="onToggleActive(hospital)">
                           <svg lucideToggleRight class="w-4 h-4"></svg>
                         </button>
                       } @else {
                         <button
-                          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-sucesso,#065f46)] hover:bg-[var(--color-sucesso-bg,#d1fae5)] transition-all duration-150"
+                          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-sucesso)] hover:bg-[var(--color-sucesso-bg)] transition-all duration-150"
                           title="Ativar hospital"
                           (click)="onToggleActive(hospital)">
                           <svg lucideToggleLeft class="w-4 h-4"></svg>

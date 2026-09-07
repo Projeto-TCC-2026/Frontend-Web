@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LucideChevronLeft } from '@lucide/angular';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
@@ -10,7 +11,7 @@ import { UserProfile } from '../../../core/models/entities/user.model';
 @Component({
   selector: 'app-edit-account',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent, LucideChevronLeft],
   templateUrl: './edit-account.component.html',
 })
 export class EditAccountComponent implements OnInit {

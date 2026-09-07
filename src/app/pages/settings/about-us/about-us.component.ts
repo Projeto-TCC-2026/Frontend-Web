@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
+import { LucideChevronLeft } from '@lucide/angular';
 
 @Component({
   selector: 'app-about-us',
   standalone: true,
-  imports: [],
+  imports: [LucideChevronLeft],
   templateUrl: './about-us.component.html',
 })
 export class AboutUsComponent {

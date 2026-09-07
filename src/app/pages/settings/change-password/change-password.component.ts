@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LucideChevronLeft } from '@lucide/angular';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
@@ -9,7 +10,7 @@ import { InputComponent } from '../../../shared/components/input/input.component
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent, LucideChevronLeft],
   templateUrl: './change-password.component.html',
 })
 export class ChangePasswordComponent {
