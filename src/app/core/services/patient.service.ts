@@ -76,7 +76,7 @@ export class PatientService {
   }
 
   /**
-   * Excluir paciente (hard delete)
+   * Excluir paciente (soft delete no backend)
    * Acesso: ADMIN apenas
    */
   delete(id: string): Observable<void> {

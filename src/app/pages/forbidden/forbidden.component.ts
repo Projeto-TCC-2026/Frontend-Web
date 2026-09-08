@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavigationHistoryService } from '../../core/services/navigation-history.service';
 
 @Component({
   selector: 'app-forbidden',
@@ -9,10 +10,15 @@ import { Router } from '@angular/router';
 })
 export class ForbiddenComponent {
 
-  constructor(private router: Router) {}
+  private readonly router = inject(Router);
+  private readonly navigationHistory = inject(NavigationHistoryService);
 
+  /**
+   * Returns to the last successfully activated route, falling back to the
+   * dashboard when there is none (direct access or reload on this screen).
+   */
   goBack(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigateByUrl(this.navigationHistory.getBackUrl());
   }
 
   goLogin(): void {
