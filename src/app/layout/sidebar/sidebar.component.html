@@ -3,19 +3,14 @@
   [class]="isSidebarCollapsed ? 'w-[68px] px-2 pt-8 pb-4' : 'w-[248px] px-4 pt-8 pb-4'"
 >
   <!-- Brand -->
-  <div class="flex flex-col gap-1 px-2 mb-8">
-    <svg class="w-full text-[var(--color-aqua-claro)] mb-3" viewBox="0 0 200 16" fill="none">
-      <path
-        d="M0 8 H70 L78 8 L84 -4 L92 20 L98 8 L108 8 L114 2 L120 8 H200"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
+  <div class="flex flex-col gap-1 px-2 mb-8 items-center justify-center">
     @if (!isSidebarCollapsed) {
+      <img src="../../../assets/icon.jpg" alt="Recupera Saúde" class="w-9 mb-3" />
       <span class="font-heading font-extrabold text-[15px] tracking-wide text-white">Recupera Saúde</span>
       <span class="text-[8px] text-[var(--color-aqua-suave)] uppercase tracking-[0.12em]">Monitoramento Pós-Cirúrgico</span>
+    }
+    @else {
+      <img src="../../../assets/icon.jpg" alt="Recupera Saúde" class="w-6  mt-9 mb-3" />
     }
   </div>
 
