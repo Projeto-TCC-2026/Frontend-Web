@@ -36,7 +36,8 @@ export interface PatientListItem {
 }
 
 export interface PatientCreateRequest {
-  userId: string;
+  /** Obrigatório quando o requisitante é HOSPITAL; para DOCTOR o backend usa o usuário autenticado. */
+  doctorId?: string;
   fullName: string;
   cpf: string;
   birthDate: string;
@@ -53,7 +54,6 @@ export interface PatientCreateRequest {
 }
 
 export interface PatientUpdateRequest {
-  userId: string;
   fullName: string;
   cpf: string;
   birthDate: string;

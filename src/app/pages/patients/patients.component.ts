@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import {
   LucidePlus,
@@ -13,6 +14,7 @@ import {
 
 import { PatientService, PaginatedResponse } from '../../core/services/patient.service';
 import { AuthService } from '../../core/services/auth.service';
+import { DoctorService } from '../../core/services/doctor.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { Patient, PatientListItem, PatientCreateRequest, Gender, BloodType } from '../../core/models/entities/patient.model';
@@ -52,6 +54,7 @@ type FormMode = 'create' | 'edit';
 export class PatientsComponent implements OnInit {
   private patientService = inject(PatientService);
   private authService = inject(AuthService);
+  private doctorService = inject(DoctorService);
   private notify = inject(NotificationService);
   private dialogService = inject(DialogService);
   private fb = inject(FormBuilder);
@@ -73,6 +76,11 @@ export class PatientsComponent implements OnInit {
   protected pageSize = signal(10);
 
   protected userRole = signal<UserRole | null>(null);
+
+  /** O vínculo com médico só é informado pelo hospital; para DOCTOR o backend resolve pelo token. */
+  protected isHospital = computed(() => this.userRole() === 'HOSPITAL');
+  protected doctorOptions = signal<SelectOption[]>([]);
+  protected loadingDoctors = signal(false);
 
   protected genderOptions: SelectOption[] = [
     { value: '', label: 'Não informado' },
@@ -132,14 +140,15 @@ export class PatientsComponent implements OnInit {
   });
 
   protected patientForm = this.fb.group({
-    userId: ['', Validators.required],
+    // Validators.required é aplicado em runtime apenas para HOSPITAL no cadastro (ver syncDoctorValidator).
+    doctorId: [''],
     fullName: ['', [Validators.required, Validators.minLength(3)]],
     cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
     birthDate: ['', Validators.required],
     gender: [''],
     bloodType: [''],
     phone: [''],
-    email: ['', Validators.email],
+    email: ['', [Validators.required, Validators.email]],
     address: [''],
     city: [''],
     state: ['', Validators.pattern(/^[A-Z]{2}$/)],
@@ -150,7 +159,44 @@ export class PatientsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userRole.set(this.authService.getRole());
+    if (this.isHospital()) {
+      this.loadDoctors();
+    }
     this.loadPatients();
+  }
+
+  /** getAll já roteia HOSPITAL para /api/hospital/doctors, devolvendo só os médicos do próprio hospital. */
+  private loadDoctors(): void {
+    this.loadingDoctors.set(true);
+
+    this.doctorService.getAll(0, 200).subscribe({
+      next: (page) => {
+        this.doctorOptions.set(
+          page.content.map(doctor => ({
+            value: doctor.id,
+            label: doctor.specialty ? `${doctor.fullName} — ${doctor.specialty}` : doctor.fullName,
+          }))
+        );
+        this.loadingDoctors.set(false);
+      },
+      error: (error) => {
+        this.loadingDoctors.set(false);
+        this.notify.error(this.extractErrorMessage(error, 'Erro ao carregar a lista de médicos.'));
+      },
+    });
+  }
+
+  /** O vínculo é definido só no cadastro: na edição o campo não é exigido nem enviado. */
+  private syncDoctorValidator(): void {
+    const control = this.patientForm.get('doctorId');
+    if (!control) return;
+
+    if (this.isHospital() && this.formMode() === 'create') {
+      control.setValidators(Validators.required);
+    } else {
+      control.clearValidators();
+    }
+    control.updateValueAndValidity({ emitEvent: false });
   }
 
   private loadPatients(page = this.pageIndex()): void {
@@ -166,7 +212,7 @@ export class PatientsComponent implements OnInit {
       },
       error: (error) => {
         this.loading.set(false);
-        this.notify.error('Erro ao carregar pacientes: ' + (error.message || 'Erro desconhecido'));
+        this.notify.error(this.extractErrorMessage(error, 'Erro ao carregar pacientes.'));
       },
     });
   }
@@ -185,6 +231,7 @@ export class PatientsComponent implements OnInit {
     this.editingId.set(null);
     this.patientForm.reset();
     this.patientForm.get('cpf')?.enable();
+    this.syncDoctorValidator();
     this.formOpen.set(true);
   }
 
@@ -193,8 +240,8 @@ export class PatientsComponent implements OnInit {
       next: (full) => {
         this.formMode.set('edit');
         this.editingId.set(full.id);
+        this.syncDoctorValidator();
         this.patientForm.patchValue({
-          userId: full.userId ?? '',
           fullName: full.fullName,
           cpf: full.cpf,
           birthDate: full.birthDate?.substring(0, 10) ?? '',
@@ -213,7 +260,7 @@ export class PatientsComponent implements OnInit {
         this.formOpen.set(true);
       },
       error: (error) => {
-        this.notify.error('Erro ao carregar paciente: ' + (error.message || 'Erro desconhecido'));
+        this.notify.error(this.extractErrorMessage(error, 'Erro ao carregar paciente.'));
       },
     });
   }
@@ -222,6 +269,17 @@ export class PatientsComponent implements OnInit {
     this.formOpen.set(false);
     this.patientForm.reset();
     this.patientForm.get('cpf')?.enable();
+  }
+
+  /** 400/422 não geram toast automático (ver error.interceptor) — o formulário precisa exibi-los. */
+  private extractErrorMessage(err: unknown, fallback: string): string {
+    if (err instanceof HttpErrorResponse) {
+      const message = err.error?.message;
+      if (typeof message === 'string' && message.trim()) {
+        return message;
+      }
+    }
+    return fallback;
   }
 
   protected onSubmit(): void {
@@ -233,15 +291,16 @@ export class PatientsComponent implements OnInit {
     this.saving.set(true);
     const formValue = this.patientForm.getRawValue();
 
+    const isEdit = this.formMode() === 'edit';
+
     const request: PatientCreateRequest = {
-      userId: formValue.userId!,
       fullName: formValue.fullName!,
       cpf: formValue.cpf!,
       birthDate: formValue.birthDate!,
       gender: (formValue.gender as Gender) || undefined,
       bloodType: (formValue.bloodType as BloodType) || undefined,
       phone: formValue.phone || undefined,
-      email: formValue.email || undefined,
+      email: formValue.email!,
       address: formValue.address || undefined,
       city: formValue.city || undefined,
       state: formValue.state || undefined,
@@ -250,7 +309,11 @@ export class PatientsComponent implements OnInit {
       height: formValue.height ? Number(formValue.height) : undefined,
     };
 
-    const isEdit = this.formMode() === 'edit';
+    // Só o hospital escolhe o médico; o vínculo não muda em atualização.
+    if (this.isHospital() && !isEdit) {
+      request.doctorId = formValue.doctorId!;
+    }
+
     const call = isEdit
       ? this.patientService.update(this.editingId()!, request)
       : this.patientService.create(request);
@@ -264,7 +327,9 @@ export class PatientsComponent implements OnInit {
       },
       error: (error) => {
         this.saving.set(false);
-        this.notify.error(`Erro ao ${isEdit ? 'atualizar' : 'cadastrar'} paciente: ` + (error.message || 'Erro desconhecido'));
+        this.notify.error(
+          this.extractErrorMessage(error, `Erro ao ${isEdit ? 'atualizar' : 'cadastrar'} paciente.`)
+        );
       },
     });
   }
@@ -276,7 +341,7 @@ export class PatientsComponent implements OnInit {
         this.showViewModal.set(true);
       },
       error: (error) => {
-        this.notify.error('Erro ao carregar paciente: ' + (error.message || 'Erro desconhecido'));
+        this.notify.error(this.extractErrorMessage(error, 'Erro ao carregar paciente.'));
       },
     });
   }
@@ -303,7 +368,7 @@ export class PatientsComponent implements OnInit {
         this.loadPatients(this.patients().length === 1 && this.pageIndex() > 0 ? this.pageIndex() - 1 : this.pageIndex());
       },
       error: (error) => {
-        this.notify.error('Erro ao inativar paciente: ' + (error.message || 'Erro desconhecido'));
+        this.notify.error(this.extractErrorMessage(error, 'Erro ao inativar paciente.'));
       },
     });
   }

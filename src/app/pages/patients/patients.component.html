@@ -169,6 +169,18 @@
     size="lg"
     (closed)="closeForm()">
     <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-4">
+      @if (isHospital() && formMode() === 'create') {
+        <app-select
+          label="Médico responsável"
+          formControlName="doctorId"
+          [options]="doctorOptions()"
+          [required]="true"
+          [disabled]="loadingDoctors()"
+          [placeholder]="loadingDoctors() ? 'Carregando médicos...' : 'Selecione o médico responsável'"
+          [state]="isFieldInvalid('doctorId') ? 'error' : 'default'"
+          [helperText]="isFieldInvalid('doctorId') ? 'Selecione o médico responsável' : ''"></app-select>
+      }
+
       <app-input
         label="Nome completo"
         placeholder="Maria da Silva"
@@ -232,8 +244,9 @@
           type="email"
           placeholder="maria@exemplo.com"
           formControlName="email"
+          [required]="true"
           [state]="isFieldInvalid('email') ? 'error' : 'default'"
-          [helperText]="isFieldInvalid('email') ? 'E-mail inválido' : ''"></app-input>
+          [helperText]="isFieldInvalid('email') ? 'Informe um e-mail válido' : ''"></app-input>
       </div>
 
       <app-input
@@ -281,12 +294,6 @@
           [helperText]="isFieldInvalid('height') ? 'Altura entre 0.5 e 3.0 m' : ''"></app-input>
       </div>
 
-      <app-input
-        label="User ID (temporário)"
-        placeholder="UUID do usuário"
-        formControlName="userId"
-        [required]="true"
-        helperText="Campo provisório até o backend definir o vínculo."></app-input>
     </form>
 
     <div dialogActions class="flex items-center justify-end gap-3">
