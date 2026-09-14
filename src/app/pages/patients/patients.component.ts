@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import {
   LucidePlus,
   LucidePencil,
-  LucideTrash2,
   LucideEye,
   LucideX,
   LucideSearch,
@@ -42,7 +41,6 @@ type FormMode = 'create' | 'edit';
     EmptyStateComponent,
     LucidePlus,
     LucidePencil,
-    LucideTrash2,
     LucideEye,
     LucideX,
     LucideSearch,
@@ -115,8 +113,6 @@ export class PatientsComponent implements OnInit {
     const role = this.userRole();
     return role === 'ADMIN' || role === 'HOSPITAL' || role === 'DOCTOR';
   });
-
-  protected canDelete = computed(() => this.userRole() === 'ADMIN');
 
   protected canDeactivate = computed(() => {
     const role = this.userRole();
@@ -308,28 +304,6 @@ export class PatientsComponent implements OnInit {
       },
       error: (error) => {
         this.notify.error('Erro ao inativar paciente: ' + (error.message || 'Erro desconhecido'));
-      },
-    });
-  }
-
-  protected async deletePatient(patient: PatientListItem): Promise<void> {
-    const confirmed = await this.dialogService.confirm({
-      title: 'Excluir paciente?',
-      message: `Deseja excluir ${patient.fullName}? Esta ação não pode ser desfeita.`,
-      confirmLabel: 'Excluir',
-      cancelLabel: 'Cancelar',
-      variant: 'destructive',
-    });
-
-    if (!confirmed) return;
-
-    this.patientService.delete(patient.id).subscribe({
-      next: () => {
-        this.notify.success(`Paciente ${patient.fullName} excluído com sucesso!`);
-        this.loadPatients(this.patients().length === 1 && this.pageIndex() > 0 ? this.pageIndex() - 1 : this.pageIndex());
-      },
-      error: (error) => {
-        this.notify.error('Erro ao excluir paciente: ' + (error.message || 'Erro desconhecido'));
       },
     });
   }

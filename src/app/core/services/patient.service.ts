@@ -76,14 +76,6 @@ export class PatientService {
   }
 
   /**
-   * Excluir paciente (soft delete no backend)
-   * Acesso: ADMIN apenas
-   */
-  delete(id: string): Observable<void> {
-    return this.api.delete<void>(`/api/patients/${id}`);
-  }
-
-  /**
    * Inativar paciente (soft delete)
    * Acesso: DOCTOR, ADMIN
    */

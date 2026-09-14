@@ -126,15 +126,6 @@
                           <svg lucideX class="w-4 h-4"></svg>
                         </button>
                       }
-                      @if (canDelete()) {
-                        <button
-                          type="button"
-                          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)] transition-all duration-150"
-                          title="Excluir"
-                          (click)="deletePatient(patient)">
-                          <svg lucideTrash2 class="w-4 h-4"></svg>
-                        </button>
-                      }
                     </div>
                   </td>
                 </tr>
