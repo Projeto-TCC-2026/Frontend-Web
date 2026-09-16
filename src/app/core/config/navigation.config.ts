@@ -82,12 +82,6 @@ export const NAV_ITEMS: NavItem[] = [
     loadComponent: () => import('../../pages/reports/reports.component').then(m => m.ReportsComponent),
   },
   {
-    label: 'Administração',
-    path: 'admin',
-    icon: 'shield',
-    roles: ['ADMIN'],
-  },
-  {
     label: 'Configurações',
     path: 'configuracoes',
     icon: 'settings',
