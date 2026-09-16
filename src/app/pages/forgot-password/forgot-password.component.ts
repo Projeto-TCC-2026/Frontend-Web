@@ -32,13 +32,12 @@ export class ForgotPasswordComponent {
         this.apiService.post('/forgot-password/request', { email: this.email }).subscribe({
             next: () => {
                 this.isSubmitting = false;
-                this.notificationService.success('Se o e-mail estiver cadastrado, enviamos as instruções.');
-                this.email = '';
+                this.notificationService.success('Se o e-mail estiver cadastrado, enviamos o código de verificação.');
+                this.router.navigate(['/reset-password']);
             },
             error: () => {
                 this.isSubmitting = false;
-                this.notificationService.success('Se o e-mail estiver cadastrado, enviamos as instruções.');
-                this.email = '';
+                this.notificationService.error('Não foi possível solicitar o código. Verifique se a API local está disponível e tente novamente.');
             },
         });
     }

@@ -19,18 +19,19 @@ export class ResetPasswordComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
+  public code = '';
   public password = '';
   public passwordConfirmation = '';
   public isSubmitting = false;
-  public token = '';
 
   constructor() {
-    this.token = this.route.snapshot.queryParamMap.get('token') ?? '';
+    this.code = this.route.snapshot.queryParamMap.get('code') ??
+      this.route.snapshot.queryParamMap.get('token') ?? '';
   }
 
   public onSubmit(): void {
-    if (!this.token) {
-      this.notificationService.error('O link de recuperação está inválido ou expirado.');
+    if (!this.code) {
+      this.notificationService.error('Informe o código de verificação recebido por e-mail.');
       return;
     }
 
@@ -52,7 +53,8 @@ export class ResetPasswordComponent {
     this.isSubmitting = true;
 
     this.apiService.post('/forgot-password/reset', {
-      token: this.token,
+      code: this.code,
+      token: this.code,
       password: this.password,
       passwordConfirmation: this.passwordConfirmation,
     }).subscribe({
@@ -61,9 +63,10 @@ export class ResetPasswordComponent {
         this.notificationService.success('Senha atualizada com sucesso.');
         this.router.navigate(['/login']);
       },
-      error: () => {
+      error: (err: any) => {
         this.isSubmitting = false;
-        this.notificationService.error('Não foi possível atualizar a senha. Tente novamente.');
+        const message = err?.error?.message ?? 'Não foi possível atualizar a senha. Tente novamente.';
+        this.notificationService.error(message);
       },
     });
   }
