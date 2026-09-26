@@ -50,7 +50,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Pacientes',
     path: 'pacientes',
     icon: 'users',
-    roles: ['ADMIN', 'HOSPITAL', 'DOCTOR'],
+    roles: ['HOSPITAL', 'DOCTOR'],
     loadComponent: () => import('../../pages/patients/patients.component').then(m => m.PatientsComponent),
   },
   {

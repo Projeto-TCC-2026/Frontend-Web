@@ -103,8 +103,6 @@ export class PatientsComponent implements OnInit {
 
   protected pageSubtitle = computed(() => {
     switch (this.userRole()) {
-      case 'ADMIN':
-        return 'Gerencie os pacientes de todos os hospitais da plataforma';
       case 'HOSPITAL':
         return 'Gerencie os pacientes do seu hospital';
       default:
@@ -114,17 +112,17 @@ export class PatientsComponent implements OnInit {
 
   protected canCreate = computed(() => {
     const role = this.userRole();
-    return role === 'ADMIN' || role === 'HOSPITAL' || role === 'DOCTOR';
+    return role === 'HOSPITAL' || role === 'DOCTOR';
   });
 
   protected canEdit = computed(() => {
     const role = this.userRole();
-    return role === 'ADMIN' || role === 'HOSPITAL' || role === 'DOCTOR';
+    return role === 'HOSPITAL' || role === 'DOCTOR';
   });
 
   protected canDeactivate = computed(() => {
     const role = this.userRole();
-    return role === 'ADMIN' || role === 'HOSPITAL' || role === 'DOCTOR';
+    return role === 'HOSPITAL' || role === 'DOCTOR';
   });
 
   protected filteredPatients = computed(() => {
