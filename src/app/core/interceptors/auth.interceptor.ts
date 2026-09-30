@@ -19,7 +19,8 @@ const PUBLIC_PATHS = [
   '/auth/doctor/login',
   '/auth/patient/login',
   '/forgot-password/request',
-  '/forgot-password/reset'
+  '/forgot-password/reset',
+  '/api/public/'
 ];
 
 function isPublicRequest(url: string): boolean {
