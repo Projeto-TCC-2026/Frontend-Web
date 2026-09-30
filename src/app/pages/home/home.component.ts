@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { CardComponent } from '../../shared/components/card/card.component';
+import { PublicStatsService, PublicStats } from '../../core/services/public-stats.service';
 
 @Component({
   selector: 'app-home',
@@ -10,20 +11,41 @@ import { CardComponent } from '../../shared/components/card/card.component';
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  private publicStatsService = inject(PublicStatsService);
+
   private scrollListener: (() => void) | null = null;
   public mobileMenuOpen = false;
+
+  /** null enquanto carrega ou quando a chamada falha — os cards mostram "—". */
+  protected stats = signal<PublicStats | null>(null);
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.scrollListener = () => this.updateActiveNav();
     window.addEventListener('scroll', this.scrollListener);
+    this.loadPublicStats();
   }
 
   ngOnDestroy(): void {
     if (this.scrollListener) {
       window.removeEventListener('scroll', this.scrollListener);
     }
+  }
+
+  /**
+   * A landing page é pública: qualquer falha aqui é silenciosa e os cards
+   * continuam exibindo "—", sem derrubar o resto da página.
+   */
+  private loadPublicStats(): void {
+    this.publicStatsService.getStats().subscribe({
+      next: (data) => {
+        this.stats.set(data);
+      },
+      error: () => {
+        this.stats.set(null);
+      },
+    });
   }
 
   goToLogin(): void {

@@ -140,7 +140,7 @@
               class="text-[var(--color-neutro-300)] text-xs font-body">Pacientes
               acompanhados</span>
             <span
-              class="font-data font-semibold text-[22px] leading-7 text-white">12.4k</span>
+              class="font-data font-semibold text-[22px] leading-7 text-white">{{ stats()?.patients ?? '—' }}</span>
             <span
               class="text-[var(--color-neutro-300)] text-[11px] font-body">registrados
               na plataforma</span>
@@ -152,12 +152,12 @@
           <div class="flex flex-col gap-1">
             <span
               class="text-[var(--color-neutro-300)] text-xs font-body">Médicos
-              verificados</span>
+              cadastrados</span>
             <span
-              class="font-data font-semibold text-[22px] leading-7 text-white">860+</span>
+              class="font-data font-semibold text-[22px] leading-7 text-white">{{ stats()?.doctors ?? '—' }}</span>
             <span
               class="text-[var(--color-neutro-300)] text-[11px] font-body">profissionais
-              ativos</span>
+              na plataforma</span>
           </div>
         </div>
 
@@ -165,13 +165,13 @@
           class="rounded-[var(--radius-lg)] border border-white/20 bg-white/10 backdrop-blur-sm p-4 transition-transform duration-150 ease-out hover:-translate-y-1 cursor-default">
           <div class="flex flex-col gap-1">
             <span
-              class="text-[var(--color-neutro-300)] text-xs font-body">Satisfação
-              dos usuários</span>
+              class="text-[var(--color-neutro-300)] text-xs font-body">Hospitais
+              cadastrados</span>
             <span
-              class="font-data font-semibold text-[22px] leading-7 text-[var(--color-laranja-primario)]">98%</span>
+              class="font-data font-semibold text-[22px] leading-7 text-[var(--color-laranja-primario)]">{{ stats()?.hospitals ?? '—' }}</span>
             <span
-              class="text-[var(--color-neutro-300)] text-[11px] font-body">avaliações
-              positivas</span>
+              class="text-[var(--color-neutro-300)] text-[11px] font-body">instituições
+              na plataforma</span>
           </div>
         </div>
       </div>
