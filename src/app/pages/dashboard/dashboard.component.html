@@ -241,7 +241,10 @@
         @else { <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">{{ doctorDashboard()?.activePatients ?? '—' }}</span> }
       </div>
 
-      <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
+      <a
+        routerLink="/app/alertas"
+        class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2 no-underline transition-colors duration-150 hover:border-[var(--color-neutro-300)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-azul-primario)]/40"
+        title="Ver alertas">
         <div class="flex items-center justify-between">
           <span class="text-xs font-medium text-[var(--color-neutro-500)] uppercase tracking-wide">Pacientes com Alerta</span>
           <span class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] bg-[var(--color-critico)]/10 text-[var(--color-critico)]">
@@ -250,7 +253,7 @@
         </div>
         @if (loading()) { <div class="h-8 w-16 rounded bg-[var(--color-neutro-150)] animate-pulse"></div> }
         @else { <span class="font-data font-semibold text-[28px] text-[var(--color-neutro-900)]">{{ doctorDashboard()?.patientsWithAlert ?? '—' }}</span> }
-      </div>
+      </a>
 
       <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5 flex flex-col gap-2">
         <div class="flex items-center justify-between">

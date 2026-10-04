@@ -14,6 +14,7 @@ import {
   LucideUserRound,
   LucideBuilding2,
   LucideFileSpreadsheet,
+  LucideBellRing,
 } from '@lucide/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { NAV_ITEMS, NavItem } from '../../core/config/navigation.config';
@@ -37,6 +38,7 @@ import { NAV_ITEMS, NavItem } from '../../core/config/navigation.config';
     LucideUserRound,
     LucideBuilding2,
     LucideFileSpreadsheet,
+    LucideBellRing,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',

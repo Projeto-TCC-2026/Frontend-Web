@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { LucideUserRound, LucideUsers, LucideClipboardList } from '@lucide/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardService, DashboardSummary, HospitalDashboard, DoctorDashboard } from '../../core/services/dashboard.service';
@@ -8,7 +9,7 @@ import { UserRole } from '../../core/models/entities/user.model';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, LucideUserRound, LucideUsers, LucideClipboardList],
+  imports: [CommonModule, RouterLink, LucideUserRound, LucideUsers, LucideClipboardList],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
