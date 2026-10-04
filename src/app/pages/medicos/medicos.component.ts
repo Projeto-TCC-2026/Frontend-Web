@@ -61,6 +61,12 @@ export class MedicosComponent implements OnInit {
   protected hospitals = signal<Hospital[]>([]);
   protected loading = signal(true);
   protected searchTerm = signal('');
+  protected statusFilter = signal<'all' | 'active' | 'inactive'>('active');
+  protected statusOptions: SelectOption[] = [
+    { value: 'all', label: 'Todos' },
+    { value: 'active', label: 'Ativos' },
+    { value: 'inactive', label: 'Desativados' },
+  ];
 
   // Paginação vinda do backend — evita carregar todos os médicos da plataforma de uma vez.
   protected pageIndex = signal(0);
@@ -134,7 +140,7 @@ export class MedicosComponent implements OnInit {
 
   private loadDoctors(page = this.pageIndex()): void {
     this.loading.set(true);
-    this.doctorService.getAll(page, this.pageSize()).subscribe({
+    this.doctorService.getAll(page, this.pageSize(), this.activeFilter()).subscribe({
       next: (result) => {
         this.doctors.set(result.content);
         this.pageIndex.set(result.number);
@@ -144,6 +150,17 @@ export class MedicosComponent implements OnInit {
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  private activeFilter(): boolean | null {
+    const status = this.statusFilter();
+    return status === 'all' ? null : status === 'active';
+  }
+
+  protected onStatusChange(status: string): void {
+    if (status !== 'all' && status !== 'active' && status !== 'inactive') return;
+    this.statusFilter.set(status);
+    this.loadDoctors(0);
   }
 
   protected goToPage(page: number): void {
@@ -381,24 +398,27 @@ export class MedicosComponent implements OnInit {
     return fallback;
   }
 
-  protected async onDelete(doctor: Doctor): Promise<void> {
+  protected async deactivateDoctor(doctor: Doctor): Promise<void> {
     const confirmed = await this.dialogService.confirm({
-      title: 'Excluir médico?',
-      message: `Deseja excluir ${doctor.fullName}? Esta ação não pode ser desfeita.`,
-      confirmLabel: 'Excluir',
+      title: 'Inativar médico?',
+      message: `Deseja inativar ${doctor.fullName}? Ele deixará de aparecer na listagem ativa.`,
+      confirmLabel: 'Inativar',
       cancelLabel: 'Cancelar',
       variant: 'destructive',
     });
 
     if (!confirmed) return;
 
-    this.doctorService.delete(doctor.id).subscribe({
+    this.doctorService.deactivate(doctor.id).subscribe({
       next: () => {
-        this.notify.success('Médico excluído com sucesso!');
-        this.loadDoctors(this.doctors().length === 1 && this.pageIndex() > 0 ? this.pageIndex() - 1 : this.pageIndex());
+        this.notify.success('Médico inativado com sucesso!');
+        const page = this.statusFilter() === 'active' && this.doctors().length === 1 && this.pageIndex() > 0
+          ? this.pageIndex() - 1
+          : this.pageIndex();
+        this.loadDoctors(page);
       },
       error: (err) => {
-        this.notify.error(this.extractErrorMessage(err, 'Não foi possível excluir o médico.'));
+        this.notify.error(this.extractErrorMessage(err, 'Não foi possível inativar o médico.'));
       },
     });
   }

@@ -35,12 +35,16 @@ export class PatientService {
    * Listar todos os pacientes ativos (paginado)
    * Acesso: DOCTOR, ADMIN
    */
-  getAll(page = 0, size = 10, sort = 'fullName,asc'): Observable<PaginatedResponse<PatientListItem>> {
-    return this.api.get<any>('/api/patients', { 
-      page: page.toString(), 
-      size: size.toString(), 
-      sort 
-    }).pipe(
+  getAll(page = 0, size = 10, sort = 'fullName,asc', active: boolean | null = true): Observable<PaginatedResponse<PatientListItem>> {
+    const params: Record<string, string | number | boolean> = {
+      page,
+      size,
+      sort,
+      includeInactive: active === null,
+    };
+    if (active !== null) params['active'] = active;
+
+    return this.api.get<any>('/api/patients', params).pipe(
       map(response => response.data ?? response)
     );
   }

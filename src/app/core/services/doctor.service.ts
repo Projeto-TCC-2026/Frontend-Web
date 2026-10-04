@@ -43,13 +43,20 @@ export class DoctorService {
   private api = inject(ApiService);
   private auth = inject(AuthService);
 
-  getAll(page = 0, size = 20): Observable<DoctorPage> {
+  getAll(page = 0, size = 20, active: boolean | null = true): Observable<DoctorPage> {
+    const params: Record<string, string | number | boolean> = {
+      page,
+      size,
+      includeInactive: active === null,
+    };
+    if (active !== null) params['active'] = active;
+
     if (this.auth.getRole() === 'HOSPITAL') {
-      return this.api.get<any>('/api/hospital/doctors', { page, size }).pipe(
+      return this.api.get<any>('/api/hospital/doctors', params).pipe(
         map(response => response.data ?? response)
       );
     }
-    return this.api.get<any>('/api/doctors', { page, size }).pipe(
+    return this.api.get<any>('/api/doctors', params).pipe(
       map(response => response.data ?? response)
     );
   }
@@ -108,5 +115,9 @@ export class DoctorService {
     return this.api.delete<any>(`/api/doctors/${id}`).pipe(
       map(response => response.data ?? response)
     );
+  }
+
+  deactivate(id: string): Observable<void> {
+    return this.delete(id);
   }
 }

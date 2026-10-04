@@ -1,6 +1,13 @@
 export type Gender = 'MALE' | 'FEMALE' | 'OTHER';
 export type BloodType = 'A_POSITIVE' | 'A_NEGATIVE' | 'B_POSITIVE' | 'B_NEGATIVE' | 'AB_POSITIVE' | 'AB_NEGATIVE' | 'O_POSITIVE' | 'O_NEGATIVE';
 
+export interface PatientDoctorSummary {
+  id: string;
+  fullName: string;
+  crm: string;
+  specialty?: string;
+}
+
 export interface Patient {
   id: string;
   userId?: string;
@@ -18,6 +25,7 @@ export interface Patient {
   weight?: number;
   height?: number;
   active: boolean;
+  responsibleDoctor?: PatientDoctorSummary | null;
   createdAt?: string;
   updatedAt?: string;
 }

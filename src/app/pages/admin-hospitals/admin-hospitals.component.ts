@@ -10,7 +10,6 @@ import {
   LucideChevronLeft,
   LucideChevronRight,
   LucideToggleLeft,
-  LucideToggleRight,
 } from '@lucide/angular';
 
 import { HospitalService, HospitalRequest } from '../../core/services/hospital.service';
@@ -20,6 +19,7 @@ import { DialogService } from '../../core/services/dialog.service';
 
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
+import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
@@ -34,6 +34,7 @@ type FormMode = 'create' | 'edit';
     ReactiveFormsModule,
     ButtonComponent,
     InputComponent,
+    SelectComponent,
     DialogComponent,
     LoadingComponent,
     EmptyStateComponent,
@@ -44,7 +45,6 @@ type FormMode = 'create' | 'edit';
     LucideChevronLeft,
     LucideChevronRight,
     LucideToggleLeft,
-    LucideToggleRight,
   ],
   templateUrl: './admin-hospitals.component.html',
 })
@@ -57,6 +57,12 @@ export class AdminHospitalsComponent implements OnInit {
   protected hospitals = signal<Hospital[]>([]);
   protected loading = signal(true);
   protected searchTerm = signal('');
+  protected statusFilter = signal<'all' | 'active' | 'inactive'>('active');
+  protected statusOptions: SelectOption[] = [
+    { value: 'all', label: 'Todos' },
+    { value: 'active', label: 'Ativos' },
+    { value: 'inactive', label: 'Desativados' },
+  ];
 
   // Paginação server-side
   protected pageIndex = signal(0);
@@ -99,7 +105,7 @@ export class AdminHospitalsComponent implements OnInit {
 
   private loadHospitals(page = this.pageIndex()): void {
     this.loading.set(true);
-    this.hospitalService.getAll(page, this.pageSize()).subscribe({
+    this.hospitalService.getAll(page, this.pageSize(), this.activeFilter()).subscribe({
       next: result => {
         this.hospitals.set(result.content);
         this.pageIndex.set(result.number);
@@ -109,6 +115,17 @@ export class AdminHospitalsComponent implements OnInit {
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  private activeFilter(): boolean | null {
+    const status = this.statusFilter();
+    return status === 'all' ? null : status === 'active';
+  }
+
+  protected onStatusChange(status: string): void {
+    if (status !== 'all' && status !== 'active' && status !== 'inactive') return;
+    this.statusFilter.set(status);
+    this.loadHospitals(0);
   }
 
   protected goToPage(page: number): void {
@@ -201,7 +218,7 @@ export class AdminHospitalsComponent implements OnInit {
     const actionLabel = isActive ? 'Inativar' : 'Ativar';
 
     const confirmed = await this.dialogService.confirm({
-      title: `${actionLabel} hospital?`,
+      title: isActive ? 'Inativar hospital?' : 'Ativar hospital?',
       message: `Deseja ${action} o hospital ${hospital.name}?`,
       confirmLabel: actionLabel,
       cancelLabel: 'Cancelar',
@@ -217,36 +234,15 @@ export class AdminHospitalsComponent implements OnInit {
     request$.subscribe({
       next: () => {
         this.notify.success(`Hospital ${isActive ? 'inativado' : 'ativado'} com sucesso!`);
-        this.loadHospitals(this.pageIndex());
+        const status = this.statusFilter();
+        const leavesCurrentList = (isActive && status === 'active') || (!isActive && status === 'inactive');
+        const page = leavesCurrentList && this.hospitals().length === 1 && this.pageIndex() > 0
+          ? this.pageIndex() - 1
+          : this.pageIndex();
+        this.loadHospitals(page);
       },
       error: err => {
         this.notify.error(this.extractErrorMessage(err, `Não foi possível ${action} o hospital.`));
-      },
-    });
-  }
-
-  protected async onDelete(hospital: Hospital): Promise<void> {
-    const confirmed = await this.dialogService.confirm({
-      title: 'Excluir hospital?',
-      message: `Deseja excluir ${hospital.name}? Esta ação não pode ser desfeita.`,
-      confirmLabel: 'Excluir',
-      cancelLabel: 'Cancelar',
-      variant: 'destructive',
-    });
-
-    if (!confirmed) return;
-
-    this.hospitalService.deleteHospital(hospital.id).subscribe({
-      next: () => {
-        this.notify.success('Hospital excluído com sucesso!');
-        this.loadHospitals(
-          this.hospitals().length === 1 && this.pageIndex() > 0
-            ? this.pageIndex() - 1
-            : this.pageIndex(),
-        );
-      },
-      error: err => {
-        this.notify.error(this.extractErrorMessage(err, 'Não foi possível excluir o hospital.'));
       },
     });
   }

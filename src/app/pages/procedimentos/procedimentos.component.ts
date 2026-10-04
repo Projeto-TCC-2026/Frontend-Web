@@ -49,6 +49,12 @@ export class ProcedimentosComponent implements OnInit {
   protected formMode = signal<'create' | 'edit'>('create');
   protected editingProcedure = signal<Procedure | null>(null);
   protected searchTerm = signal('');
+  protected statusFilter = signal<'all' | 'active' | 'inactive'>('active');
+  protected statusOptions: SelectOption[] = [
+    { value: 'all', label: 'Todos' },
+    { value: 'active', label: 'Ativos' },
+    { value: 'inactive', label: 'Desativados' },
+  ];
   protected selectedHospitalId = signal<string | null>(null);
   protected hospitalOptions = computed<SelectOption[]>(() => this.hospitals().map(hospital => ({ value: hospital.id, label: hospital.name })));
 
@@ -90,9 +96,17 @@ export class ProcedimentosComponent implements OnInit {
     this.loadProcedures(hospitalId);
   }
 
+  protected onStatusChange(status: string): void {
+    if (status !== 'all' && status !== 'active' && status !== 'inactive') return;
+    this.statusFilter.set(status);
+    this.loadProcedures(this.selectedHospitalId());
+  }
+
   private loadProcedures(hospitalId: string | null): void {
     this.loading.set(true);
-    this.procedureService.list(this.isAdmin() ? hospitalId : null).subscribe({
+    const status = this.statusFilter();
+    const active = status === 'all' ? null : status === 'active';
+    this.procedureService.list(this.isAdmin() ? hospitalId : null, active).subscribe({
       next: page => {
         this.procedures.set(page.content);
         this.loading.set(false);
@@ -138,7 +152,7 @@ export class ProcedimentosComponent implements OnInit {
       title: value.title!.trim(),
       description: value.description?.trim() ?? '',
       estimatedDuration: value.estimatedDuration,
-      active: true,
+      active: this.editingProcedure()?.active ?? true,
     };
     const hospitalId = this.isAdmin() ? this.selectedHospitalId() : null;
     const editingId = this.editingProcedure()?.id;
@@ -177,7 +191,7 @@ export class ProcedimentosComponent implements OnInit {
     const hospitalId = this.isAdmin() ? this.selectedHospitalId() : null;
     this.procedureService.deactivate(hospitalId, procedure.id).subscribe({
       next: () => {
-        this.procedures.update(current => current.filter(item => item.id !== procedure.id));
+        this.loadProcedures(this.selectedHospitalId());
         this.notify.success('Procedimento inativado.');
       },
       error: err => this.notify.error(err?.error?.message ?? 'Não foi possível inativar o procedimento.'),

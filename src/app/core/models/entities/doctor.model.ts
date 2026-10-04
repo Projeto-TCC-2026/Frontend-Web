@@ -21,4 +21,5 @@ export interface Doctor {
   crm: string;
   specialty: string;
   phone: string;
+  active?: boolean;
 }

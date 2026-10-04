@@ -32,9 +32,17 @@ export class HospitalService {
   private api = inject(ApiService);
 
   /** Lista paginada de hospitais (para a tela de gestão Admin). */
-  getAll(page = 0, size = 10): Observable<HospitalPageResult> {
+  getAll(page = 0, size = 10, active: boolean | null = true): Observable<HospitalPageResult> {
+    const params: Record<string, string | number | boolean> = {
+      page,
+      size,
+      sort: 'name,asc',
+      includeInactive: active === null,
+    };
+    if (active !== null) params['active'] = active;
+
     return this.api
-      .get<any>('/api/admin/hospitals', { page, size, sort: 'name,asc' })
+      .get<any>('/api/admin/hospitals', params)
       .pipe(
         map(response => {
           const data = response?.data ?? response;

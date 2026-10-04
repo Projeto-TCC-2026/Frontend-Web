@@ -41,9 +41,14 @@ export interface DoctorProcedureAssignment {
 export class ProcedureService {
   private api = inject(ApiService);
 
-  list(hospitalId: string | null, includeInactive = false): Observable<ProcedurePage> {
+  list(hospitalId: string | null, active: boolean | null = true): Observable<ProcedurePage> {
     const path = hospitalId ? '/api/admin/procedures' : '/api/hospital/procedures';
-    const params: Record<string, string | number | boolean> = { page: 0, size: 100, includeInactive };
+    const params: Record<string, string | number | boolean> = {
+      page: 0,
+      size: 100,
+      includeInactive: active === null,
+    };
+    if (active !== null) params['active'] = active;
     if (hospitalId) params['hospitalId'] = hospitalId;
     return this.api.get<any>(path, params).pipe(map(response => response.data ?? response));
   }

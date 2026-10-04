@@ -14,23 +14,32 @@
     }
   </div>
 
-  <div>
-    <label
-      class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5"
-      for="patient-search">
-      Buscar
-    </label>
-    <div class="relative mb-6 max-w-sm">
-      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-neutro-400)] pointer-events-none">
-        <svg lucideSearch class="w-4 h-4"></svg>
-      </span>
-      <input
-        id="patient-search"
-        type="text"
-        placeholder="Buscar paciente por nome, CPF, e-mail ou telefone..."
-        class="w-full pl-9 pr-4 py-2.5 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-500)] outline-none focus:border-[var(--color-azul-primario)] focus:shadow-[0_0_0_3px_rgba(12,76,138,0.14)] transition-all duration-150"
-        (input)="onSearch($event)" />
+  <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_14rem] gap-4 mb-6 max-w-3xl">
+    <div>
+      <label
+        class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5"
+        for="patient-search">
+        Buscar
+      </label>
+      <div class="relative">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-neutro-400)] pointer-events-none">
+          <svg lucideSearch class="w-4 h-4"></svg>
+        </span>
+        <input
+          id="patient-search"
+          type="text"
+          placeholder="Buscar paciente por nome, CPF, e-mail ou telefone..."
+          class="w-full pl-9 pr-4 py-2.5 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-500)] outline-none focus:border-[var(--color-azul-primario)] focus:shadow-[0_0_0_3px_rgba(12,76,138,0.14)] transition-all duration-150"
+          (input)="onSearch($event)" />
+      </div>
     </div>
+    <app-select
+      label="Status"
+      inputId="patient-status"
+      [options]="statusOptions"
+      [selectedValue]="statusFilter()"
+      (changed)="onStatusChange($event)">
+    </app-select>
   </div>
 
   @if (loading()) {
@@ -101,30 +110,32 @@
                   </td>
                   <td class="px-4 py-3">
                     <div class="flex items-center justify-end gap-1">
-                      <button
-                        type="button"
-                        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
-                        title="Visualizar"
-                        (click)="viewPatient(patient)">
-                        <svg lucideEye class="w-4 h-4"></svg>
-                      </button>
-                      @if (canEdit()) {
+                      @if (patient.active) {
                         <button
                           type="button"
                           class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
-                          title="Editar"
-                          (click)="openEdit(patient)">
-                          <svg lucidePencil class="w-4 h-4"></svg>
+                          title="Visualizar"
+                          (click)="viewPatient(patient)">
+                          <svg lucideEye class="w-4 h-4"></svg>
                         </button>
-                      }
-                      @if (canDeactivate() && patient.active) {
-                        <button
-                          type="button"
-                          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)] transition-all duration-150"
-                          title="Inativar"
-                          (click)="deactivatePatient(patient)">
-                          <svg lucideX class="w-4 h-4"></svg>
-                        </button>
+                        @if (canEdit()) {
+                          <button
+                            type="button"
+                            class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
+                            title="Editar"
+                            (click)="openEdit(patient)">
+                            <svg lucidePencil class="w-4 h-4"></svg>
+                          </button>
+                        }
+                        @if (canDeactivate()) {
+                          <button
+                            type="button"
+                            class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)] transition-all duration-150"
+                            title="Inativar"
+                            (click)="deactivatePatient(patient)">
+                            <svg lucideTrash2 class="w-4 h-4"></svg>
+                          </button>
+                        }
                       }
                     </div>
                   </td>
@@ -169,6 +180,17 @@
     size="lg"
     (closed)="closeForm()">
     <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-4">
+      @if (formMode() === 'edit') {
+        <div>
+          <p class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5">
+            Médico responsável
+          </p>
+          <p class="w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-[var(--color-neutro-100)] text-[var(--color-neutro-700)]">
+            {{ responsibleDoctorName() || 'Não informado' }}
+          </p>
+        </div>
+      }
+
       @if (isHospital() && formMode() === 'create') {
         <app-select
           label="Médico responsável"

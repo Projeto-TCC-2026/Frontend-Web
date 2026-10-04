@@ -6,10 +6,10 @@ import {
   LucidePlus,
   LucidePencil,
   LucideEye,
-  LucideX,
   LucideSearch,
   LucideChevronLeft,
   LucideChevronRight,
+  LucideTrash2,
 } from '@lucide/angular';
 
 import { PatientService, PaginatedResponse } from '../../core/services/patient.service';
@@ -44,10 +44,10 @@ type FormMode = 'create' | 'edit';
     LucidePlus,
     LucidePencil,
     LucideEye,
-    LucideX,
     LucideSearch,
     LucideChevronLeft,
     LucideChevronRight,
+    LucideTrash2,
   ],
   templateUrl: './patients.component.html',
 })
@@ -63,7 +63,14 @@ export class PatientsComponent implements OnInit {
   protected loading = signal(true);
   protected saving = signal(false);
   protected selectedPatient = signal<Patient | null>(null);
+  protected responsibleDoctorName = signal<string | null>(null);
   protected searchTerm = signal('');
+  protected statusFilter = signal<'all' | 'active' | 'inactive'>('active');
+  protected statusOptions: SelectOption[] = [
+    { value: 'all', label: 'Todos' },
+    { value: 'active', label: 'Ativos' },
+    { value: 'inactive', label: 'Desativados' },
+  ];
 
   protected showViewModal = signal(false);
   protected formOpen = signal(false);
@@ -200,7 +207,7 @@ export class PatientsComponent implements OnInit {
   private loadPatients(page = this.pageIndex()): void {
     this.loading.set(true);
 
-    this.patientService.getAll(page, this.pageSize()).subscribe({
+    this.patientService.getAll(page, this.pageSize(), 'fullName,asc', this.activeFilter()).subscribe({
       next: (response: PaginatedResponse<PatientListItem>) => {
         this.patients.set(response.content);
         this.pageIndex.set(response.number);
@@ -215,8 +222,19 @@ export class PatientsComponent implements OnInit {
     });
   }
 
+  private activeFilter(): boolean | null {
+    const status = this.statusFilter();
+    return status === 'all' ? null : status === 'active';
+  }
+
   protected onSearch(event: Event): void {
     this.searchTerm.set((event.target as HTMLInputElement).value);
+  }
+
+  protected onStatusChange(status: string): void {
+    if (status !== 'all' && status !== 'active' && status !== 'inactive') return;
+    this.statusFilter.set(status);
+    this.loadPatients(0);
   }
 
   protected goToPage(page: number): void {
@@ -227,6 +245,7 @@ export class PatientsComponent implements OnInit {
   protected openCreate(): void {
     this.formMode.set('create');
     this.editingId.set(null);
+    this.responsibleDoctorName.set(null);
     this.patientForm.reset();
     this.patientForm.get('cpf')?.enable();
     this.syncDoctorValidator();
@@ -238,6 +257,7 @@ export class PatientsComponent implements OnInit {
       next: (full) => {
         this.formMode.set('edit');
         this.editingId.set(full.id);
+        this.responsibleDoctorName.set(full.responsibleDoctor?.fullName ?? null);
         this.syncDoctorValidator();
         this.patientForm.patchValue({
           fullName: full.fullName,
@@ -265,6 +285,7 @@ export class PatientsComponent implements OnInit {
 
   protected closeForm(): void {
     this.formOpen.set(false);
+    this.responsibleDoctorName.set(null);
     this.patientForm.reset();
     this.patientForm.get('cpf')?.enable();
   }
@@ -363,7 +384,10 @@ export class PatientsComponent implements OnInit {
     this.patientService.deactivate(patient.id).subscribe({
       next: () => {
         this.notify.success(`Paciente ${patient.fullName} inativado com sucesso!`);
-        this.loadPatients(this.patients().length === 1 && this.pageIndex() > 0 ? this.pageIndex() - 1 : this.pageIndex());
+        const page = this.statusFilter() === 'active' && this.patients().length === 1 && this.pageIndex() > 0
+          ? this.pageIndex() - 1
+          : this.pageIndex();
+        this.loadPatients(page);
       },
       error: (error) => {
         this.notify.error(this.extractErrorMessage(error, 'Erro ao inativar paciente.'));
