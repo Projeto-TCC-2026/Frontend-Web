@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
 import {
   LucidePlus,
   LucidePencil,
@@ -17,6 +18,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { DoctorService } from '../../core/services/doctor.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { DialogService } from '../../core/services/dialog.service';
+import { Procedure, ProcedureService } from '../../core/services/procedure.service';
 import { Patient, PatientListItem, PatientCreateRequest, Gender, BloodType } from '../../core/models/entities/patient.model';
 import { UserRole } from '../../core/models/entities/user.model';
 
@@ -57,6 +59,7 @@ export class PatientsComponent implements OnInit {
   private doctorService = inject(DoctorService);
   private notify = inject(NotificationService);
   private dialogService = inject(DialogService);
+  private procedureService = inject(ProcedureService);
   private fb = inject(FormBuilder);
 
   protected patients = signal<PatientListItem[]>([]);
@@ -88,6 +91,12 @@ export class PatientsComponent implements OnInit {
   protected isHospital = computed(() => this.userRole() === 'HOSPITAL');
   protected doctorOptions = signal<SelectOption[]>([]);
   protected loadingDoctors = signal(false);
+
+  /** Procedimentos disponíveis para vincular no cadastro (só modo create). */
+  protected procedureOptions = signal<SelectOption[]>([]);
+  protected loadingProcedures = signal(false);
+  /** Diferencia "ainda não buscou" de "buscou e veio vazio", para não mostrar a dica cedo demais. */
+  protected proceduresLoaded = signal(false);
 
   protected genderOptions: SelectOption[] = [
     { value: '', label: 'Não informado' },
@@ -147,6 +156,8 @@ export class PatientsComponent implements OnInit {
   protected patientForm = this.fb.group({
     // Validators.required é aplicado em runtime apenas para HOSPITAL no cadastro (ver syncDoctorValidator).
     doctorId: [''],
+    // Validators.required é aplicado em runtime apenas no cadastro (ver syncProcedureValidator).
+    procedureId: [''],
     fullName: ['', [Validators.required, Validators.minLength(3)]],
     cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
     birthDate: ['', Validators.required],
@@ -204,6 +215,93 @@ export class PatientsComponent implements OnInit {
     control.updateValueAndValidity({ emitEvent: false });
   }
 
+  /** O procedimento inicial só existe no cadastro: na edição não é exigido nem enviado. */
+  private syncProcedureValidator(): void {
+    const control = this.patientForm.get('procedureId');
+    if (!control) return;
+
+    if (this.formMode() === 'create') {
+      control.setValidators(Validators.required);
+    } else {
+      control.clearValidators();
+    }
+    control.updateValueAndValidity({ emitEvent: false });
+  }
+
+  /** DOCTOR usa os próprios procedimentos; HOSPITAL depende do médico escolhido no form. */
+  private loadProcedures(): void {
+    if (this.formMode() !== 'create') return;
+
+    if (this.isHospital()) {
+      const doctorId = this.patientForm.get('doctorId')?.value;
+      if (!doctorId) {
+        this.procedureOptions.set([]);
+        this.proceduresLoaded.set(false);
+        return;
+      }
+      this.fetchProcedures(this.procedureService.listProceduresByDoctor(doctorId));
+      return;
+    }
+
+    this.fetchProcedures(this.procedureService.listMyDoctorProcedures());
+  }
+
+  private fetchProcedures(source: Observable<Procedure[]>): void {
+    this.loadingProcedures.set(true);
+    this.proceduresLoaded.set(false);
+
+    source.subscribe({
+      next: (procedures) => {
+        this.procedureOptions.set(procedures.map(procedure => ({ value: procedure.id, label: procedure.title })));
+        this.loadingProcedures.set(false);
+        this.proceduresLoaded.set(true);
+      },
+      error: (error) => {
+        this.procedureOptions.set([]);
+        this.loadingProcedures.set(false);
+        this.proceduresLoaded.set(true);
+        this.notify.error(this.extractErrorMessage(error, 'Erro ao carregar a lista de procedimentos.'));
+      },
+    });
+  }
+
+  /** Trocar de médico invalida o procedimento já escolhido: ele pode não pertencer ao novo médico. */
+  protected onDoctorChange(doctorId: string): void {
+    this.patientForm.get('procedureId')?.reset('');
+    this.procedureOptions.set([]);
+    this.proceduresLoaded.set(false);
+    if (doctorId) this.loadProcedures();
+  }
+
+  protected isProcedureFieldDisabled(): boolean {
+    if (this.loadingProcedures()) return true;
+    return this.isHospital() && !this.patientForm.get('doctorId')?.value;
+  }
+
+  protected procedurePlaceholder(): string {
+    if (this.loadingProcedures()) return 'Carregando procedimentos...';
+    if (this.isHospital() && !this.patientForm.get('doctorId')?.value) return 'Selecione o médico primeiro';
+    if (this.proceduresLoaded() && !this.procedureOptions().length) return 'Nenhum procedimento disponível';
+    return 'Selecione o procedimento';
+  }
+
+  /** O erro de validação tem prioridade sobre a dica de lista vazia. */
+  protected procedureHelperText(): string {
+    if (this.isFieldInvalid('procedureId')) return 'Selecione um procedimento';
+    if (this.proceduresLoaded() && !this.procedureOptions().length) {
+      return 'Nenhum procedimento atribuído a este médico. O hospital precisa atribuir um em Procedimentos.';
+    }
+    return '';
+  }
+
+  /** yyyy-MM-dd no fuso local; toISOString() usaria UTC e adiantaria o dia à noite. */
+  private todayLocalIsoDate(): string {
+    const now = new Date();
+    const month = `${now.getMonth() + 1}`.padStart(2, '0');
+    const day = `${now.getDate()}`.padStart(2, '0');
+    return `${now.getFullYear()}-${month}-${day}`;
+  }
+
   private loadPatients(page = this.pageIndex()): void {
     this.loading.set(true);
 
@@ -248,8 +346,13 @@ export class PatientsComponent implements OnInit {
     this.responsibleDoctorName.set(null);
     this.patientForm.reset();
     this.patientForm.get('cpf')?.enable();
+    this.procedureOptions.set([]);
+    this.proceduresLoaded.set(false);
     this.syncDoctorValidator();
+    this.syncProcedureValidator();
     this.formOpen.set(true);
+    // HOSPITAL carrega só após escolher o médico (ver onDoctorChange).
+    if (!this.isHospital()) this.loadProcedures();
   }
 
   protected openEdit(patient: PatientListItem): void {
@@ -258,7 +361,10 @@ export class PatientsComponent implements OnInit {
         this.formMode.set('edit');
         this.editingId.set(full.id);
         this.responsibleDoctorName.set(full.responsibleDoctor?.fullName ?? null);
+        this.procedureOptions.set([]);
+        this.proceduresLoaded.set(false);
         this.syncDoctorValidator();
+        this.syncProcedureValidator();
         this.patientForm.patchValue({
           fullName: full.fullName,
           cpf: full.cpf,
@@ -288,6 +394,9 @@ export class PatientsComponent implements OnInit {
     this.responsibleDoctorName.set(null);
     this.patientForm.reset();
     this.patientForm.get('cpf')?.enable();
+    this.procedureOptions.set([]);
+    this.proceduresLoaded.set(false);
+    this.loadingProcedures.set(false);
   }
 
   /** 400/422 não geram toast automático (ver error.interceptor) — o formulário precisa exibi-los. */
@@ -331,6 +440,17 @@ export class PatientsComponent implements OnInit {
     // Só o hospital escolhe o médico; o vínculo não muda em atualização.
     if (this.isHospital() && !isEdit) {
       request.doctorId = formValue.doctorId!;
+    }
+
+    // O PUT não aceita procedures: o procedimento inicial vai apenas no cadastro.
+    if (!isEdit) {
+      request.procedures = [
+        {
+          procedureId: formValue.procedureId!,
+          startDate: this.todayLocalIsoDate(),
+          status: 'EM_ANDAMENTO',
+        },
+      ];
     }
 
     const call = isEdit

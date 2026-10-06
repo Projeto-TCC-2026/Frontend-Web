@@ -43,6 +43,17 @@ export interface PatientListItem {
   gender?: Gender;
 }
 
+/** Status inicial do vínculo paciente↔procedimento criado junto com o paciente. */
+export type PatientProcedureStatus = 'EM_ANDAMENTO';
+
+/** Item de `PatientCreateRequest.procedures`; aceito apenas no POST (o PUT não recebe procedures). */
+export interface PatientProcedureCreateItem {
+  procedureId: string;
+  /** Data local no formato yyyy-MM-dd (sem conversão para UTC). */
+  startDate: string;
+  status: PatientProcedureStatus;
+}
+
 export interface PatientCreateRequest {
   /** Obrigatório quando o requisitante é HOSPITAL; para DOCTOR o backend usa o usuário autenticado. */
   doctorId?: string;
@@ -59,6 +70,8 @@ export interface PatientCreateRequest {
   zipCode?: string;
   weight?: number;
   height?: number;
+  /** Enviado somente no cadastro; o backend não aceita este campo na atualização. */
+  procedures?: PatientProcedureCreateItem[];
 }
 
 export interface PatientUpdateRequest {

@@ -37,6 +37,17 @@ export interface DoctorProcedureAssignment {
   procedure: { id: string; title: string };
 }
 
+/**
+ * Os endpoints de procedimentos por médico podem devolver a lista crua, um envelope `data`,
+ * uma página (`content`) ou vínculos `{ procedure: {...} }` — como já ocorre em
+ * `listDoctorProcedures`. Normaliza tudo para `Procedure[]`.
+ */
+function normalizeProcedures(response: any): Procedure[] {
+  const payload = response?.data ?? response;
+  const list: any[] = Array.isArray(payload) ? payload : payload?.content ?? [];
+  return list.map(item => (item?.procedure ?? item) as Procedure).filter(item => !!item?.id);
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProcedureService {
   private api = inject(ApiService);
@@ -69,6 +80,24 @@ export class ProcedureService {
     const path = hospitalId ? `/api/admin/procedures/${id}` : `/api/hospital/procedures/${id}`;
     const request = hospitalId ? this.api.delete<any>(`${path}?hospitalId=${encodeURIComponent(hospitalId)}`) : this.api.delete<any>(path);
     return request.pipe(map(response => response.data ?? response));
+  }
+
+  /**
+   * Procedimentos atribuídos ao médico autenticado (perfil DOCTOR).
+   * Endpoint novo neste serviço: não havia chamada a `/api/doctor/procedures` no app.
+   */
+  listMyDoctorProcedures(): Observable<Procedure[]> {
+    return this.api.get<any>('/api/doctor/procedures').pipe(map(response => normalizeProcedures(response)));
+  }
+
+  /**
+   * Procedimentos atribuídos a um médico do próprio hospital (perfil HOSPITAL).
+   * Endpoint novo neste serviço: não havia chamada a `/api/hospital/procedures/doctors/{doctorId}` no app.
+   */
+  listProceduresByDoctor(doctorId: string): Observable<Procedure[]> {
+    return this.api
+      .get<any>(`/api/hospital/procedures/doctors/${doctorId}`)
+      .pipe(map(response => normalizeProcedures(response)));
   }
 
   listDoctorProcedures(doctorId: string, admin: boolean): Observable<DoctorProcedureAssignment[]> {

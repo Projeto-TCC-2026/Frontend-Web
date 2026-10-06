@@ -200,7 +200,20 @@
           [disabled]="loadingDoctors()"
           [placeholder]="loadingDoctors() ? 'Carregando médicos...' : 'Selecione o médico responsável'"
           [state]="isFieldInvalid('doctorId') ? 'error' : 'default'"
-          [helperText]="isFieldInvalid('doctorId') ? 'Selecione o médico responsável' : ''"></app-select>
+          [helperText]="isFieldInvalid('doctorId') ? 'Selecione o médico responsável' : ''"
+          (changed)="onDoctorChange($event)"></app-select>
+      }
+
+      @if (formMode() === 'create') {
+        <app-select
+          label="Procedimento"
+          formControlName="procedureId"
+          [options]="procedureOptions()"
+          [required]="true"
+          [disabled]="isProcedureFieldDisabled()"
+          [placeholder]="procedurePlaceholder()"
+          [state]="isFieldInvalid('procedureId') ? 'error' : 'default'"
+          [helperText]="procedureHelperText()"></app-select>
       }
 
       <app-input
