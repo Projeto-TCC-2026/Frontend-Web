@@ -54,11 +54,16 @@ export class EditAccountComponent implements OnInit {
     if (this.isHospital) {
       this.hospitalName = this.user.hospitalName ?? '';
       this.hospitalEmail = this.user.email ?? '';
+      this.hospitalPhone = this.user.phone ?? '';
+      this.hospitalAddress = this.user.address ?? '';
+      this.hospitalCity = this.user.city ?? '';
+      this.hospitalState = this.user.state ?? '';
     }
 
     if (this.isDoctor) {
       this.doctorFullName = this.user.fullName ?? '';
       this.doctorSpecialty = this.user.specialty ?? '';
+      this.doctorPhone = this.user.doctorPhone ?? this.user.phone ?? '';
     }
   }
 

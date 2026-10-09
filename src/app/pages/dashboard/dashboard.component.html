@@ -67,24 +67,20 @@
     <!-- Procedimentos por Período + Últimos Pacientes -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
+      <!-- Gráfico de pizza: Procedimentos por Período -->
       <div class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-5">
         <h2 class="font-heading font-semibold text-sm text-[var(--color-neutro-900)] mb-4">Procedimentos por Período</h2>
         @if (loading()) {
-          <div class="space-y-2">
-            @for (i of [1,2,3]; track i) {
-              <div class="h-6 rounded bg-[var(--color-neutro-150)] animate-pulse"></div>
-            }
-          </div>
+          <div class="h-64 rounded bg-[var(--color-neutro-150)] animate-pulse"></div>
         } @else if (!hospitalDashboard()?.proceduresByPeriod?.length) {
           <p class="text-sm text-[var(--color-neutro-500)]">Nenhum dado disponível.</p>
         } @else {
-          <div class="space-y-2">
-            @for (item of hospitalDashboard()!.proceduresByPeriod; track item.period) {
-              <div class="flex items-center justify-between py-2 border-b border-[var(--color-neutro-150)] last:border-0">
-                <span class="text-sm text-[var(--color-neutro-700)]">{{ item.period }}</span>
-                <span class="font-data font-semibold text-sm text-[var(--color-neutro-900)]">{{ item.totalProcedures }}</span>
-              </div>
-            }
+          <div class="relative h-80">
+            <canvas baseChart
+              [data]="pieChartData()"
+              [options]="pieChartOptions"
+              type="pie">
+            </canvas>
           </div>
         }
       </div>
@@ -101,7 +97,7 @@
           <p class="text-sm text-[var(--color-neutro-500)]">Nenhum paciente cadastrado ainda.</p>
         } @else {
           <div class="space-y-2">
-            @for (patient of hospitalDashboard()!.latestPatients; track patient.id) {
+            @for (patient of paginatedPatients; track patient.id) {
               <div class="flex items-center justify-between py-2 border-b border-[var(--color-neutro-150)] last:border-0">
                 <div class="flex items-center gap-3">
                   <div class="w-7 h-7 rounded-full bg-[var(--color-azul-primario)]/10 text-[var(--color-azul-primario)] flex items-center justify-center text-xs font-semibold shrink-0">
@@ -113,6 +109,30 @@
               </div>
             }
           </div>
+
+          @if (totalPatientPages > 1) {
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-[var(--color-neutro-150)]">
+              <span class="text-xs text-[var(--color-neutro-500)]">
+                Página {{ patientPage() + 1 }} de {{ totalPatientPages }}
+              </span>
+              <div class="flex items-center gap-1">
+                <button
+                  class="flex items-center justify-center w-7 h-7 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
+                  [disabled]="patientPage() === 0"
+                  (click)="prevPatientPage()"
+                  aria-label="Página anterior">
+                  <svg lucideChevronLeft class="w-4 h-4"></svg>
+                </button>
+                <button
+                  class="flex items-center justify-center w-7 h-7 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
+                  [disabled]="patientPage() >= totalPatientPages - 1"
+                  (click)="nextPatientPage()"
+                  aria-label="Próxima página">
+                  <svg lucideChevronRight class="w-4 h-4"></svg>
+                </button>
+              </div>
+            </div>
+          }
         }
       </div>
 

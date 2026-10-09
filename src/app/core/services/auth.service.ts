@@ -136,7 +136,9 @@ export class AuthService {
   }
 
   public updateProfile(dto: UpdateHospitalProfileRequest | UpdateDoctorProfileRequest): Observable<void> {
-    return this.api.patch<void>('/auth/profile', dto);
+    const role = this.getRole();
+    const path = role === 'HOSPITAL' ? '/auth/profile/hospital' : '/auth/profile/doctor';
+    return this.api.patch<void>(path, dto);
   }
 
   // --- Accessors ---

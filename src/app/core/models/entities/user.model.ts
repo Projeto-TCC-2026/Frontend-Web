@@ -8,6 +8,11 @@ export interface UserProfile {
   doctorId?: string;
   crm?: string;
   specialty?: string;
+  phone?: string;
+  doctorPhone?: string;
   hospitalName?: string;
   hospitalId?: string;
+  address?: string;
+  city?: string;
+  state?: string;
 }
