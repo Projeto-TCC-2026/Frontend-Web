@@ -19,6 +19,7 @@ import { DoctorService } from '../../core/services/doctor.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { Procedure, ProcedureService } from '../../core/services/procedure.service';
+import { ReportService } from '../../core/services/report.service';
 import { Patient, PatientListItem, PatientCreateRequest, Gender, BloodType } from '../../core/models/entities/patient.model';
 import { UserRole } from '../../core/models/entities/user.model';
 
@@ -60,6 +61,7 @@ export class PatientsComponent implements OnInit {
   private notify = inject(NotificationService);
   private dialogService = inject(DialogService);
   private procedureService = inject(ProcedureService);
+  private reportService = inject(ReportService);
   private fb = inject(FormBuilder);
 
   protected patients = signal<PatientListItem[]>([]);
@@ -79,6 +81,9 @@ export class PatientsComponent implements OnInit {
   protected formOpen = signal(false);
   protected formMode = signal<FormMode>('create');
   protected editingId = signal<string | null>(null);
+
+  protected hasCheckedInToday = signal(false);
+  protected exportingReport = signal(false);
 
   protected pageIndex = signal(0);
   protected totalPages = signal(0);
@@ -477,7 +482,14 @@ export class PatientsComponent implements OnInit {
     this.patientService.getById(patient.id).subscribe({
       next: (fullPatient) => {
         this.selectedPatient.set(fullPatient);
+        this.hasCheckedInToday.set(false);
         this.showViewModal.set(true);
+
+        const today = this.todayLocalIsoDate();
+        this.reportService.checkDailyStatus(today, fullPatient.id).subscribe({
+          next: (status) => this.hasCheckedInToday.set(status.checkedIn),
+          error: () => this.hasCheckedInToday.set(false),
+        });
       },
       error: (error) => {
         this.notify.error(this.extractErrorMessage(error, 'Erro ao carregar paciente.'));
@@ -488,6 +500,31 @@ export class PatientsComponent implements OnInit {
   protected closeViewModal(): void {
     this.showViewModal.set(false);
     this.selectedPatient.set(null);
+    this.hasCheckedInToday.set(false);
+  }
+
+  protected exportDailyReport(): void {
+    const patient = this.selectedPatient();
+    if (!patient) return;
+
+    this.exportingReport.set(true);
+    const today = this.todayLocalIsoDate();
+
+    this.reportService.exportDailyReport(today, patient.id).subscribe({
+      next: (blob) => {
+        this.exportingReport.set(false);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `relatorio-${patient.fullName.replace(/\s+/g, '-').toLowerCase()}-${today}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.exportingReport.set(false);
+        this.notify.error('Não foi possível exportar o relatório. Tente novamente.');
+      },
+    });
   }
 
   protected async deactivatePatient(patient: PatientListItem): Promise<void> {

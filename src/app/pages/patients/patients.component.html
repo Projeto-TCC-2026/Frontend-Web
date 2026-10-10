@@ -441,6 +441,18 @@
     }
 
     <div dialogActions class="flex items-center justify-end gap-3">
+      @if (userRole() === 'HOSPITAL' || userRole() === 'DOCTOR') {
+        <app-button
+          variant="primary"
+          size="sm"
+          type="button"
+          [disabled]="!hasCheckedInToday()"
+          [loading]="exportingReport()"
+          [title]="hasCheckedInToday() ? 'Exportar relatório diário' : 'Paciente não fez check-in hoje'"
+          (clicked)="exportDailyReport()">
+          Exportar relatório do dia
+        </app-button>
+      }
       <app-button variant="ghost" size="sm" type="button" customClass="min-w-[100px]" (clicked)="closeViewModal()">
         Fechar
       </app-button>
