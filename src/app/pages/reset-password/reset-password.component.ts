@@ -6,11 +6,19 @@ import { NotificationService } from '../../core/services/notification.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { ApiService } from '../../core/services/api.service';
+import { ApiEnvelope, UserRoleResponse } from '../../core/models/dtos/auth.dto';
+import { PasswordSetSuccessComponent } from '../../shared/components/password-set-success/password-set-success.component';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonComponent,
+    InputComponent,
+    PasswordSetSuccessComponent,
+  ],
   templateUrl: './reset-password.component.html',
 })
 export class ResetPasswordComponent {
@@ -23,6 +31,8 @@ export class ResetPasswordComponent {
   public password = '';
   public passwordConfirmation = '';
   public isSubmitting = false;
+  /** Troca o formulário pela confirmação "Senha definida" (apenas paciente). */
+  public isPasswordSet = false;
 
   constructor() {
     this.code = this.route.snapshot.queryParamMap.get('code') ??
@@ -52,14 +62,20 @@ export class ResetPasswordComponent {
 
     this.isSubmitting = true;
 
-    this.apiService.post('/forgot-password/reset', {
+    this.apiService.post<ApiEnvelope<UserRoleResponse>>('/forgot-password/reset', {
       code: this.code,
       token: this.code,
       password: this.password,
       passwordConfirmation: this.passwordConfirmation,
     }).subscribe({
-      next: () => {
+      next: response => {
         this.isSubmitting = false;
+
+        if (response?.data?.role === 'PATIENT') {
+          this.isPasswordSet = true;
+          return;
+        }
+
         this.notificationService.success('Senha atualizada com sucesso.');
         this.router.navigate(['/login']);
       },

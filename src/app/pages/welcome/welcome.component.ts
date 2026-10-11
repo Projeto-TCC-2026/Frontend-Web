@@ -6,6 +6,8 @@ import { NotificationService } from '../../core/services/notification.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { ApiService } from '../../core/services/api.service';
+import { ApiEnvelope, UserRoleResponse } from '../../core/models/dtos/auth.dto';
+import { PasswordSetSuccessComponent } from '../../shared/components/password-set-success/password-set-success.component';
 
 /**
  * Tela de primeiro acesso: aberta a partir do link de boas-vindas enviado por
@@ -16,7 +18,13 @@ import { ApiService } from '../../core/services/api.service';
 @Component({
   selector: 'app-welcome',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonComponent,
+    InputComponent,
+    PasswordSetSuccessComponent,
+  ],
   templateUrl: './welcome.component.html',
 })
 export class WelcomeComponent {
@@ -29,6 +37,8 @@ export class WelcomeComponent {
   public passwordConfirmation = '';
   public isSubmitting = false;
   public token = '';
+  /** Troca o formulário pela confirmação "Senha definida" (apenas paciente). */
+  public isPasswordSet = false;
 
   constructor() {
     this.token = this.route.snapshot.queryParamMap.get('token') ?? '';
@@ -57,13 +67,19 @@ export class WelcomeComponent {
 
     this.isSubmitting = true;
 
-    this.apiService.post('/account-activation/activate', {
+    this.apiService.post<ApiEnvelope<UserRoleResponse>>('/account-activation/activate', {
       token: this.token,
       password: this.password,
       passwordConfirmation: this.passwordConfirmation,
     }).subscribe({
-      next: () => {
+      next: response => {
         this.isSubmitting = false;
+
+        if (response?.data?.role === 'PATIENT') {
+          this.isPasswordSet = true;
+          return;
+        }
+
         this.notificationService.success('Conta ativada com sucesso! Faça login com sua nova senha.');
         this.router.navigate(['/login']);
       },
