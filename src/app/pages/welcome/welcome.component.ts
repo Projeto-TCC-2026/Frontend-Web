@@ -73,8 +73,4 @@ export class WelcomeComponent {
       },
     });
   }
-
-  public goToLogin(): void {
-    this.router.navigate(['/login']);
-  }
 }

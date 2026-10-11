@@ -42,10 +42,6 @@ export class ForgotPasswordComponent {
         });
     }
 
-    public goToLogin(): void {
-        this.router.navigate(['/login']);
-    }
-
     public goToHome(): void {
         this.router.navigate(['/']);
     }
