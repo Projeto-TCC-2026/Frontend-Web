@@ -6,7 +6,6 @@ import {
   LucideChevronRight,
   LucideCheck,
   LucideTriangleAlert,
-  LucideInfo,
 } from '@lucide/angular';
 
 import { DoctorAlertService } from '../../core/services/doctor-alert.service';
@@ -23,8 +22,11 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 
+/** O médico só vê alertas já confirmados; a tela nunca filtra por outros status. */
+type AlertTabStatus = Extract<DoctorAlertStatus, 'PENDING' | 'RESOLVED'>;
+
 interface AlertTab {
-  status: DoctorAlertStatus;
+  status: AlertTabStatus;
   label: string;
   emptyTitle: string;
   emptyDescription: string;
@@ -67,7 +69,6 @@ const SAO_PAULO_FORMATTER = new Intl.DateTimeFormat('pt-BR', {
     LucideChevronRight,
     LucideCheck,
     LucideTriangleAlert,
-    LucideInfo,
   ],
   templateUrl: './alerts.component.html',
 })
@@ -84,12 +85,6 @@ export class AlertsComponent implements OnInit {
       emptyDescription: 'Não há alertas aguardando a sua avaliação neste momento.',
     },
     {
-      status: 'AWAITING_PATIENT',
-      label: 'Aguardando paciente',
-      emptyTitle: 'Nenhum alerta aguardando o paciente',
-      emptyDescription: 'Não há confirmações pendentes de resposta do paciente.',
-    },
-    {
       status: 'RESOLVED',
       label: 'Resolvidos',
       emptyTitle: 'Nenhum alerta resolvido',
@@ -97,7 +92,7 @@ export class AlertsComponent implements OnInit {
     },
   ];
 
-  protected activeStatus = signal<DoctorAlertStatus>('PENDING');
+  protected activeStatus = signal<AlertTabStatus>('PENDING');
   protected alerts = signal<DoctorAlert[]>([]);
   protected loading = signal(true);
   protected loadError = signal<string | null>(null);
@@ -111,10 +106,27 @@ export class AlertsComponent implements OnInit {
     this.loadAlerts(0);
   }
 
-  protected selectTab(status: DoctorAlertStatus): void {
+  protected selectTab(status: AlertTabStatus): void {
     if (this.activeStatus() === status) return;
     this.activeStatus.set(status);
     this.loadAlerts(0);
+  }
+
+  /** Padrão WAI-ARIA de abas: setas/Home/End movem o foco e ativam a aba (tabindex roving). */
+  protected onTabKeydown(event: KeyboardEvent, index: number): void {
+    const last = this.tabs.length - 1;
+    let next: number;
+    switch (event.key) {
+      case 'ArrowRight': next = index === last ? 0 : index + 1; break;
+      case 'ArrowLeft': next = index === 0 ? last : index - 1; break;
+      case 'Home': next = 0; break;
+      case 'End': next = last; break;
+      default: return;
+    }
+    event.preventDefault();
+    const status = this.tabs[next].status;
+    this.selectTab(status);
+    document.getElementById('alerts-tab-' + status)?.focus();
   }
 
   protected goToPage(page: number): void {

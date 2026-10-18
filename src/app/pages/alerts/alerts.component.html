@@ -13,7 +13,7 @@
     class="mb-6 flex gap-1 border-b border-[var(--color-neutro-150)]"
     role="tablist"
     aria-label="Status dos alertas">
-    @for (tab of tabs; track tab.status) {
+    @for (tab of tabs; track tab.status; let i = $index) {
       <button
         type="button"
         role="tab"
@@ -25,7 +25,8 @@
         [class]="activeStatus() === tab.status
           ? 'border-[var(--color-azul-primario)] text-[var(--color-azul-primario)]'
           : 'border-transparent text-[var(--color-neutro-500)] hover:text-[var(--color-neutro-900)]'"
-        (click)="selectTab(tab.status)">
+        (click)="selectTab(tab.status)"
+        (keydown)="onTabKeydown($event, i)">
         {{ tab.label }}
       </button>
     }
@@ -35,15 +36,6 @@
     role="tabpanel"
     [id]="'alerts-panel-' + activeStatus()"
     [attr.aria-labelledby]="'alerts-tab-' + activeStatus()">
-
-    @if (activeStatus() === 'AWAITING_PATIENT') {
-      <div class="mb-6 flex gap-3 rounded-[var(--radius-lg)] border border-[var(--color-azul-primario)]/20 bg-[var(--color-azul-primario)]/5 p-4">
-        <svg lucideInfo class="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-azul-primario)]"></svg>
-        <p class="text-sm text-[var(--color-neutro-700)]">
-          Se a paciente não responder em 10 minutos, o alerta passa para Pendentes.
-        </p>
-      </div>
-    }
 
     @if (loading()) {
       <app-loading text="Carregando alertas..." [fullPage]="true"></app-loading>
