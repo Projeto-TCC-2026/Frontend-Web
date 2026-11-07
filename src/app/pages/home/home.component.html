@@ -1,9 +1,9 @@
 <div class="min-h-screen flex flex-col">
   <!-- ═══════════ NAV ═══════════ -->
   <nav
-    class="flex flex-wrap items-center justify-between bg-brand-primary py-3 px-4 md:px-8 sticky top-0 z-50">
+    class="flex flex-wrap items-center justify-between bg-[var(--color-azul-profundo)] py-3 px-4 md:px-8 sticky top-0 z-50">
     <h3
-      class="text-neutro-150 font-bold text-lg font-heading cursor-pointer"
+      class="text-[var(--color-laranja-primario)] font-bold text-lg font-heading cursor-pointer"
       (click)="scrollToTop()">
       Recupera Saúde
     </h3>
@@ -14,40 +14,43 @@
       (click)="toggleMobileMenu()"
       aria-label="Abrir menu de navegação"
       [attr.aria-expanded]="mobileMenuOpen">
-      <span class="block w-5 h-0.5 bg-[var(--color-neutro-150)] transition-transform duration-150"
+      <span
+        class="block w-5 h-0.5 bg-[var(--color-neutro-150)] transition-transform duration-150"
         [class.rotate-45]="mobileMenuOpen"
         [class.translate-y-[6px]]="mobileMenuOpen"></span>
-      <span class="block w-5 h-0.5 bg-[var(--color-neutro-150)] transition-opacity duration-150"
+      <span
+        class="block w-5 h-0.5 bg-[var(--color-neutro-150)] transition-opacity duration-150"
         [class.opacity-0]="mobileMenuOpen"></span>
-      <span class="block w-5 h-0.5 bg-[var(--color-neutro-150)] transition-transform duration-150"
+      <span
+        class="block w-5 h-0.5 bg-[var(--color-neutro-150)] transition-transform duration-150"
         [class.-rotate-45]="mobileMenuOpen"
         [class.-translate-y-[6px]]="mobileMenuOpen"></span>
     </button>
 
     <!-- Desktop links -->
-    <div class="hidden md:flex gap-6 items-center">
+    <div class="hidden md:flex gap-4 items-center">
       <a
         data-nav-link="inicio"
         (click)="scrollToTop()"
-        class="text-[var(--color-neutro-150)] duration-150 hover:text-white text-xs cursor-pointer">
+        class="text-[var(--color-neutro-300)] hover:text-[var(--color-laranja-primario)] text-xs cursor-pointer">
         Início
       </a>
       <a
         data-nav-link="features"
         (click)="scrollToSection('features')"
-        class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-xs cursor-pointer">
+        class="text-[var(--color-neutro-300)] hover:text-[var(--color-laranja-primario)] text-xs cursor-pointer">
         Recursos
       </a>
       <a
         data-nav-link="how"
         (click)="scrollToSection('how')"
-        class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-xs cursor-pointer">
+        class="text-[var(--color-neutro-300)] hover:text-[var(--color-laranja-primario)] text-xs cursor-pointer">
         Como funciona
       </a>
       <a
         data-nav-link="footer"
         (click)="scrollToSection('footer')"
-        class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-xs cursor-pointer">
+        class="text-[var(--color-neutro-300)] hover:text-[var(--color-laranja-primario)] text-xs cursor-pointer">
         Suporte
       </a>
 
@@ -58,50 +61,53 @@
 
     <!-- Mobile menu -->
     @if (mobileMenuOpen) {
-      <div class="w-full md:hidden flex flex-col gap-3 pt-4 pb-2 border-t border-white/10 mt-3">
-        <a
-          data-nav-link="inicio"
-          (click)="scrollToTop()"
-          class="text-[var(--color-neutro-150)] duration-150 hover:text-white text-sm cursor-pointer py-1">
-          Início
-        </a>
-        <a
-          data-nav-link="features"
-          (click)="scrollToSection('features')"
-          class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-sm cursor-pointer py-1">
-          Recursos
-        </a>
-        <a
-          data-nav-link="how"
-          (click)="scrollToSection('how')"
-          class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-sm cursor-pointer py-1">
-          Como funciona
-        </a>
-        <a
-          data-nav-link="footer"
-          (click)="scrollToSection('footer')"
-          class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-sm cursor-pointer py-1">
-          Suporte
-        </a>
+    <div
+      class="w-full md:hidden flex flex-col gap-3 pt-4 pb-2 border-t border-white/10 mt-3">
+      <a
+        data-nav-link="inicio"
+        (click)="scrollToTop()"
+        class="text-[var(--color-neutro-150)] duration-150 hover:text-white text-sm cursor-pointer py-1">
+        Início
+      </a>
+      <a
+        data-nav-link="features"
+        (click)="scrollToSection('features')"
+        class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-sm cursor-pointer py-1">
+        Recursos
+      </a>
+      <a
+        data-nav-link="how"
+        (click)="scrollToSection('how')"
+        class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-sm cursor-pointer py-1">
+        Como funciona
+      </a>
+      <a
+        data-nav-link="footer"
+        (click)="scrollToSection('footer')"
+        class="text-[var(--color-neutro-500)] duration-150 hover:text-[var(--color-neutro-150)] text-sm cursor-pointer py-1">
+        Suporte
+      </a>
 
-        <app-button size="sm" [fullWidth]="true" (clicked)="goToLogin()">
-          Entrar
-        </app-button>
-      </div>
+      <app-button size="sm" [fullWidth]="true" (clicked)="goToLogin()">
+        Entrar
+      </app-button>
+    </div>
     }
   </nav>
 
-  <!-- ═══════════ HERO ═══════════ -->
   <section
-    class="bg-[linear-gradient(130deg,_var(--color-azul-marinho)_0%,_var(--color-azul-primario)_100%)] px-6 py-12 md:px-12 md:py-16">
+    class="bg-[var(--color-azul-profundo)] px-6 py-16 md:px-12">
     <div
       class="max-w-6xl mx-auto flex flex-col md:flex-row gap-10 items-center">
       <!-- Texto -->
-      <div class="flex-1 flex flex-col gap-4">
-        <span
-          class="text-[var(--color-laranja-primario)] font-body text-xs font-medium tracking-wide uppercase">
-          ✦ Acompanhamento pós-operatório digital
-        </span>
+      <!-- <div class="p-12">
+        <img src="../../../assets/icon.jpg" alt="Descrição da imagem"
+          width="100" height="100">
+      </div> -->
+
+      <div class="flex-1 flex flex-col gap-4 items-center">
+        <img src="../../../assets/icon.jpg" alt="Descrição da imagem"
+          width="100" height="100" class="py-10">
 
         <h1
           class="font-heading font-extrabold text-[32px] leading-10 text-white">
@@ -111,13 +117,13 @@
         </h1>
 
         <p
-          class="text-sm text-[var(--color-neutro-300)] font-body leading-relaxed max-w-lg">
-          Conectamos médicos e pacientes durante todo o processo pós-cirúrgico e
-          pós-consulta,
-          garantindo monitoramento contínuo e comunicação rápida e segura.
+          class="text-sm text-[var(--color-neutro-300)] font-body leading-relaxed ">
+          Conectamos médicos e pacientes durante todo o processo pós-cirúrgico,
+          garantindo monitoramento contínuo e acompanhamento da evolução
+          clínica.
         </p>
 
-        <div class="flex gap-3 mt-4 flex-wrap">
+        <div class="flex gap-3 my-4 flex-wrap">
           <app-button
             customClass="!bg-[var(--color-laranja-primario)] !text-[var(--color-neutro-900)] hover:!bg-[var(--color-laranja-primario)]/80"
             (clicked)="goToRegister()">
@@ -130,128 +136,81 @@
           </app-button>
         </div>
       </div>
-
-      <!-- Stats cards -->
-      <div class="flex flex-col gap-4 w-full md:w-auto">
-        <div
-          class="rounded-[var(--radius-lg)] border border-white/20 bg-white/10 backdrop-blur-sm p-4 transition-transform duration-150 ease-out hover:-translate-y-1 cursor-default">
-          <div class="flex flex-col gap-1">
-            <span
-              class="text-[var(--color-neutro-300)] text-xs font-body">Pacientes
-              acompanhados</span>
-            <span
-              class="font-data font-semibold text-[22px] leading-7 text-white">{{ stats()?.patients ?? '—' }}</span>
-            <span
-              class="text-[var(--color-neutro-300)] text-[11px] font-body">registrados
-              na plataforma</span>
-          </div>
-        </div>
-
-        <div
-          class="rounded-[var(--radius-lg)] border border-white/20 bg-white/10 backdrop-blur-sm p-4 transition-transform duration-150 ease-out hover:-translate-y-1 cursor-default">
-          <div class="flex flex-col gap-1">
-            <span
-              class="text-[var(--color-neutro-300)] text-xs font-body">Médicos
-              cadastrados</span>
-            <span
-              class="font-data font-semibold text-[22px] leading-7 text-white">{{ stats()?.doctors ?? '—' }}</span>
-            <span
-              class="text-[var(--color-neutro-300)] text-[11px] font-body">profissionais
-              na plataforma</span>
-          </div>
-        </div>
-
-        <div
-          class="rounded-[var(--radius-lg)] border border-white/20 bg-white/10 backdrop-blur-sm p-4 transition-transform duration-150 ease-out hover:-translate-y-1 cursor-default">
-          <div class="flex flex-col gap-1">
-            <span
-              class="text-[var(--color-neutro-300)] text-xs font-body">Hospitais
-              cadastrados</span>
-            <span
-              class="font-data font-semibold text-[22px] leading-7 text-[var(--color-laranja-primario)]">{{ stats()?.hospitals ?? '—' }}</span>
-            <span
-              class="text-[var(--color-neutro-300)] text-[11px] font-body">instituições
-              na plataforma</span>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
-  <!-- ═══════════ FEATURES ═══════════ -->
-  <section id="features" class="px-6 py-12 md:px-12 md:py-16 bg-white">
-    <div class="max-w-6xl mx-auto">
-      <div class="mb-8 flex flex-col gap-2">
+  <div
+    class="py-4 bg-[var(--color-azul-primario)] items-center justify-center flex">
+  </div>
+
+  <!-- bg-[linear-gradient(180deg,_var(--color-azul-profundo)_0%,_var(--color-azul-primario)_100%)] -->
+
+  <section id="features"
+    class="flex flex-row bg-white items-center justify-center">
+    <div class="flex-1 px-6 py-16 md:px-4 max-w-7xl">
+      <div class="mb-12 flex flex-col gap-2">
         <h2
           class="font-heading font-bold text-2xl text-[var(--color-neutro-900)]">
           Por que usar o Recupera Saúde?
         </h2>
-        <p class="text-[var(--color-neutro-500)] text-sm font-body">
-          Uma plataforma completa para o cuidado contínuo do paciente
-          pós-operatório
-        </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <app-card padding="md">
+      <div class="flex flex-wrap justify-start lg:justify-center gap-6 mt-6">
+        <div
+          class="relative rounded-[var(--radius-lg)] h-full border border-[var(--color-neutro-150)] p-8 w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333%_-_1rem)]">
+          <p
+            class="absolute -top-5 bg-white pr-2 font-heading text-[30px] text-[var(--color-neutro-500)]">01.</p>
           <div class="flex flex-col gap-3">
-            <div
-              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-info-bg)] flex items-center justify-center text-lg">
-              📋
-            </div>
             <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Prontuário
+              class="font-heading font-semibold text-[17px] text-[var(--color-neutro-900)]">Prontuário
               digital</h3>
             <p
               class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              Histórico completo de cirurgias, consultas e evolução do paciente
+              Histórico completo de cirurgias e evolução do paciente
               centralizado em um só lugar.
             </p>
           </div>
-        </app-card>
+        </div>
 
-        <app-card padding="md">
+        <div
+          class="relative rounded-[var(--radius-lg)] h-full border border-[var(--color-neutro-150)] p-8 w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333%_-_1rem)]">
+          <p
+            class="absolute -top-5 bg-white pr-2 font-heading text-[30px] text-[var(--color-neutro-500)]">02.</p>
           <div class="flex flex-col gap-3">
-            <div
-              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-critico-bg)] flex items-center justify-center text-lg">
-              🔔
-            </div>
             <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Alertas
+              class="font-heading font-semibold text-[17px] text-[var(--color-neutro-900)]">Alertas
               automáticos</h3>
             <p
               class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              Lembretes de medicação, retornos agendados e sinais de alerta
-              enviados em tempo real.
+              Sinais de alerta enviados em tempo real com análise de dados
+              automatizada.
             </p>
           </div>
-        </app-card>
+        </div>
 
-        <app-card padding="md">
+        <div
+          class="relative rounded-[var(--radius-lg)] h-full border border-[var(--color-neutro-150)] p-8 w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333%_-_1rem)]">
+          <p
+            class="absolute -top-5 bg-white pr-2 font-heading text-[30px] text-[var(--color-neutro-500)]">03.</p>
           <div class="flex flex-col gap-3">
-            <div
-              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-sucesso-bg)] flex items-center justify-center text-lg">
-              ⚠️
-            </div>
             <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Monitoramento
+              class="font-heading font-semibold text-[17px] text-[var(--color-neutro-900)]">Monitoramento
               contínuo</h3>
             <p
               class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              Dados em tempo real através do uso de dispositivos vestiveis
+              Dados em tempo real através do uso de smartwatches e wearables
               integrados ao app, permitindo monitoramento contínuo.
             </p>
           </div>
-        </app-card>
+        </div>
 
-        <app-card padding="md">
+        <div
+          class="relative rounded-[var(--radius-lg)] h-full border border-[var(--color-neutro-150)] p-8 w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333%_-_1rem)]">
+          <p
+            class="absolute -top-5 bg-white pr-2 font-heading text-[30px] text-[var(--color-neutro-500)]">04.</p>
           <div class="flex flex-col gap-3">
-            <div
-              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-sucesso-bg)] flex items-center justify-center text-lg">
-              📊
-            </div>
             <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Evolução
+              class="font-heading font-semibold text-[17px] text-[var(--color-neutro-900)]">Evolução
               clínica</h3>
             <p
               class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
@@ -259,160 +218,145 @@
               indicadores de recuperação.
             </p>
           </div>
-        </app-card>
+        </div>
 
-        <app-card padding="md">
+        <div
+          class="relative rounded-[var(--radius-lg)] h-full border border-[var(--color-neutro-150)] p-8 w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333%_-_1rem)]">
+          <p
+            class="absolute -top-5 bg-white pr-2 font-heading text-[30px] text-[var(--color-neutro-500)]">05.</p>
           <div class="flex flex-col gap-3">
-            <div
-              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-atencao-bg)] flex items-center justify-center text-lg">
-              📅
-            </div>
             <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Agendamento
-              fácil</h3>
-            <p
-              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              Solicite retornos e consultas diretamente pelo app sem burocracia.
-            </p>
-          </div>
-        </app-card>
-
-        <app-card padding="md">
-          <div class="flex flex-col gap-3">
-            <div
-              class="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-info-bg)] flex items-center justify-center text-lg">
-              🔒
-            </div>
-            <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Dados
+              class="font-heading font-semibold text-[17px] text-[var(--color-neutro-900)]">Dados
               protegidos</h3>
             <p
               class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              Criptografia de ponta a ponta e conformidade com a LGPD para total
+              Criptografia de ponta a ponta e conformidade com a LGPD para
+              total
               segurança.
             </p>
           </div>
-        </app-card>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ COMO FUNCIONA ═══════════ -->
   <section id="how"
-    class="px-6 py-12 md:px-12 md:py-16 bg-[var(--color-neutro-100)]">
-    <div class="max-w-6xl mx-auto">
-      <div class="mb-8 flex flex-col gap-2">
-        <h2
-          class="font-heading font-bold text-2xl text-[var(--color-neutro-900)]">
-          Como funciona em 5 passos simples
-        </h2>
-        <p class="text-[var(--color-neutro-500)] text-sm font-body">
-          Do cadastro ao acompanhamento completo em minutos
-        </p>
-      </div>
+    class="bg-gradient-to-b from-white to-[var(--color-neutro-150)] px-6 md:px-12 pb-12 pt-2">
+    <div class="max-w-7xl mx-auto">
+      <div
+        class=" bg-white rounded-[var(--radius-lg)]">
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Passo 1 -->
-        <app-card padding="md">
-          <div class="flex flex-col items-center text-center gap-3">
-            <div
-              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
-              1
-            </div>
-            <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Cadastro</h3>
-            <p
-              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              O hospital cria uma conta na plataforma e cadastra sua equipe
-              médica.
-            </p>
-          </div>
-        </app-card>
+        <div class="flex flex-row">
 
-        <!-- Passo 2 -->
-        <app-card padding="md">
-          <div class="flex flex-col items-center text-center gap-3">
-            <div
-              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
-              2
-            </div>
-            <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Pacientes</h3>
-            <p
-              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              No painel gerencial do médico, ele cadastra seus próprios
-              pacientes.
-            </p>
-          </div>
-        </app-card>
+          <img src="../../../assets/celular1.png"
+            class="lg:w-3/7 object-contain mt-auto invisible lg:visible w-0">
 
-        <!-- Passo 3 -->
-        <app-card padding="md">
-          <div class="flex flex-col items-center text-center gap-3">
-            <div
-              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
-              3
+          <div class="flex flex-col px-6 py-12 md:px-12 md:py-16 gap-6">
+            <div class="flex flex-col gap-2">
+              <h2
+                class="font-heading font-bold text-2xl text-[var(--color-neutro-900)]">
+                App próprio para pacientes
+              </h2>
             </div>
-            <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Vinculação</h3>
-            <p
-              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              Vincula o paciente ao procedimento realizado, seja tratamento ou
-              cirurgia.
-            </p>
-          </div>
-        </app-card>
 
-        <!-- Passo 4 -->
-        <app-card padding="md">
-          <div class="flex flex-col items-center text-center gap-3">
-            <div
-              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
-              4
-            </div>
-            <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Monitoramento</h3>
-            <p
-              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              Paciente registra sintomas e evolução diariamente pelo app
-            </p>
-          </div>
-        </app-card>
+            <div class="h-0.5 w-full bg-[var(--color-neutro-100)]"></div>
 
-        <!-- Passo 5 — centralizado quando é o último ímpar -->
-        <app-card padding="md" class="sm:col-span-2 sm:max-w-[50%] sm:mx-auto lg:col-span-1 lg:max-w-none">
-          <div class="flex flex-col items-center text-center gap-3">
-            <div
-              class="w-10 h-10 rounded-full bg-[var(--color-azul-primario)] text-white flex items-center justify-center font-data font-semibold text-sm">
-              5
+            <!-- Passo 1 -->
+            <div class="flex flex-col gap-2">
+              <h3
+                class="font-heading font-semibold text-md text-[var(--color-neutro-900)]">01.
+                Cadastro</h3>
+              <p
+                class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed text-justify">
+                O médico realiza o cadastro do paciente, que recebe um convite
+                para acessar a plataforma.
+              </p>
             </div>
-            <h3
-              class="font-heading font-semibold text-[15px] text-[var(--color-neutro-900)]">Acompanhamento</h3>
-            <p
-              class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed">
-              Médico visualiza relatórios e acompanha a evolução dos pacientes em tempo real
-            </p>
+
+            <!-- Passo 3 -->
+            <div class="flex flex-col gap-2">
+              <h3
+                class="font-heading font-semibold text-md text-[var(--color-neutro-900)]">02.
+                Evolução
+                pessoal</h3>
+              <p
+                class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed text-justify">
+                O paciente consegue ter acesso a um dashboard com informações
+                sobre sua evolução clínica, incluindo gráficos e relatórios
+                sobre sintomas, dor, mobilidade e outros indicadores de
+                recuperação.
+              </p>
+            </div>
+
+            <!-- Passo 4 -->
+            <div class="flex flex-col gap-2">
+              <h3
+                class="font-heading font-semibold text-md text-[var(--color-neutro-900)]">03.
+                Registro
+                diário</h3>
+              <p
+                class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed text-justify">
+                Todos os dias, o paciente registra informações sobre sua
+                evolução clínica, de acordo com os campos definidos pelo médico.
+              </p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <h3
+                class="font-heading font-semibold text-md text-[var(--color-neutro-900)]">
+                <img src="../../../assets/android-icon.png" class="w-5">
+                04.
+                Monitoramento
+                24 horas</h3>
+              <p
+                class="text-[var(--color-neutro-700)] text-sm font-body leading-relaxed text-justify">
+                A cada hora, métricas são coletadas automaticamente através do
+                uso de smartwatches e wearables integrados ao app, permitindo
+                monitoramento contínuo.
+              </p>
+            </div>
           </div>
-        </app-card>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ CTA ═══════════ -->
   <section class="px-6 py-12 md:px-12 md:py-16 bg-[var(--color-azul-profundo)]">
     <div
-      class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="flex flex-col gap-2">
         <h3 class="font-heading font-bold text-xl text-white">
-          Comece hoje, gratuitamente
+          Comece hoje e faça parte dos
         </h3>
-        <p class="text-[var(--color-neutro-300)] text-sm font-body">
-          Junte-se a mais de 860 médicos que já usam o Recupera Saúde para
-          cuidar dos seus pacientes
-        </p>
+        <div class="max-w-7xl flex flex-row justify-between items-center flex-1">
+          <div class="flex flex-col items-center gap-1 py-2">
+            <span
+              class="font-data font-semibold text-3xl leading-7 text-[var(--color-laranja-primario)]">+{{
+              stats()?.patients ?? '-' }}</span>
+            <span
+              class="text-[var(--color-neutro-300)] text-sm font-body">Pacientes</span>
+          </div>
+
+          <div class="flex flex-col items-center gap-1">
+            <span
+              class="font-data font-semibold text-3xl leading-7 text-[var(--color-laranja-primario)]">+{{
+              stats()?.doctors ?? '-' }}</span>
+            <span
+              class="text-[var(--color-neutro-300)] text-sm font-body">Médicos</span>
+          </div>
+
+          <div class="flex flex-col items-center gap-1">
+            <span
+              class="font-data font-semibold text-3xl leading-7 text-[var(--color-laranja-primario)]">+{{
+              stats()?.hospitals ?? '-' }}</span>
+            <span
+              class="text-[var(--color-neutro-300)] text-sm font-body">Hospitais</span>
+          </div>
+        </div>
+
       </div>
 
-      <div class="flex gap-3 flex-wrap">
+      <div class="flex gap-3 flex-wrap items-center justify-center">
         <app-button variant="secondary"
           customClass="text-white border-white/40 hover:bg-white/10"
           (clicked)="goToRegister()">
@@ -427,36 +371,28 @@
 
   <!-- ═══════════ FOOTER ═══════════ -->
   <footer id="footer" class="bg-brand-primary px-6 py-6 md:px-8">
-    <div class="max-w-6xl mx-auto flex flex-col gap-4">
+    <div
+      class="max-w-7xl mx-auto flex flex-row gap-4 justify-between items-center">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4">
         <h4 class="text-neutro-150 font-heading font-bold text-base">Recupera
           Saúde</h4>
-
-        <div class="flex gap-4">
-          <a
-            class="text-[var(--color-neutro-500)] hover:text-[var(--color-neutro-150)] text-xs duration-150 cursor-pointer font-body">
-            Privacidade
-          </a>
-          <a
-            class="text-[var(--color-neutro-500)] hover:text-[var(--color-neutro-150)] text-xs duration-150 cursor-pointer font-body">
-            Termos de uso
-          </a>
-          <a
-            class="text-[var(--color-neutro-500)] hover:text-[var(--color-neutro-150)] text-xs duration-150 cursor-pointer font-body">
-            Contato
-          </a>
-          <a
-            class="text-[var(--color-neutro-500)] hover:text-[var(--color-neutro-150)] text-xs duration-150 cursor-pointer font-body">
-            LGPD
-          </a>
-        </div>
       </div>
 
       <div class="flex justify-center md:justify-start">
         <p class="text-[13px] text-[var(--color-neutro-500)] font-body">
-          © 2026 Recupera Saúde · Todos os direitos reservados
+          © 2026 Recupera Saúde - Todos os direitos reservados
         </p>
       </div>
+    </div>
+    <div
+      class="max-w-7xl mx-auto flex flex-row mt-4 justify-between items-center">
+      <p
+        class="text-[13px] text-[var(--color-neutro-500)] font-body text-justify">
+        Trabalho de Conclusão de Curso (TCC) para obtenção do título de Bacharel
+        em Ciência da Computação, no curso de graduação em Ciência da Computação
+        pela Universidade Paulista - Campus Alphaville, sob a orientação do
+        professor Edy Hayashida.
+      </p>
     </div>
   </footer>
 </div>
