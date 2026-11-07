@@ -1,4 +1,4 @@
-<div class="bg-white p-8 lg:px-12 rounded-lg">
+<div class>
   <h1
     class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">
     Configurações
@@ -9,25 +9,27 @@
   </p>
 
   <section
-    class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6 w-full max-w-2xl">
+    class="bg-white p-8 rounded-lg w-full flex flex-col max-w-2xl gap-3">
 
-    <div class="space-y-2">
-      <!-- Editar conta -->
-      <a routerLink="/app/configuracoes/editar-conta"
-        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+    <!-- Editar conta -->
+    <a routerLink="/app/configuracoes/editar-conta"
+      class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)] flex flex-row items-center gap-5 px-3">
+      <div class="flex flex-col gap-1">
         <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
           Editar conta
         </h3>
         <p class="text-sm text-[var(--color-neutro-500)] mt-1">
           Edite as informações da sua conta.
         </p>
-      </a>
+      </div>
+    </a>
 
-      <hr class="border-[var(--color-neutro-150)]" />
+    <hr class="border-[var(--color-neutro-150)]" />
 
-      <!-- Termos de privacidade -->
-      <a routerLink="/app/configuracoes/termos-privacidade"
-        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+    <!-- Termos de privacidade -->
+    <a routerLink="/app/configuracoes/termos-privacidade"
+      class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)] flex flex-row items-center gap-5 px-3">
+      <div class="flex flex-col gap-1">
         <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
           Termos de privacidade
         </h3>
@@ -35,56 +37,67 @@
           Consulte os termos de privacidade e informações importantes
           sobre o uso da plataforma.
         </p>
-      </a>
+      </div>
+    </a>
 
-      <hr class="border-[var(--color-neutro-150)]" />
+    <hr class="border-[var(--color-neutro-150)]" />
 
-      <!-- Sobre nós -->
-      <a routerLink="/app/configuracoes/sobre-nos"
-        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+    <!-- Sobre nós -->
+    <a routerLink="/app/configuracoes/sobre-nos"
+      class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)] flex flex-row items-center gap-5 px-3">
+      <div class="flex flex-col gap-1">
         <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
           Sobre nós
         </h3>
-        <p class="text-sm text-[var(--color-neutro-500)] mt-1">
+        <p class="text-sm text-[var(--color-neutro-500)]">
           Conheça nossa equipe e saiba mais sobre o projeto.
         </p>
-      </a>
+      </div>
+    </a>
 
-      <hr class="border-[var(--color-neutro-150)]" />
+    <hr class="border-[var(--color-neutro-150)]" />
 
-      <!-- Contate-nos -->
-      <a href="mailto:tcc.cc.aacijl@gmail.com"
-        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+    <!-- Contate-nos -->
+    <a href="mailto:tcc.cc.aacijl@gmail.com"
+      class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)] flex flex-row items-center gap-5 px-3">
+      <div class="flex flex-col gap-1">
         <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
           Contate-nos
         </h3>
-        <p class="text-sm text-[var(--color-neutro-500)] mt-1">
+        <p class="text-sm text-[var(--color-neutro-500)]">
           Entre em contato conosco por e-mail.
         </p>
-      </a>
+      </div>
+    </a>
 
-      <hr class="border-[var(--color-neutro-150)]" />
+    <hr class="border-[var(--color-neutro-150)]" />
 
-      <!-- Redefinir senha -->
-      <a routerLink="/app/configuracoes/redefinir-senha"
-        class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)]">
+    <!-- Redefinir senha -->
+    <a routerLink="/app/configuracoes/redefinir-senha"
+      class="block px-2 py-4 rounded-md cursor-pointer transition-all duration-150 hover:bg-[var(--color-neutro-100)] active:bg-[var(--color-neutro-150)] flex flex-row items-center gap-5 px-3">
+      <div class="flex flex-col gap-1">
         <h3 class="text-sm font-semibold text-[var(--color-neutro-900)]">
           Redefinir senha
         </h3>
-        <p class="text-sm text-[var(--color-neutro-500)] mt-1">
+        <p class="text-sm text-[var(--color-neutro-500)]">
           Altere a senha de acesso à sua conta.
         </p>
-      </a>
+      </div>
+    </a>
 
-      <hr class="border-[var(--color-neutro-150)]" />
+    <hr class="border-[var(--color-neutro-150)]" />
 
-      <button
-        type="button"
-        (click)="logout()"
-        class="block w-full px-2 py-4 rounded-md text-left transition-all duration-150 hover:bg-red-50 active:bg-red-100">
+    <button
+      type="button"
+      (click)="logout()"
+      class="block w-full px-2 py-4 rounded-md text-left transition-all duration-150 hover:bg-red-50 active:bg-red-100 flex flex-row justify-between items-center gap-5 px-3">
+      <div class="flex flex-col gap-1">
         <h3 class="text-sm font-semibold text-red-600">Sair</h3>
-        <p class="text-sm text-red-500 mt-1">Encerrar sessão.</p>
-      </button>
-    </div>
+        <p class="text-sm text-red-500">Encerrar sessão.</p>
+      </div>
+
+      <svg lucideLogOut class="h-5 w-5 text-[var(--color-critico)]"
+        aria-hidden="true"></svg>
+    </button>
   </section>
 </div>
