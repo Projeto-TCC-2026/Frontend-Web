@@ -1,46 +1,82 @@
-<div
-  class="min-h-screen bg-[var(--color-neutro-100)] flex items-center justify-center px-4 py-8 lg:px-8">
-  <div
-    class="w-full max-w-5xl overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] bg-white shadow-[0_20px_60px_rgba(20,34,48,0.10)] mx-auto lg:grid lg:grid-cols-[1fr_1.2fr]">
-    <div
-      class="bg-[linear-gradient(135deg,_var(--color-azul-marinho)_0%,_var(--color-azul-primario)_100%)] p-8 lg:p-12 text-white hidden lg:flex flex-col transition duration-300">
-      <button
-        type="button"
-        class="w-fit rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/90 transition hover:bg-white/20 flex items-center gap-1"
-        (click)="goToHome()">
-        <svg lucideChevronLeft class="w-4 h-4"></svg> Voltar para a home
-      </button>
 
-      <div class="h-full flex flex-col justify-center lg:gap-6">
-        <h1 class="font-heading lg:text-3xl font-bold leading-tight text-white">
+<div
+  class="min-h-screen flex flex-col lg:flex-row">
+  <div
+    class="bg-[var(--color-azul-profundo)] p-8 xl:p-16 text-white hidden lg:flex flex-col transition duration-300 lg:w-[35%] relative">
+    <button
+      type="button"
+      class="w-fit py-1.5 text-sm font-medium text-white/80 transition hover:text-white flex items-center gap-1"
+      (click)="goBack()">
+      <svg lucideChevronLeft class="w-4 h-4"></svg> Voltar para a tela anterior
+    </button>
+
+    <div
+      class="h-full flex flex-col justify-center lg:gap-6">
+      <div class="flex flex-row items-center gap-4">
+        <img src="../../../assets/icon.jpg" alt="Recupera Saúde"
+          width="35" height="35" class>
+        <h1 class="font-heading lg:text-4xl font-bold leading-tight text-white">
           Cadastre seu hospital
         </h1>
-        <p class="max-w-md lg:text-sm leading-7 text-[var(--color-neutro-300)]">
-          O cadastro é exclusivo para hospitais. Assim que você enviar os dados,
-          o acesso já fica liberado para login.
-        </p>
+      </div>
+
+      <p
+        class="lg:text-sm leading-7 text-[var(--color-neutro-300)] text-justify">
+        O cadastro é exclusivo para hospitais. Assim que você enviar os dados,
+        o acesso já fica liberado para login.
+      </p>
+    </div>
+  </div>
+
+  <div
+    class="bg-[var(--color-azul-profundo)] text-white lg:hidden flex flex-row transition duration-300 py-2 px-4 items-center relative">
+    <button
+      type="button"
+      class="w-fit py-1.5 text-xs font-medium text-white/80 transition hover:text-white flex items-center gap-1"
+      (click)="goBack()">
+      <svg lucideChevronLeft class="w-4 h-4"></svg> Voltar
+    </button>
+
+    <div
+      class="h-full flex flex-col justify-center lg:gap-6">
+      <div class="flex flex-row items-center gap-4">
+        <img src="../../../assets/icon.jpg" alt="Recupera Saúde"
+          width="50" height="50"
+          class="absolute left-1/2 transform -translate-x-1/2 top-6 p-2 bg-[var(--color-azul-profundo)] rounded-full">
       </div>
     </div>
+  </div>
 
-    <div class="p-8 lg:p-12">
+  <div
+    class="py-2 lg:py-0 bg-[var(--color-azul-primario)] items-center justify-center flex">
+  </div>
+
+  <div
+    class="lg:px-4 bg-[var(--color-azul-primario)] items-center justify-center flex">
+  </div>
+
+  <div class="bg-white flex flex-col justify-center items-center flex-1">
+    <div class="p-8 lg:p-12 max-w-3xl w-full">
       <div class="mb-6">
-        <h2 class="mt-2 font-heading text-xl lg:text-2xl font-semibold text-[var(--color-neutro-900)]">
-          Dados do hospital
+        <h2
+          class="mt-2 font-heading text-2xl font-bold text-[var(--color-neutro-900)]">
+          Cadastre-se
         </h2>
-        <p class="mt-2 text-xs lg:text-sm leading-6 text-[var(--color-neutro-700)]">
-          Preencha as informações abaixo para criar a conta do seu hospital.
+        <p
+          class="mt-2 text-sm leading-6 text-[var(--color-neutro-700)]">
+          Preencha as informações abaixo para criar a conta do seu hospital:
         </p>
       </div>
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-4">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate
+        class="flex flex-col gap-4">
         <app-input
           label="Nome do hospital"
           placeholder="Hospital Santa Clara"
           formControlName="name"
           [required]="true"
           [state]="isFieldInvalid('name') ? 'error' : 'default'"
-          [helperText]="isFieldInvalid('name') ? 'Informe o nome do hospital (mínimo 3 caracteres)' : ''"
-        ></app-input>
+          [helperText]="isFieldInvalid('name') ? 'Informe o nome do hospital (mínimo 3 caracteres)' : ''"></app-input>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <app-input
@@ -50,8 +86,7 @@
             [required]="true"
             [state]="isFieldInvalid('cnpj') ? 'error' : 'default'"
             [helperText]="isFieldInvalid('cnpj') ? 'CNPJ inválido' : ''"
-            (input)="onCnpjInput($event)"
-          ></app-input>
+            (input)="onCnpjInput($event)"></app-input>
 
           <app-input
             label="Telefone"
@@ -61,8 +96,7 @@
             [required]="true"
             [state]="isFieldInvalid('phone') ? 'error' : 'default'"
             [helperText]="isFieldInvalid('phone') ? 'Telefone é obrigatório' : ''"
-            (input)="onPhoneInput($event)"
-          ></app-input>
+            (input)="onPhoneInput($event)"></app-input>
         </div>
 
         <app-input
@@ -72,8 +106,7 @@
           formControlName="email"
           [required]="true"
           [state]="isFieldInvalid('email') ? 'error' : 'default'"
-          [helperText]="isFieldInvalid('email') ? 'Informe um e-mail válido' : ''"
-        ></app-input>
+          [helperText]="isFieldInvalid('email') ? 'Informe um e-mail válido' : ''"></app-input>
 
         <app-input
           label="Endereço"
@@ -81,8 +114,7 @@
           formControlName="address"
           [required]="true"
           [state]="isFieldInvalid('address') ? 'error' : 'default'"
-          [helperText]="isFieldInvalid('address') ? 'Endereço é obrigatório' : ''"
-        ></app-input>
+          [helperText]="isFieldInvalid('address') ? 'Endereço é obrigatório' : ''"></app-input>
 
         <div class="grid grid-cols-2 gap-4">
           <app-input
@@ -91,8 +123,7 @@
             formControlName="city"
             [required]="true"
             [state]="isFieldInvalid('city') ? 'error' : 'default'"
-            [helperText]="isFieldInvalid('city') ? 'Cidade é obrigatória' : ''"
-          ></app-input>
+            [helperText]="isFieldInvalid('city') ? 'Cidade é obrigatória' : ''"></app-input>
 
           <app-input
             label="Estado (UF)"
@@ -100,8 +131,7 @@
             formControlName="state"
             [required]="true"
             [state]="isFieldInvalid('state') ? 'error' : 'default'"
-            [helperText]="isFieldInvalid('state') ? 'Informe a UF (2 letras)' : ''"
-          ></app-input>
+            [helperText]="isFieldInvalid('state') ? 'Informe a UF (2 letras)' : ''"></app-input>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -112,8 +142,7 @@
             formControlName="password"
             [required]="true"
             [state]="isFieldInvalid('password') ? 'error' : 'default'"
-            [helperText]="isFieldInvalid('password') ? 'Mínimo de 6 caracteres' : ''"
-          ></app-input>
+            [helperText]="isFieldInvalid('password') ? 'Mínimo de 6 caracteres' : ''"></app-input>
 
           <app-input
             label="Confirmar senha"
@@ -122,19 +151,18 @@
             formControlName="confirmPassword"
             [required]="true"
             [state]="isFieldInvalid('confirmPassword') ? 'error' : 'default'"
-            [helperText]="isFieldInvalid('confirmPassword') ? 'As senhas não coincidem' : ''"
-          ></app-input>
+            [helperText]="isFieldInvalid('confirmPassword') ? 'As senhas não coincidem' : ''"></app-input>
         </div>
 
-        <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-          <app-button type="submit" [loading]="submitting()" [fullWidth]="true">
-            Cadastrar hospital
-          </app-button>
-          <app-button variant="ghost" type="button" [fullWidth]="true" (clicked)="goToLogin()">
+        <div class="flex flex-col gap-3 pt-2 sm:flex-row justify-end">
+          <app-button variant="ghost" type="button" [fullWidth]="true"
+            (clicked)="goToLogin()">
             Já tenho conta
+          </app-button>
+          <app-button type="submit" [loading]="submitting()" [fullWidth]="true" [customClass]="'px-8'">
+            Cadastrar hospital
           </app-button>
         </div>
       </form>
     </div>
   </div>
-</div>

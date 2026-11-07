@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,17 +6,19 @@ import { NotificationService } from '../../core/services/notification.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { ApiService } from '../../core/services/api.service';
+import { LucideChevronLeft } from '@lucide/angular';
 
 @Component({
     selector: 'app-forgot-password',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonComponent, InputComponent],
+    imports: [CommonModule, FormsModule, ButtonComponent, InputComponent, LucideChevronLeft],
     templateUrl: './forgot-password.component.html',
 })
 export class ForgotPasswordComponent {
     private readonly notificationService = inject(NotificationService);
     private readonly router = inject(Router);
     private readonly apiService = inject(ApiService);
+    private readonly location = inject(Location);   
 
     public email: string = '';
     public isSubmitting: boolean = false;
@@ -40,6 +42,10 @@ export class ForgotPasswordComponent {
                 this.notificationService.error('Não foi possível solicitar o código. Verifique se a API local está disponível e tente novamente.');
             },
         });
+    }
+
+    protected goBack(): void {
+        this.location.back();
     }
 
     public goToHome(): void {

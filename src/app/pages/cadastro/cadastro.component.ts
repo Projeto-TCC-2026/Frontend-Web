@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import {
   ReactiveFormsModule,
@@ -40,7 +40,7 @@ export class CadastroComponent {
   private notify = inject(NotificationService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
-
+  private location = inject(Location);
   protected submitting = signal(false);
 
   protected form: FormGroup = this.fb.group(
@@ -129,11 +129,11 @@ export class CadastroComponent {
     });
   }
 
-  protected goToLogin(): void {
-    this.router.navigate(['/login']);
+  protected goBack(): void {
+    this.location.back();
   }
 
-  protected goToHome(): void {
-    this.router.navigate(['/']);
+  protected goToLogin(): void {
+    this.router.navigate(['/login']);
   }
 }
