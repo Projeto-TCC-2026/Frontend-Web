@@ -1,5 +1,3 @@
-/* Apenas o estado ativo do routerLinkActive — não há classe Tailwind equivalente
-   para "classe aplicada condicionalmente pelo Angular" */
 :host .sidebar-link--active {
   color: #fff;
   font-weight: 600;

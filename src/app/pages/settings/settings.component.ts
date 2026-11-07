@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+
 
 @Component({
   selector: 'app-settings',
@@ -7,4 +9,10 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: './settings.component.html',
 })
-export class SettingsComponent {}
+export class SettingsComponent {
+  private authService = inject(AuthService);
+
+  logout(): void {
+    this.authService.logout();
+  }
+}
