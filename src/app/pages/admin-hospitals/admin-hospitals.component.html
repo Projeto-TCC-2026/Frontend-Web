@@ -54,13 +54,14 @@
   <!-- Conteúdo -->
   @if (!loading()) {
     @if (filteredHospitals().length === 0) {
+      <div class="bg-white p-6 rounded-[var(--radius-lg)]">
       <app-empty-state
-        title="Nenhum hospital encontrado"
-        description="Cadastre um novo hospital para começar.">
+        title="Nenhum hospital encontrado">
         <app-button variant="primary" size="sm" (clicked)="openCreate()">
           Cadastrar hospital
         </app-button>
       </app-empty-state>
+      </div>
     } @else {
       <div
         class="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] mb-5">

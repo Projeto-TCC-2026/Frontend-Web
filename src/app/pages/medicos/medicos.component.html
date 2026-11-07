@@ -17,7 +17,8 @@
   </div>
 
   <!-- Busca -->
-  <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_14rem] gap-4 mb-6 max-w-3xl">
+  <div
+    class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_14rem] gap-4 mb-6 max-w-3xl">
     <div>
       <label
         class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5"
@@ -54,12 +55,13 @@
   <!-- Conteúdo -->
   @if (!loading()) {
   @if (filteredDoctors().length === 0) {
-  <app-empty-state
-    title="Nenhum médico encontrado"
-    description="Cadastre um novo médico para começar.">
-    <app-button variant="primary" size="sm" (clicked)="openCreate()">Cadastrar
-      médico</app-button>
-  </app-empty-state>
+  <div class="bg-white p-6 rounded-[var(--radius-lg)]">
+    <app-empty-state
+      title="Nenhum médico encontrado">
+      <app-button variant="primary" size="sm" (clicked)="openCreate()">Cadastrar
+        médico</app-button>
+    </app-empty-state>
+  </div>
   } @else {
   <div
     class="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] mb-5">
@@ -110,13 +112,15 @@
               }}</td>
             <td class="px-4 py-3">
               @if (doctor.active !== false) {
-                <span class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-sucesso-bg)] text-[var(--color-sucesso)] rounded-full">
-                  Ativo
-                </span>
+              <span
+                class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-sucesso-bg)] text-[var(--color-sucesso)] rounded-full">
+                Ativo
+              </span>
               } @else {
-                <span class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-neutro-100)] text-[var(--color-neutro-500)] rounded-full">
-                  Desativado
-                </span>
+              <span
+                class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-neutro-100)] text-[var(--color-neutro-500)] rounded-full">
+                Desativado
+              </span>
               }
             </td>
             <td class="px-4 py-3">
@@ -192,8 +196,7 @@
           formControlName="hospitalId"
           (changed)="onHospitalChange()"
           [state]="isFieldInvalid('hospitalId') ? 'error' : 'default'"
-          helperText="Selecione o hospital do médico"
-        ></app-select>
+          helperText="Selecione o hospital do médico"></app-select>
       </div>
       }
 
