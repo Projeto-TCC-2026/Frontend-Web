@@ -119,7 +119,7 @@ export class AdminHospitalsComponent implements OnInit {
       width: 'min-w-[260px]',
       format: (_, row) => {
         const email = row.email ?? '-';
-        const phone = row.phone ? ` · ${row.phone}` : '';
+        const phone = row.phone ? ` - ${row.phone}` : '';
         return `${email}${phone}`;
       },
     },
@@ -127,7 +127,7 @@ export class AdminHospitalsComponent implements OnInit {
       key: 'active',
       label: 'Status',
       width: 'w-28',
-      format: value => (value ? 'Ativo' : 'Inativo'),
+      format: value => (value ? '<span class="text-green-300"> Ativo</span>' : '<span class="text-red-300"> Inativo</span>'),
     },
   ];
 
