@@ -1,9 +1,13 @@
-<div class="max-w-7xl">
-  <div
-    class="flex items-start justify-between mb-8 gap-4 flex-wrap">
-    <div>
-      <h1
-        class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Procedimentos</h1>
+<div class="max-w-7xl flex flex-col w-full mx-auto">
+  <!-- Header -->
+  <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
+    <div class="flex flex-col gap-1">
+      <div class="flex flex-row items-center gap-3">
+        <svg lucideClipboardList class="w-6 h-6 md:w-8 md:h-8"></svg>
+        <h1
+          class="font-heading font-extrabold text-[25px] md:text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Procedimentos</h1>
+      </div>
+
       <p class="text-sm text-[var(--color-neutro-500)]">Catálogo de
         procedimentos atendidos pelo hospital</p>
     </div>
@@ -14,46 +18,38 @@
     </app-button>
   </div>
 
+  <hr class="border-[var(--color-neutro-150)] border-1 rounded-full my-3" />
+
+  <!-- Busca -->
   <div
-    class="grid grid-cols-1 gap-4 mb-6 max-w-3xl"
-    [class.md:grid-cols-3]="isAdmin()"
-    [class.md:grid-cols-2]="!isAdmin()"
-    [class.max-w-3xl]="isAdmin()"
-    [class.max-w-sm]="!isAdmin()">
-    @if (isAdmin()) {
-    <div>
-      <label
-        class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5"
-        for="procedure-hospital">
-        Hospital
-      </label>
-      <app-select
+    class="mb-3 flex flex-col items-center justify-between gap-4 lg:flex-row">
+    <div class="w-full lg:w-[calc(50%-2rem)]">
+      <app-input-search-filter
+        [value]="searchTerm()"
+        inputId="doctor-search"
+        placeholder="Buscar registros"
+        (valueChange)="onSearch($event)">
+      </app-input-search-filter>
+    </div>
+
+    <div class="lg:w-[calc(50%-2rem)] flex flex-col lg:flex-row lg:justify-end justify-center items-center">
+      @if (isAdmin()) {
+      <app-select-filter-active
+        label="Hospital"
         inputId="procedure-hospital"
         [options]="hospitalOptions()"
         [selectedValue]="selectedHospitalId() ?? ''"
-        (changed)="selectHospital($event)"></app-select>
-    </div>
-    }
+        (changed)="selectHospital($event)">
+      </app-select-filter-active>
+      }
 
-    <div>
-      <label
-        class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5"
-        for="procedure-search">
-        Buscar
-      </label>
-      <input
-        id="procedure-search"
-        type="text"
-        placeholder="Buscar procedimento..."
-        class="w-full h-11 px-4 py-2.5 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-500)] outline-none focus:border-[var(--color-azul-primario)]"
-        (input)="onSearch($event)" />
+      <app-select-filter-active
+        inputId="procedure-status"
+        [options]="statusOptions"
+        [selectedValue]="statusFilter()"
+        (changed)="onStatusChange($event)">
+      </app-select-filter-active>
     </div>
-    <app-select
-      label="Status"
-      inputId="procedure-status"
-      [options]="statusOptions"
-      [selectedValue]="statusFilter()"
-      (changed)="onStatusChange($event)"></app-select>
   </div>
 
   @if (loading()) {
@@ -68,69 +64,35 @@
     </app-empty-state>
   </div>
   } @else {
-  <div
-    class="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] mb-5">
-    <div class="overflow-x-auto">
-      <table class="w-full bg-white text-sm">
-        <thead>
-          <tr
-            class="bg-[var(--color-neutro-150)] border-b border-[var(--color-neutro-150)]">
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Procedimento</th>
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Descrição</th>
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Duração</th>
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Status</th>
-            <th
-              class="px-4 py-3 text-right text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (procedure of filteredProcedures(); track procedure.id) {
-          <tr
-            class="border-b border-[var(--color-neutro-150)] last:border-b-0 hover:bg-[var(--color-neutro-100)]/50">
-            <td
-              class="px-4 py-3 font-medium text-[var(--color-neutro-900)]">{{
-              procedure.title }}</td>
-            <td class="px-4 py-3 text-[var(--color-neutro-700)] max-w-md">{{
-              procedure.description || '-' }}</td>
-            <td class="px-4 py-3 text-[var(--color-neutro-700)]">{{
-              procedure.estimatedDuration ? procedure.estimatedDuration +
-              ' min' : '-' }}</td>
-            <td class="px-4 py-3">
-              @if (procedure.active) {
-              <span
-                class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-sucesso-bg)] text-[var(--color-sucesso)] rounded-full">Ativo</span>
-              } @else {
-              <span
-                class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-neutro-100)] text-[var(--color-neutro-500)] rounded-full">Desativado</span>
-              }
-            </td>
-            <td class="px-4 py-3">
-              <div class="flex items-center justify-end gap-1">
-                <button type="button" title="Editar"
-                  (click)="openEdit(procedure)"
-                  class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8">
-                  <svg lucidePencil class="w-4 h-4"></svg>
-                </button>
-                @if (procedure.active) {
-                <button type="button" title="Inativar"
-                  (click)="deactivate(procedure)"
-                  class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)]">
-                  <svg lucideTrash2 class="w-4 h-4"></svg>
-                </button>
-                }
-              </div>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <div class="mb-5">
+    <app-data-table
+      [columns]="tableColumns()"
+      [data]="filteredProcedures()"
+      [pageSize]="pageSize()"
+      [totalItems]="filteredProcedures().length"
+      [page]="pageIndex() + 1"
+      (pageChange)="onTablePageChange($event)"
+      [actionsTemplate]="procedureActions">
+    </app-data-table>
   </div>
   }
+
+  <ng-template #procedureActions let-procedure>
+    <div class="flex items-center justify-end gap-1">
+      <button type="button" title="Editar"
+        (click)="openEdit(procedure)"
+        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8">
+        <svg lucidePencil class="w-4 h-4"></svg>
+      </button>
+      @if (procedure.active) {
+      <button type="button" title="Inativar"
+        (click)="deactivate(procedure)"
+        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)]">
+        <svg lucideTrash2 class="w-4 h-4"></svg>
+      </button>
+      }
+    </div>
+  </ng-template>
 
   <app-dialog
     [open]="formOpen()"

@@ -1,10 +1,14 @@
-<div class="max-w-7xl">
+<div class="max-w-7xl flex flex-col w-full mx-auto">
   <!-- Header -->
-  <div class="flex items-start justify-between mb-8 gap-4 flex-wrap">
-    <div>
-      <h1
-        class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Gerencial
-        de Doutores</h1>
+  <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
+    <div class="flex flex-col gap-1">
+      <div class="flex flex-row items-center gap-3">
+        <svg lucideUser class="w-6 h-6 md:w-8 md:h-8"></svg>
+        <h1
+          class="font-heading font-extrabold text-[25px] md:text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">Gerencial
+          de Doutores</h1>
+      </div>
+
       <p class="text-sm text-[var(--color-neutro-500)]">
         {{ isAdmin() ? 'Gerencie os médicos de todos os hospitais da plataforma'
         : 'Gerencie os médicos do seu hospital' }}
@@ -16,35 +20,26 @@
     </app-button>
   </div>
 
+  <hr class="border-[var(--color-neutro-150)] border-1 rounded-full my-3" />
+
   <!-- Busca -->
   <div
-    class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_14rem] gap-4 mb-6 max-w-3xl">
-    <div>
-      <label
-        class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5"
-        for="doctor-search">
-        Buscar
-      </label>
-      <div class="relative">
-        <span
-          class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-neutro-400)] pointer-events-none">
-          <svg lucideSearch class="w-4 h-4"></svg>
-        </span>
-        <input
-          id="doctor-search"
-          type="text"
-          placeholder="Buscar médico por nome, CRM ou especialidade..."
-          class="w-full pl-9 pr-4 py-2.5 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-500)] outline-none focus:border-[var(--color-azul-primario)] focus:shadow-[0_0_0_3px_rgba(12,76,138,0.14)] transition-all duration-150"
-          (input)="onSearch($event)" />
-      </div>
+    class="mb-3 flex flex-col items-center justify-between gap-4 md:flex-row">
+    <div class="w-full md:w-[calc(50%-2rem)]">
+      <app-input-search-filter
+        [value]="searchTerm()"
+        inputId="doctor-search"
+        placeholder="Buscar registros"
+        (valueChange)="onSearch($event)">
+      </app-input-search-filter>
     </div>
-    <app-select
-      label="Status"
+
+    <app-select-filter-active
       inputId="doctor-status"
       [options]="statusOptions"
       [selectedValue]="statusFilter()"
       (changed)="onStatusChange($event)">
-    </app-select>
+    </app-select-filter-active>
   </div>
 
   <!-- Loading -->
@@ -56,126 +51,45 @@
   @if (!loading()) {
   @if (filteredDoctors().length === 0) {
   <div class="bg-white p-6 rounded-[var(--radius-lg)]">
-    <app-empty-state
-      title="Nenhum médico encontrado">
+    <app-empty-state title="Nenhum médico encontrado">
       <app-button variant="primary" size="sm" (clicked)="openCreate()">Cadastrar
         médico</app-button>
     </app-empty-state>
   </div>
   } @else {
-  <div
-    class="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] mb-5">
-    <div class="overflow-x-auto">
-      <table class="w-full bg-white text-sm">
-        <thead>
-          <tr
-            class="bg-[var(--color-neutro-150)] border-b border-[var(--color-neutro-150)]">
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Nome</th>
-            @if (isAdmin()) {
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Hospital</th>
-            }
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">CPF</th>
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">CRM</th>
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Especialidade</th>
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Telefone</th>
-            <th
-              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Status</th>
-            <th
-              class="px-4 py-3 text-right text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (doctor of filteredDoctors(); track doctor.id) {
-          <tr
-            class="border-b border-[var(--color-neutro-150)] last:border-b-0 hover:bg-[var(--color-neutro-100)]/50 transition-colors duration-100">
-            <td class="px-4 py-3 font-medium text-[var(--color-neutro-900)]">{{
-              doctor.fullName }}</td>
-            @if (isAdmin()) {
-            <td class="px-4 py-3 text-[var(--color-neutro-700)]">{{
-              doctor.hospital?.name ?? '-' }}</td>
-            }
-            <td
-              class="px-4 py-3 font-data text-xs text-[var(--color-neutro-700)]">{{
-              doctor.cpf }}</td>
-            <td
-              class="px-4 py-3 font-data text-xs text-[var(--color-neutro-700)]">{{
-              doctor.crm }}</td>
-            <td class="px-4 py-3 text-[var(--color-neutro-700)]">{{
-              doctor.specialty }}</td>
-            <td class="px-4 py-3 text-[var(--color-neutro-700)]">{{ doctor.phone
-              }}</td>
-            <td class="px-4 py-3">
-              @if (doctor.active !== false) {
-              <span
-                class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-sucesso-bg)] text-[var(--color-sucesso)] rounded-full">
-                Ativo
-              </span>
-              } @else {
-              <span
-                class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-neutro-100)] text-[var(--color-neutro-500)] rounded-full">
-                Desativado
-              </span>
-              }
-            </td>
-            <td class="px-4 py-3">
-              <div class="flex items-center justify-end gap-1">
-                <button
-                  class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
-                  title="Editar"
-                  (click)="openEdit(doctor)">
-                  <svg lucidePencil class="w-4 h-4"></svg>
-                </button>
-                @if (doctor.active !== false) {
-                <button
-                  class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)] transition-all duration-150"
-                  title="Inativar"
-                  (click)="deactivateDoctor(doctor)">
-                  <svg lucideTrash2 class="w-4 h-4"></svg>
-                </button>
-                }
-              </div>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Paginação (server-side) -->
-    @if (totalPages() > 1) {
-    <div
-      class="flex items-center justify-between px-4 py-3 bg-white border-t border-[var(--color-neutro-150)]">
-      <span class="text-xs text-[var(--color-neutro-500)]">
-        Página {{ pageIndex() + 1 }} de {{ totalPages() }} · {{ totalElements()
-        }} médicos
-      </span>
-      <div class="flex items-center gap-1">
-        <button
-          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
-          [disabled]="pageIndex() === 0"
-          (click)="goToPage(pageIndex() - 1)"
-          aria-label="Página anterior">
-          <svg lucideChevronLeft class="w-4 h-4"></svg>
-        </button>
-        <button
-          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
-          [disabled]="pageIndex() >= totalPages() - 1"
-          (click)="goToPage(pageIndex() + 1)"
-          aria-label="Próxima página">
-          <svg lucideChevronRight class="w-4 h-4"></svg>
-        </button>
-      </div>
-    </div>
-    }
+  <div class="mb-5">
+    <app-data-table
+      [columns]="tableColumns()"
+      [data]="filteredDoctors()"
+      [pageSize]="pageSize()"
+      [totalItems]="totalElements()"
+      [page]="pageIndex() + 1"
+      (pageChange)="onTablePageChange($event)"
+      [actionsTemplate]="doctorActions">
+    </app-data-table>
   </div>
   }
   }
+
+  <ng-template #doctorActions let-doctor>
+    <div class="flex items-center justify-end gap-1">
+      <button
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[var(--color-neutro-500)] hover:bg-[var(--color-azul-primario)] hover:text-white/80 transition-all duration-150"
+        title="Editar"
+        (click)="openEdit(doctor)">
+        <svg lucidePencil class="w-4 h-4"></svg>
+      </button>
+
+      @if (doctor.active !== false) {
+      <button
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[var(--color-neutro-500)] hover:bg-[var(--color-critico)] hover:text-white/80 transition-all duration-150"
+        title="Inativar"
+        (click)="deactivateDoctor(doctor)">
+        <svg lucideTrash2 class="w-4 h-4"></svg>
+      </button>
+      }
+    </div>
+  </ng-template>
 
   <!-- Modal: Cadastro / Edição -->
   <app-dialog
@@ -188,7 +102,7 @@
 
       @if (isAdmin()) {
       <div>
-        <app-select
+        <!-- <app-select
           label="Hospital"
           [options]="hospitalOptions()"
           placeholder="Selecione um hospital"
@@ -196,7 +110,7 @@
           formControlName="hospitalId"
           (changed)="onHospitalChange()"
           [state]="isFieldInvalid('hospitalId') ? 'error' : 'default'"
-          helperText="Selecione o hospital do médico"></app-select>
+          helperText="Selecione o hospital do médico"></app-select> -->
       </div>
       }
 

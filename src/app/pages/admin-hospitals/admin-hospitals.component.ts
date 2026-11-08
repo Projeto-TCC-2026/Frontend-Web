@@ -4,11 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import {
   LucidePlus,
-  LucideSearch,
   LucidePencil,
   LucideTrash2,
-  LucideChevronLeft,
-  LucideChevronRight,
   LucideToggleLeft,
   LucideBuilding2
 } from '@lucide/angular';
@@ -20,7 +17,7 @@ import { DialogService } from '../../core/services/dialog.service';
 
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
-import { SelectFilterActiveComponent, SelectOption } from '../../shared/components/select-filter-active/select-filter-active.component';
+import { SelectFilterActiveComponent, SelectOption } from '../../shared/components/select-filter/select-filter.component';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
@@ -44,11 +41,8 @@ type FormMode = 'create' | 'edit';
     DataTableComponent,
     InputSearchFilterComponent,
     LucidePlus,
-    LucideSearch,
     LucidePencil,
     LucideTrash2,
-    LucideChevronLeft,
-    LucideChevronRight,
     LucideToggleLeft,
     LucideBuilding2
   ],
@@ -295,6 +289,7 @@ export class AdminHospitalsComponent implements OnInit {
 
   protected onSearch(value: string): void {
     this.searchTerm.set(value);
+    this.pageIndex.set(0);
   }
 
   protected isFieldInvalid(field: string): boolean {

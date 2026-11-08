@@ -14,7 +14,7 @@ export interface SelectOption {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LucideChevronDown, LucideCheck],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectFilterActiveComponent), multi: true }],
-  templateUrl: './select-filter-active.component.html',
+  templateUrl: './select-filter.component.html',
 })
 export class SelectFilterActiveComponent implements ControlValueAccessor {
   @Input() inputId = `select-${Math.random().toString(36).slice(2, 8)}`;
@@ -26,6 +26,7 @@ export class SelectFilterActiveComponent implements ControlValueAccessor {
   @Input() state: 'default' | 'error' = 'default';
   @Input() helperText = '';
   @Output() changed = new EventEmitter<string>();
+  @Input() label = 'Status';
 
   protected value = signal('');
   protected open = signal(false);

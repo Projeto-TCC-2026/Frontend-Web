@@ -63,6 +63,7 @@
       [data]="filteredHospitals()"
       [pageSize]="pageSize()"
       [totalItems]="totalElements()"
+      [page]="pageIndex() + 1"
       (pageChange)="onTablePageChange($event)"
       [actionsTemplate]="hospitalActions"></app-data-table>
   </div>

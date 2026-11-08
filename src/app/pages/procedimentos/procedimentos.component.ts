@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LucidePencil, LucidePlus, LucideTrash2 } from '@lucide/angular';
+import { LucidePencil, LucidePlus, LucideTrash2, LucideClipboardList } from '@lucide/angular';
 
 import { Procedure, ProcedureRequest, ProcedureService } from '../../core/services/procedure.service';
 import { HospitalService } from '../../core/services/hospital.service';
@@ -14,6 +14,9 @@ import { DialogComponent } from '../../shared/components/dialog/dialog.component
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
+import { DataTableComponent, TableColumn } from '../../shared/components/data-table/data-table.component';
+import { InputSearchFilterComponent } from '../../shared/components/input-search-filter/input-search-filter.component';
+import { SelectFilterActiveComponent } from '../../shared/components/select-filter/select-filter.component';
 
 @Component({
   selector: 'app-procedimentos',
@@ -26,9 +29,13 @@ import { SelectComponent, SelectOption } from '../../shared/components/select/se
     EmptyStateComponent,
     LoadingComponent,
     SelectComponent,
+    DataTableComponent,
+    InputSearchFilterComponent,
     LucidePencil,
     LucidePlus,
     LucideTrash2,
+    LucideClipboardList,
+    SelectFilterActiveComponent
   ],
   templateUrl: './procedimentos.component.html',
 })
@@ -57,6 +64,8 @@ export class ProcedimentosComponent implements OnInit {
   ];
   protected selectedHospitalId = signal<string | null>(null);
   protected hospitalOptions = computed<SelectOption[]>(() => this.hospitals().map(hospital => ({ value: hospital.id, label: hospital.name })));
+  protected pageIndex = signal(0);
+  protected pageSize = signal(10);
 
   protected filteredProcedures = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
@@ -66,6 +75,23 @@ export class ProcedimentosComponent implements OnInit {
       (procedure.description ?? '').toLowerCase().includes(term)
     );
   });
+
+  protected tableColumns = computed<TableColumn<Procedure>[]>(() => [
+    { key: 'title', label: 'Procedimento', width: 'min-w-[220px]' },
+    {
+      key: 'description',
+      label: 'Descrição',
+      width: 'min-w-[260px]',
+      format: (value) => value || '-',
+    },
+    {
+      key: 'estimatedDuration',
+      label: 'Duração',
+      width: 'min-w-[120px]',
+      format: (value) => (value ? `${value} min` : '-'),
+    },
+    { key: 'active', label: 'Status', width: 'w-32' },
+  ]);
 
   protected form = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
@@ -93,13 +119,19 @@ export class ProcedimentosComponent implements OnInit {
 
   protected selectHospital(hospitalId: string): void {
     this.selectedHospitalId.set(hospitalId);
+    this.pageIndex.set(0);
     this.loadProcedures(hospitalId);
   }
 
   protected onStatusChange(status: string): void {
     if (status !== 'all' && status !== 'active' && status !== 'inactive') return;
     this.statusFilter.set(status);
+    this.pageIndex.set(0);
     this.loadProcedures(this.selectedHospitalId());
+  }
+
+  protected onTablePageChange(event: { page: number; pageSize: number }): void {
+    this.pageIndex.set(event.page - 1);
   }
 
   private loadProcedures(hospitalId: string | null): void {
@@ -198,8 +230,9 @@ export class ProcedimentosComponent implements OnInit {
     });
   }
 
-  protected onSearch(event: Event): void {
-    this.searchTerm.set((event.target as HTMLInputElement).value);
+  protected onSearch(value: string): void {
+    this.searchTerm.set(value);
+    this.pageIndex.set(0);
   }
 
   protected isFieldInvalid(field: string): boolean {

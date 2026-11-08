@@ -3,7 +3,16 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { forkJoin, Observable, of } from 'rxjs';
-import { LucidePlus, LucideSearch, LucidePencil, LucideTrash2, LucideChevronLeft, LucideChevronRight, LucideCopy } from '@lucide/angular';
+import {
+  LucidePlus,
+  LucideSearch,
+  LucidePencil,
+  LucideTrash2,
+  LucideChevronLeft,
+  LucideChevronRight,
+  LucideCopy,
+  LucideUser
+} from '@lucide/angular';
 
 import { DoctorService, DoctorRegistrationResponse, RegisterDoctorRequest, SaveDoctorRequest } from '../../core/services/doctor.service';
 import { HospitalService } from '../../core/services/hospital.service';
@@ -19,7 +28,9 @@ import { InputComponent } from '../../shared/components/input/input.component';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
-import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
+import { DataTableComponent, TableColumn } from '../../shared/components/data-table/data-table.component';
+import { InputSearchFilterComponent } from '../../shared/components/input-search-filter/input-search-filter.component';
+import { SelectFilterActiveComponent, SelectOption } from '../../shared/components/select-filter/select-filter.component';
 
 type FormMode = 'create' | 'edit';
 
@@ -34,14 +45,17 @@ type FormMode = 'create' | 'edit';
     DialogComponent,
     LoadingComponent,
     EmptyStateComponent,
-    SelectComponent,
+    DataTableComponent,
     LucidePlus,
     LucideSearch,
     LucidePencil,
     LucideTrash2,
     LucideChevronLeft,
     LucideChevronRight,
+    InputSearchFilterComponent,
+    SelectFilterActiveComponent,
     LucideCopy,
+    LucideUser
   ],
   templateUrl: './medicos.component.html',
 })
@@ -110,16 +124,41 @@ export class MedicosComponent implements OnInit {
     );
   });
 
+  protected tableColumns = computed<TableColumn<Doctor>[]>(() => {
+    const columns: TableColumn<Doctor>[] = [
+      { key: 'fullName', label: 'Nome', width: 'min-w-[220px]' },
+    ];
+
+    if (this.isAdmin()) {
+      columns.push({
+        key: 'hospital',
+        label: 'Hospital',
+        width: 'min-w-[180px]',
+        format: (_, row) => row.hospital?.name ?? '-',
+      });
+    }
+
+    columns.push(
+      { key: 'cpf', label: 'CPF', width: 'min-w-[140px]' },
+      { key: 'crm', label: 'CRM', width: 'min-w-[120px]' },
+      { key: 'specialty', label: 'Especialidade', width: 'min-w-[180px]' },
+      { key: 'phone', label: 'Telefone', width: 'min-w-[140px]' },
+      { key: 'active', label: 'Status', width: 'w-32' },
+    );
+
+    return columns;
+  });
+
   protected form = this.fb.group({
     hospitalId: ['', []],
     // Preenchido apenas ao editar (usuário já existente); no cadastro a conta é criada pelo backend a partir do e-mail.
-    userId:     ['', []],
-    email:      ['', []],
-    fullName:   ['', [Validators.required, Validators.minLength(3)]],
-    cpf:        ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
-    crm:        ['', [Validators.required]],
-    specialty:  ['', [Validators.required]],
-    phone:      ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
+    userId: ['', []],
+    email: ['', []],
+    fullName: ['', [Validators.required, Validators.minLength(3)]],
+    cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+    crm: ['', [Validators.required]],
+    specialty: ['', [Validators.required]],
+    phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
   });
 
   ngOnInit(): void {
@@ -166,6 +205,10 @@ export class MedicosComponent implements OnInit {
   protected goToPage(page: number): void {
     if (page < 0 || page >= this.totalPages() || page === this.pageIndex()) return;
     this.loadDoctors(page);
+  }
+
+  protected onTablePageChange(event: { page: number; pageSize: number }): void {
+    this.goToPage(event.page - 1);
   }
 
   protected openCreate(): void {
@@ -423,8 +466,10 @@ export class MedicosComponent implements OnInit {
     });
   }
 
-  protected onSearch(event: Event): void {
-    this.searchTerm.set((event.target as HTMLInputElement).value);
+
+  protected onSearch(value: string): void {
+    this.searchTerm.set(value);
+    this.pageIndex.set(0);
   }
 
   protected isFieldInvalid(field: string): boolean {
