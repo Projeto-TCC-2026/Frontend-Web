@@ -44,6 +44,7 @@ export class ComponentsDemoComponent {
     { key: 'age', label: 'Idade', format: (v) => `${v} anos` },
     { key: 'status', label: 'Status' },
     { key: 'lastVisit', label: 'Última consulta' },
+    { key: 'active', label: 'Ativo', format: (v) => (v ? 'Ativo' : 'Inativo') },
   ];
 
   protected tableData = Array.from({ length: 27 }, (_, i) => ({
@@ -51,6 +52,7 @@ export class ComponentsDemoComponent {
     age: 25 + Math.floor(Math.random() * 50),
     status: ['Estável', 'Atenção', 'Crítico'][Math.floor(Math.random() * 3)],
     lastVisit: `${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}/06/2026`,
+    active: Math.random() > 0.5,
   }));
 
   protected simulateLoading(): void {

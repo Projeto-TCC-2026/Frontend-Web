@@ -5,38 +5,55 @@
       <thead>
         <tr class="bg-[var(--color-azul-primario)]">
           @for (col of columns; track col.key) {
-            <th
-              class="p-4 text-left text-xs font-semibold text-[var(--color-neutro-150)] uppercase tracking-wide "
-              [class]="col.width ?? ''"
-            >
-              {{ col.label }}
-            </th>
+          <th
+            class="p-4 text-left text-xs font-semibold text-[var(--color-neutro-150)] uppercase tracking-wide "
+            [class]="col.width ?? ''">
+            {{ col.label }}
+          </th>
           }
           @if (actionsTemplate) {
-            <th class="p-4 text-right text-xs font-semibold text-[var(--color-neutro-150)] uppercase tracking-wide">Ações</th>
+          <th
+            class="p-4 text-right text-xs font-semibold text-[var(--color-neutro-150)] uppercase tracking-wide">Ações</th>
           }
         </tr>
       </thead>
       <tbody>
         @for (row of paginatedData(); track $index) {
-          <tr class="border-b border-[var(--color-neutro-150)] last:border-b-0 hover:bg-[var(--color-neutro-100)]/50 transition-colors duration-100">
-            @for (col of columns; track col.key) {
-              <td class="p-4 text-[var(--color-neutro-900)]">
-                {{ getCellValue(col, row) }}
-              </td>
+        <tr
+          class="border-b border-[var(--color-neutro-150)] last:border-b-0 hover:bg-[var(--color-neutro-100)]/50 transition-colors duration-100">
+          @for (col of columns; track col.key) {
+          <td class="p-4 text-[var(--color-neutro-900)]">
+            @if (col.key === 'active') {
+            @if (row.active) {
+            <span class="inline-flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
+              <span class="text-sm font-medium text-green-700">Ativo</span>
+            </span>
+            } @else {
+            <span class="inline-flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+              <span class="text-sm font-medium text-red-700">Inativo</span>
+            </span>
             }
-            @if (actionsTemplate) {
-              <td class="p-4">
-                <ng-container *ngTemplateOutlet="actionsTemplate; context: { $implicit: row }"></ng-container>
-              </td>
+            } @else {
+            {{ getCellValue(col, row) }}
             }
-          </tr>
+          </td>
+          }
+          @if (actionsTemplate) {
+          <td class="p-4">
+            <ng-container
+              *ngTemplateOutlet="actionsTemplate; context: { $implicit: row }"></ng-container>
+          </td>
+          }
+        </tr>
         } @empty {
-          <tr>
-            <td [attr.colspan]="columns.length" class="px-4 py-8 text-center text-[var(--color-neutro-500)] italic">
-              Nenhum dado encontrado.
-            </td>
-          </tr>
+        <tr>
+          <td [attr.colspan]="columns.length"
+            class="px-4 py-8 text-center text-[var(--color-neutro-500)] italic">
+            Nenhum dado encontrado.
+          </td>
+        </tr>
         }
       </tbody>
     </table>
@@ -44,41 +61,39 @@
 
   <!-- Pagination -->
   @if (totalPages() > 1) {
-    <div class="flex items-center justify-between px-4 py-3 bg-white border-t border-[var(--color-neutro-150)]">
-      <span class="text-xs text-[var(--color-neutro-500)]">
-        {{ startItem() }}–{{ endItem() }} de {{ data.length }} itens
-      </span>
-      <div class="flex items-center gap-1">
-        <button
-          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
-          [disabled]="currentPage() === 1"
-          (click)="goToPage(currentPage() - 1)"
-          aria-label="Página anterior"
-        >
-          <svg lucideChevronLeft class="w-4 h-4"></svg>
-        </button>
+  <div
+    class="flex items-center justify-between px-4 py-3 bg-white border-t border-[var(--color-neutro-150)]">
+    <span class="text-xs text-[var(--color-neutro-500)]">
+      {{ startItem() }}–{{ endItem() }} de {{ data.length }} itens
+    </span>
+    <div class="flex items-center gap-1">
+      <button
+        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
+        [disabled]="currentPage() === 1"
+        (click)="goToPage(currentPage() - 1)"
+        aria-label="Página anterior">
+        <svg lucideChevronLeft class="w-4 h-4"></svg>
+      </button>
 
-        @for (page of visiblePages(); track page) {
-          <button
-            class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-xs font-medium transition-colors duration-150"
-            [class]="page === currentPage()
+      @for (page of visiblePages(); track page) {
+      <button
+        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-xs font-medium transition-colors duration-150"
+        [class]="page === currentPage()
               ? 'bg-[var(--color-azul-primario)] text-white'
               : 'text-[var(--color-neutro-700)] hover:bg-[var(--color-neutro-100)]'"
-            (click)="goToPage(page)"
-          >
-            {{ page }}
-          </button>
-        }
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+      }
 
-        <button
-          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
-          [disabled]="currentPage() === totalPages()"
-          (click)="goToPage(currentPage() + 1)"
-          aria-label="Próxima página"
-        >
-          <svg lucideChevronRight class="w-4 h-4"></svg>
-        </button>
-      </div>
+      <button
+        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goToPage(currentPage() + 1)"
+        aria-label="Próxima página">
+        <svg lucideChevronRight class="w-4 h-4"></svg>
+      </button>
     </div>
+  </div>
   }
 </div>

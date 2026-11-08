@@ -127,7 +127,7 @@ export class AdminHospitalsComponent implements OnInit {
       key: 'active',
       label: 'Status',
       width: 'w-28',
-      format: value => (value ? '<span class="text-green-300"> Ativo</span>' : '<span class="text-red-300"> Inativo</span>'),
+      format: value => (value ? 'Ativo' : 'Inativo'),
     },
   ];
 
