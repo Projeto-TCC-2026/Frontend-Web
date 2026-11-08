@@ -10,6 +10,7 @@ import {
   LucideChevronLeft,
   LucideChevronRight,
   LucideToggleLeft,
+  LucideBuilding2
 } from '@lucide/angular';
 
 import { HospitalService, HospitalRequest } from '../../core/services/hospital.service';
@@ -47,6 +48,7 @@ type FormMode = 'create' | 'edit';
     LucideChevronLeft,
     LucideChevronRight,
     LucideToggleLeft,
+    LucideBuilding2
   ],
   templateUrl: './admin-hospitals.component.html',
 })
