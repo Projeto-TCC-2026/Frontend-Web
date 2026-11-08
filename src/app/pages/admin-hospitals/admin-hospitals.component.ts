@@ -25,6 +25,7 @@ import { DialogComponent } from '../../shared/components/dialog/dialog.component
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { DataTableComponent, TableColumn } from '../../shared/components/data-table/data-table.component';
+import { InputSearchFilterComponent } from '../../shared/components/input-search-filter/input-search-filter.component';
 
 type FormMode = 'create' | 'edit';
 
@@ -41,6 +42,7 @@ type FormMode = 'create' | 'edit';
     LoadingComponent,
     EmptyStateComponent,
     DataTableComponent,
+    InputSearchFilterComponent,
     LucidePlus,
     LucideSearch,
     LucidePencil,
@@ -291,8 +293,8 @@ export class AdminHospitalsComponent implements OnInit {
     });
   }
 
-  protected onSearch(event: Event): void {
-    this.searchTerm.set((event.target as HTMLInputElement).value);
+  protected onSearch(value: string): void {
+    this.searchTerm.set(value);
   }
 
   protected isFieldInvalid(field: string): boolean {

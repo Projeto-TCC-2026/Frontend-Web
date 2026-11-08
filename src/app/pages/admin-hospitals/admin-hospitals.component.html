@@ -1,6 +1,6 @@
 <div class="max-w-7xl flex flex-col w-full mx-auto">
   <!-- Header -->
-  <div class="flex items-start justify-between mb-8 gap-4 flex-wrap">
+  <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
     <div class="flex flex-col gap-1">
       <div class="flex flex-row items-center gap-3">
         <svg lucideBuilding2 class="w-6 h-6 md:w-8 md:h-8"></svg>
@@ -20,19 +20,17 @@
     </app-button>
   </div>
 
-  <!-- Busca -->
-  <div
-    class="md:flex-row flex-col flex items-center justify-between gap-4 mb-5">
-    <div class="flex flex-row items-center md:w-[calc(50%-2rem)] w-full">
-      <svg lucideSearch
-        class="w-3.5 h-3.5 text-[var(--color-neutro-500)]"></svg>
+  <hr class="border-[var(--color-neutro-150)] border-1 rounded-full my-3" />
 
-      <input
-        id="hospital-search"
-        type="text"
+  <!-- Busca -->
+  <div class="mb-3 flex flex-col items-center justify-between gap-4 md:flex-row">
+    <div class="w-full md:w-[calc(50%-2rem)]">
+      <app-input-search-filter
+        [value]="searchTerm()"
+        inputId="hospital-search"
         placeholder="Buscar registros"
-        class="w-full px-3 py-2.5 text-sm text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-500)] outline-none transition-all duration-150"
-        (input)="onSearch($event)" />
+        (valueChange)="onSearch($event)">
+      </app-input-search-filter>
     </div>
 
     <app-select-filter-active
@@ -74,7 +72,7 @@
   <ng-template #hospitalActions let-hospital>
     <div class="flex items-center justify-end gap-1">
       <button
-        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[var(--color-neutro-500)] hover:bg-[var(--color-azul-primario)] hover:text-white/80 transition-all duration-150"
         title="Editar"
         (click)="openEdit(hospital)">
         <svg lucidePencil class="w-4 h-4"></svg>
@@ -82,14 +80,14 @@
 
       @if (hospital.active) {
       <button
-        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-atencao)] hover:bg-[var(--color-atencao-bg)] transition-all duration-150"
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[var(--color-neutro-500)] hover:bg-[var(--color-critico)] hover:text-white/80 transition-all duration-150"
         title="Inativar"
         (click)="onToggleActive(hospital)">
         <svg lucideTrash2 class="w-4 h-4"></svg>
       </button>
       } @else {
       <button
-        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-sucesso)] hover:bg-[var(--color-sucesso-bg)] transition-all duration-150"
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[var(--color-neutro-500)] hover:bg-[var(--color-sucesso)] hover:text-white/80 transition-all duration-150"
         title="Ativar hospital"
         (click)="onToggleActive(hospital)">
         <svg lucideToggleLeft class="w-4 h-4"></svg>
