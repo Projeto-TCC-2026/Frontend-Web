@@ -1,67 +1,91 @@
 <aside
-  class="h-screen sticky top-0 flex flex-col overflow-hidden bg-[var(--color-azul-profundo)] text-white transition-all"
-  [class]="isSidebarCollapsed ? 'w-[68px]' : 'w-[248px]'"
->
+  class="h-screen sticky top-0 flex flex-col overflow-hidden bg-[var(--color-azul-profundo)] text-white transition-all w-[248px]">
   <!-- Brand -->
   <div class="flex flex-col gap-1 px-2 my-8 items-center justify-center">
-    @if (!isSidebarCollapsed) {
-      <div class="p-1 mb-2 border border-2 border-[var(--color-laranja-primario)] rounded-full">
-        <span class="font-heading text-[20px] font-bold text-white tracking-wide bg-[var(--color-azul-primario)] rounded-full p-4 flex items-center justify-center">{{ userInitials }}</span>
-      </div>
-      <span class="font-heading font-extrabold text-[15px] tracking-wide text-white">{{ userName }}</span>
-      <span class="font-heading text-xs tracking-wide text-white/80">{{ userRole }}</span>
-    }
-    @else {
-      <div class="p-1 my-4 border border-2 border-[var(--color-laranja-primario)] rounded-full">
-        <span class="font-heading text-[10px] font-bold text-white tracking-wide bg-[var(--color-azul-primario)] rounded-full p-2 flex items-center justify-center">{{ userInitials }}</span>
-      </div>
-    }
+    <div
+      class="p-1 mb-2 border border-2 border-[var(--color-laranja-primario)] rounded-full">
+      <span
+        class="font-heading text-[20px] font-bold text-white tracking-wide bg-[var(--color-azul-primario)] rounded-full p-4 flex items-center justify-center">{{
+        userInitials }}</span>
+    </div>
+    <span
+      class="font-heading font-extrabold text-[15px] tracking-wide text-white">{{
+      userName }}</span>
+    <span class="font-heading text-xs tracking-wide text-white/80">{{ userRole
+      }}</span>
   </div>
 
   <!-- Navigation -->
-  <nav class="flex-1 flex flex-col gap-3 overflow-y-auto bg-[var(--color-azul-primario)]/30 py-4">
+  <nav
+    class="flex-1 flex flex-col gap-3 overflow-y-auto bg-[var(--color-azul-primario)]/30 py-4 rounded-t-lg">
     @for (item of visibleItems; track item.path) {
-      <a
-        class="sidebar-link mx-4 flex items-center justify-center gap-4 px-3 py-2.5 rounded-sm text-white/70 text-sm font-medium no-underline transition-all duration-150 hover:text-white hover:bg-white/[0.08]"
-        [routerLink]="getRoute(item)"
-        routerLinkActive="sidebar-link--active"
-        [title]="item.label"
-      >
-        <span class="flex items-center justify-center w-5 h-5 shrink-0 [&>svg]:w-5 [&>svg]:h-5 text-[var(--color-laranja-primario)]">
-          @switch (item.icon) {
-            @case ('layout-dashboard') { <svg lucideLayoutDashboard></svg> }
-            @case ('users') { <svg lucideUsers></svg> }
-            @case ('calendar-days') { <svg lucideCalendarDays></svg> }
-            @case ('clipboard-list') { <svg lucideClipboardList></svg> }
-            @case ('message-square') { <svg lucideMessageSquare></svg> }
-            @case ('chart-bar') { <svg lucideChartBar></svg> }
-            @case ('settings') { <svg lucideSettings></svg> }
-            @case ('activity') { <svg lucideActivity></svg> }
-            @case ('shield') { <svg lucideShield></svg> }
-            @case ('user-round') { <svg lucideUserRound></svg> }
-            @case ('building-2') { <svg lucideBuilding2></svg> }
-            @case ('file-spreadsheet') { <svg lucideFileSpreadsheet></svg> }
-            @case ('bell-ring') { <svg lucideBellRing></svg> }
-          }
-        </span>
-        @if (!isSidebarCollapsed) {
-          <span class="whitespace-nowrap overflow-hidden text-ellipsis w-full">{{ item.label }}</span>
+    <a
+      class="sidebar-link mx-4 flex items-center justify-center gap-4 px-3 py-2.5 rounded-sm text-white/70 text-sm font-medium no-underline transition-all duration-150 hover:text-white hover:bg-white/[0.08]"
+      [routerLink]="getRoute(item)"
+      routerLinkActive="sidebar-link--active"
+      [title]="item.label">
+      <span
+        class="flex items-center justify-center w-5 h-5 shrink-0 [&>svg]:w-5 [&>svg]:h-5 text-[var(--color-laranja-primario)]">
+        @switch (item.icon) {
+        @case ('layout-dashboard') { <svg lucideLayoutDashboard></svg> }
+        @case ('users') { <svg lucideUsers></svg> }
+        @case ('calendar-days') { <svg lucideCalendarDays></svg> }
+        @case ('clipboard-list') { <svg lucideClipboardList></svg> }
+        @case ('message-square') { <svg lucideMessageSquare></svg> }
+        @case ('chart-bar') { <svg lucideChartBar></svg> }
+        @case ('settings') { <svg lucideSettings></svg> }
+        @case ('activity') { <svg lucideActivity></svg> }
+        @case ('shield') { <svg lucideShield></svg> }
+        @case ('user-round') { <svg lucideUserRound></svg> }
+        @case ('building-2') { <svg lucideBuilding2></svg> }
+        @case ('file-spreadsheet') { <svg lucideFileSpreadsheet></svg> }
+        @case ('bell-ring') { <svg lucideBellRing></svg> }
         }
-      </a>
+      </span>
+      <span class="whitespace-nowrap overflow-hidden text-ellipsis w-full">{{
+        item.label }}</span>
+    </a>
     }
   </nav>
 
   <!-- Collapse toggle -->
   <button
-    class="mt-auto flex items-center justify-center p-2.5 text-white/50 transition-all duration-150 hover:text-white bg-[var(--color-azul-primario)]/30"
-    (click)="toggleCollapse()"
-    [attr.aria-label]="isSidebarCollapsed ? 'Expandir menu' : 'Recolher menu'"
-  >
-    <span
-      class="text-xs font-bold transition-transform duration-150 flex items-center gap-1 py-4"
-      [class.rotate-180]="isSidebarCollapsed"
-    >
-      <svg lucideChevronLeft class="w-6 h-6"></svg>
-    </span>
+    class="mt-auto flex items-center justify-between py-4 px-6 text-white/50 transition-all duration-150 text-sm hover:text-[var(--color-critico)] hover:bg-[var(--color-critico)]/20"
+    (click)="openLogoutModal()"
+    [attr.aria-label]="'Sair'">
+    Sair
+    <svg lucideLogOut class="w-4 h-4"></svg>
   </button>
 </aside>
+
+@if (showLogoutModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div class="w-[420px] rounded-xl bg-white flex flex-col p-6 shadow-lg gap-3">
+      <h3 class="text-lg font-semibold text-[var(--color-neutro-900)]">
+        Você tem certeza que deseja sair?
+      </h3>
+
+      <p class="text-sm text-[var(--color-neutro-500)]">
+        Você será redirecionado para a página inicial.
+      </p>
+
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          (click)="closeLogoutModal()"
+          class="rounded-md px-4 py-2 text-sm font-medium text-[var(--color-neutro-700)] hover:bg-[var(--color-neutro-100)]"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          (click)="confirmLogout()"
+          class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 px-6"
+        >
+          Sair
+        </button>
+      </div>
+    </div>
+  </div>
+}

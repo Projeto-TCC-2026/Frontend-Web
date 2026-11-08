@@ -1,0 +1,40 @@
+<div class="relative flex flex-row gap-1.5 items-center">
+    <label class="text-sm font-semibold text-[var(--color-neutro-500)]">
+      Status:
+    </label> 
+
+  <button
+    [id]="inputId"
+    type="button"
+    class="h-11 flex items-center justify-between px-4 text-left text-sm outline-none transition-all duration-150"
+    [class]="'h-11 flex items-center gap-2 justify-between px-4 text-left text-sm outline-none transition-all duration-150' + (state === 'error' ? 'border-[var(--color-critico)]' : 'border-[var(--color-neutro-300)]') + (disabled ? ' opacity-60 cursor-not-allowed' : ' focus:border-[var(--color-azul-primario)]')"
+    [class.opacity-60]="disabled"
+    [class.cursor-not-allowed]="disabled"
+    [attr.aria-expanded]="open()"
+    [attr.aria-haspopup]="'listbox'"
+    (click)="toggle()"
+    (keydown)="onKeydown($event)"
+  >
+    <span class="text-sm font-semibold" [class.text-[var(--color-neutro-500)]]="!selectedOption">{{ selectedOption?.label ?? placeholder }}</span>
+    <svg lucideChevronDown class="w-5 h-5 shrink-0 transition-transform" [class.text-[var(--color-neutro-500)]]="!selectedOption" [class.rotate-180]="open()"></svg>
+  </button>
+
+  @if (open()) {
+    <div class="absolute left-0 right-0 top-full z-30 mt-1 max-h-60 overflow-y-auto rounded-sm border border-[var(--color-neutro-150)] bg-white shadow-lg" role="listbox">
+      @for (option of options; track option.value; let index = $index) {
+        <button
+          type="button"
+          class="w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left text-sm transition-colors"
+          [class]="'w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left text-sm transition-colors ' + (option.value === value() ? 'bg-[var(--color-azul-primario)]/10 text-[var(--color-azul-primario)]' : 'text-[var(--color-neutro-700)]') + (option.disabled ? ' opacity-50' : '')"
+          [disabled]="option.disabled"
+          role="option"
+          [attr.aria-selected]="option.value === value()"
+          (click)="choose(option)"
+        >
+          <span>{{ option.label }}</span>
+          @if (option.value === value()) { <svg lucideCheck class="w-4 h-4 shrink-0"></svg> }
+        </button>
+      }
+    </div>
+  }
+</div>

@@ -1,4 +1,4 @@
-<div class="max-w-7xl">
+<div class="max-w-7xl flex flex-col w-full mx-auto">
   <!-- Header -->
   <div class="flex items-start justify-between mb-8 gap-4 flex-wrap">
     <div>
@@ -6,9 +6,6 @@
         class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">
         Gestão de Hospitais
       </h1>
-      <p class="text-sm text-[var(--color-neutro-500)]">
-        Gerencie todos os hospitais cadastrados na plataforma
-      </p>
     </div>
     <app-button variant="primary" (clicked)="openCreate()">
       <svg lucidePlus class="w-4 h-4"></svg>
@@ -17,188 +14,184 @@
   </div>
 
   <!-- Busca -->
-  <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_14rem] gap-4 mb-6 max-w-3xl">
-    <div>
-      <label
-        class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5"
-        for="hospital-search">
-        Buscar
-      </label>
-      <div class="relative">
-        <span
-          class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-neutro-400)] pointer-events-none">
-          <svg lucideSearch class="w-4 h-4"></svg>
-        </span>
-        <input
-          id="hospital-search"
-          type="text"
-          placeholder="Buscar por nome, CNPJ, cidade ou estado..."
-          class="w-full pl-9 pr-4 py-2.5 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-500)] outline-none focus:border-[var(--color-azul-primario)] focus:shadow-[0_0_0_3px_rgba(12,76,138,0.14)] transition-all duration-150"
-          (input)="onSearch($event)" />
-      </div>
+  <div
+    class="md:flex-row flex-col flex items-center justify-between gap-4 mb-5">
+    <div class="flex flex-row items-center md:w-[calc(50%-2rem)] w-full">
+      <svg lucideSearch class="w-3.5 h-3.5 text-[var(--color-neutro-500)]"></svg>
+
+      <input
+        id="hospital-search"
+        type="text"
+        placeholder="Buscar registros"
+        class="w-full px-3 py-2.5 text-sm text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-500)] outline-none transition-all duration-150"
+        (input)="onSearch($event)" />
     </div>
-    <app-select
-      label="Status"
+
+    <app-select-filter-active
       inputId="hospital-status"
       [options]="statusOptions"
       [selectedValue]="statusFilter()"
       (changed)="onStatusChange($event)">
-    </app-select>
+    </app-select-filter-active>
   </div>
 
   <!-- Loading -->
   @if (loading()) {
-    <app-loading text="Carregando hospitais..." [fullPage]="true"></app-loading>
+  <app-loading text="Carregando hospitais..." [fullPage]="true"></app-loading>
   }
 
   <!-- Conteúdo -->
   @if (!loading()) {
-    @if (filteredHospitals().length === 0) {
-      <div class="bg-white p-6 rounded-[var(--radius-lg)]">
-      <app-empty-state
-        title="Nenhum hospital encontrado">
-        <app-button variant="primary" size="sm" (clicked)="openCreate()">
-          Cadastrar hospital
-        </app-button>
-      </app-empty-state>
-      </div>
-    } @else {
-      <div
-        class="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] mb-5">
-        <div class="overflow-x-auto">
-          <table class="w-full bg-white text-sm">
-            <thead>
-              <tr
-                class="bg-[var(--color-neutro-150)] border-b border-[var(--color-neutro-150)]">
-                <th
-                  class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
-                  Hospital
-                </th>
-                <th
-                  class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
-                  CNPJ
-                </th>
-                <th
-                  class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
-                  Cidade / Estado
-                </th>
-                <th
-                  class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
-                  Contato
-                </th>
-                <th
-                  class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
-                  Status
-                </th>
-                <th
-                  class="px-4 py-3 text-right text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (hospital of filteredHospitals(); track hospital.id) {
-                <tr
-                  class="border-b border-[var(--color-neutro-150)] last:border-b-0 hover:bg-[var(--color-neutro-100)]/50 transition-colors duration-100">
-                  <td class="px-4 py-3 font-medium text-[var(--color-neutro-900)]">
-                    {{ hospital.name }}
-                  </td>
-                  <td
-                    class="px-4 py-3 font-data text-xs text-[var(--color-neutro-700)]">
-                    {{ formatCnpjDisplay(hospital.cnpj) }}
-                  </td>
-                  <td class="px-4 py-3 text-[var(--color-neutro-700)]">
-                    <span>{{ hospital.city }}</span>
-                    @if (hospital.state) {
-                      <span class="text-[var(--color-neutro-500)]"> · {{ hospital.state }}</span>
-                    }
-                  </td>
-                  <td class="px-4 py-3 text-[var(--color-neutro-700)]">
-                    <div>{{ hospital.email }}</div>
-                    <div class="text-xs text-[var(--color-neutro-500)]">{{ hospital.phone }}</div>
-                  </td>
-                  <td class="px-4 py-3">
-                    @if (hospital.active) {
-                      <span
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-sucesso-bg)] text-[var(--color-sucesso)]">
-                        Ativo
-                      </span>
-                    } @else {
-                      <span
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-neutro-150)] text-[var(--color-neutro-600)]">
-                        Inativo
-                      </span>
-                    }
-                  </td>
-                  <td class="px-4 py-3">
-                    <div class="flex items-center justify-end gap-1">
-                      <!-- Editar -->
-                      <button
-                        class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
-                        title="Editar"
-                        (click)="openEdit(hospital)">
-                        <svg lucidePencil class="w-4 h-4"></svg>
-                      </button>
-                      <!-- Inativar -->
-                      @if (hospital.active) {
-                        <button
-                          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-atencao)] hover:bg-[var(--color-atencao-bg)] transition-all duration-150"
-                          title="Inativar"
-                          (click)="onToggleActive(hospital)">
-                          <svg lucideTrash2 class="w-4 h-4"></svg>
-                        </button>
-                      } @else {
-                        <button
-                          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-sucesso)] hover:bg-[var(--color-sucesso-bg)] transition-all duration-150"
-                          title="Ativar hospital"
-                          (click)="onToggleActive(hospital)">
-                          <svg lucideToggleLeft class="w-4 h-4"></svg>
-                        </button>
-                      }
-                    </div>
-                  </td>
-                </tr>
+  @if (filteredHospitals().length === 0) {
+  <div class="bg-white p-6 rounded-[var(--radius-lg)] shadow-md">
+    <app-empty-state
+      title="Nenhum hospital encontrado">
+      <app-button variant="primary" size="sm" (clicked)="openCreate()">
+        Cadastrar hospital
+      </app-button>
+    </app-empty-state>
+  </div>
+  } @else {
+  <div
+    class="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] mb-5">
+    <div class="overflow-x-auto">
+      <table class="w-full bg-white text-sm">
+        <thead>
+          <tr
+            class="bg-[var(--color-neutro-150)] border-b border-[var(--color-neutro-150)]">
+            <th
+              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
+              Hospital
+            </th>
+            <th
+              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
+              CNPJ
+            </th>
+            <th
+              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
+              Cidade / Estado
+            </th>
+            <th
+              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
+              Contato
+            </th>
+            <th
+              class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
+              Status
+            </th>
+            <th
+              class="px-4 py-3 text-right text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">
+              Ações
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (hospital of filteredHospitals(); track hospital.id) {
+          <tr
+            class="border-b border-[var(--color-neutro-150)] last:border-b-0 hover:bg-[var(--color-neutro-100)]/50 transition-colors duration-100">
+            <td class="px-4 py-3 font-medium text-[var(--color-neutro-900)]">
+              {{ hospital.name }}
+            </td>
+            <td
+              class="px-4 py-3 font-data text-xs text-[var(--color-neutro-700)]">
+              {{ formatCnpjDisplay(hospital.cnpj) }}
+            </td>
+            <td class="px-4 py-3 text-[var(--color-neutro-700)]">
+              <span>{{ hospital.city }}</span>
+              @if (hospital.state) {
+              <span class="text-[var(--color-neutro-500)]"> · {{ hospital.state
+                }}</span>
               }
-            </tbody>
-          </table>
-        </div>
+            </td>
+            <td class="px-4 py-3 text-[var(--color-neutro-700)]">
+              <div>{{ hospital.email }}</div>
+              <div class="text-xs text-[var(--color-neutro-500)]">{{
+                hospital.phone }}</div>
+            </td>
+            <td class="px-4 py-3">
+              @if (hospital.active) {
+              <span
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-sucesso-bg)] text-[var(--color-sucesso)]">
+                Ativo
+              </span>
+              } @else {
+              <span
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-neutro-150)] text-[var(--color-neutro-600)]">
+                Inativo
+              </span>
+              }
+            </td>
+            <td class="px-4 py-3">
+              <div class="flex items-center justify-end gap-1">
+                <!-- Editar -->
+                <button
+                  class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
+                  title="Editar"
+                  (click)="openEdit(hospital)">
+                  <svg lucidePencil class="w-4 h-4"></svg>
+                </button>
+                <!-- Inativar -->
+                @if (hospital.active) {
+                <button
+                  class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-atencao)] hover:bg-[var(--color-atencao-bg)] transition-all duration-150"
+                  title="Inativar"
+                  (click)="onToggleActive(hospital)">
+                  <svg lucideTrash2 class="w-4 h-4"></svg>
+                </button>
+                } @else {
+                <button
+                  class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-sucesso)] hover:bg-[var(--color-sucesso-bg)] transition-all duration-150"
+                  title="Ativar hospital"
+                  (click)="onToggleActive(hospital)">
+                  <svg lucideToggleLeft class="w-4 h-4"></svg>
+                </button>
+                }
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
-        <!-- Paginação (server-side) -->
-        @if (totalPages() > 1) {
-          <div
-            class="flex items-center justify-between px-4 py-3 bg-white border-t border-[var(--color-neutro-150)]">
-            <span class="text-xs text-[var(--color-neutro-500)]">
-              Página {{ pageIndex() + 1 }} de {{ totalPages() }} · {{ totalElements() }} hospitais
-            </span>
-            <div class="flex items-center gap-1">
-              <button
-                class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
-                [disabled]="pageIndex() === 0"
-                (click)="goToPage(pageIndex() - 1)"
-                aria-label="Página anterior">
-                <svg lucideChevronLeft class="w-4 h-4"></svg>
-              </button>
-              <button
-                class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
-                [disabled]="pageIndex() >= totalPages() - 1"
-                (click)="goToPage(pageIndex() + 1)"
-                aria-label="Próxima página">
-                <svg lucideChevronRight class="w-4 h-4"></svg>
-              </button>
-            </div>
-          </div>
-        }
+    <!-- Paginação (server-side) -->
+    @if (totalPages() > 1) {
+    <div
+      class="flex items-center justify-between px-4 py-3 bg-white border-t border-[var(--color-neutro-150)]">
+      <span class="text-xs text-[var(--color-neutro-500)]">
+        Página {{ pageIndex() + 1 }} de {{ totalPages() }} · {{ totalElements()
+        }} hospitais
+      </span>
+      <div class="flex items-center gap-1">
+        <button
+          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
+          [disabled]="pageIndex() === 0"
+          (click)="goToPage(pageIndex() - 1)"
+          aria-label="Página anterior">
+          <svg lucideChevronLeft class="w-4 h-4"></svg>
+        </button>
+        <button
+          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
+          [disabled]="pageIndex() >= totalPages() - 1"
+          (click)="goToPage(pageIndex() + 1)"
+          aria-label="Próxima página">
+          <svg lucideChevronRight class="w-4 h-4"></svg>
+        </button>
       </div>
+    </div>
     }
+  </div>
+  }
   }
 
   <!-- Modal: Cadastro / Edição -->
   <app-dialog
     [open]="formOpen()"
-    [title]="formMode() === 'create' ? 'Novo Hospital' : 'Editar Hospital'"
+    [title]="formMode() === 'create' ? 'Cadastrar Hospital' : 'Editar Hospital'"
     size="md"
     (closed)="closeForm()">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-4">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate
+      class="flex flex-col gap-4">
 
       <app-input
         label="Nome do hospital"
@@ -225,13 +218,14 @@
           (input)="onCnpjInput($event)"
           class="w-full px-3 py-2.5 text-sm rounded-[var(--radius-sm)] border-[1.5px] transition-all duration-150 outline-none bg-white
             {{ isFieldInvalid('cnpj') ? 'border-[var(--color-critico)] focus:shadow-[0_0_0_3px_rgba(220,38,38,0.14)]' : 'border-[var(--color-neutro-300)] focus:border-[var(--color-azul-primario)] focus:shadow-[0_0_0_3px_rgba(12,76,138,0.14)]' }}
-            disabled:bg-[var(--color-neutro-100)] disabled:text-[var(--color-neutro-500)] disabled:cursor-not-allowed"
-        />
+            disabled:bg-[var(--color-neutro-100)] disabled:text-[var(--color-neutro-500)] disabled:cursor-not-allowed" />
         @if (isFieldInvalid('cnpj')) {
-          <p class="mt-1 text-xs text-[var(--color-critico)]">CNPJ deve ter 14 dígitos</p>
+        <p class="mt-1 text-xs text-[var(--color-critico)]">CNPJ deve ter 14
+          dígitos</p>
         }
         @if (formMode() === 'edit') {
-          <p class="mt-1 text-xs text-[var(--color-neutro-500)]">O CNPJ não pode ser alterado</p>
+        <p class="mt-1 text-xs text-[var(--color-neutro-500)]">O CNPJ não pode
+          ser alterado</p>
         }
       </div>
 

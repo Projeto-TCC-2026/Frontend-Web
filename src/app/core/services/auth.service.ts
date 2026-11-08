@@ -104,7 +104,7 @@ export class AuthService {
 
     this.clearStorage();
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
   /**

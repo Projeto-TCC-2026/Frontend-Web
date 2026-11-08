@@ -19,7 +19,7 @@ import { DialogService } from '../../core/services/dialog.service';
 
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
-import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
+import { SelectFilterActiveComponent, SelectOption } from '../../shared/components/select-filter-active/select-filter-active.component';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
@@ -34,7 +34,7 @@ type FormMode = 'create' | 'edit';
     ReactiveFormsModule,
     ButtonComponent,
     InputComponent,
-    SelectComponent,
+    SelectFilterActiveComponent,
     DialogComponent,
     LoadingComponent,
     EmptyStateComponent,

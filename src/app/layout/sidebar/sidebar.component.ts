@@ -15,7 +15,7 @@ import {
   LucideBuilding2,
   LucideFileSpreadsheet,
   LucideBellRing,
-  LucideChevronLeft,
+  LucideLogOut,
 } from '@lucide/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { NAV_ITEMS, NavItem } from '../../core/config/navigation.config';
@@ -40,13 +40,14 @@ import { NAV_ITEMS, NavItem } from '../../core/config/navigation.config';
     LucideBuilding2,
     LucideFileSpreadsheet,
     LucideBellRing,
-    LucideChevronLeft,
+    LucideLogOut,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
   private auth = inject(AuthService);
+  public showLogoutModal = false;
 
   protected get visibleItems(): NavItem[] {
     const role = this.auth.getRole();
@@ -60,11 +61,7 @@ export class SidebarComponent {
     return `/app/${item.path}`;
   }
 
-  protected get isSidebarCollapsed(): boolean {
-    return this._collapsed;
-  }
-
-    protected get userName(): string {
+  protected get userName(): string {
     const user = this.auth.getCurrentUser();
     return user?.fullName ?? user?.email ?? '';
   }
@@ -89,9 +86,16 @@ export class SidebarComponent {
     return name.substring(0, 2).toUpperCase();
   }
 
-  private _collapsed = false;
+  openLogoutModal() {
+    this.showLogoutModal = true;
+  }
 
-  toggleCollapse(): void {
-    this._collapsed = !this._collapsed;
+  closeLogoutModal() {
+    this.showLogoutModal = false;
+  }
+
+  confirmLogout() {
+    this.auth.logout();
+    this.showLogoutModal = false;
   }
 }
