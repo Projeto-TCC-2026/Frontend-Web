@@ -23,6 +23,7 @@ import { SelectFilterActiveComponent, SelectOption } from '../../shared/componen
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { DataTableComponent, TableColumn } from '../../shared/components/data-table/data-table.component';
 
 type FormMode = 'create' | 'edit';
 
@@ -38,6 +39,7 @@ type FormMode = 'create' | 'edit';
     DialogComponent,
     LoadingComponent,
     EmptyStateComponent,
+    DataTableComponent,
     LucidePlus,
     LucideSearch,
     LucidePencil,
@@ -89,6 +91,42 @@ export class AdminHospitalsComponent implements OnInit {
     );
   });
 
+  protected tableColumns: TableColumn<Hospital>[] = [
+    { key: 'name', label: 'Hospital', width: 'min-w-[220px]' },
+    {
+      key: 'cnpj',
+      label: 'CNPJ',
+      width: 'min-w-[150px]',
+      format: value => this.formatCnpjDisplay(String(value ?? '')),
+    },
+    {
+      key: 'city',
+      label: 'Cidade / Estado',
+      width: 'min-w-[200px]',
+      format: (_, row) => {
+        const city = row.city ?? '-';
+        const state = row.state ? ` / ${row.state}` : '';
+        return `${city}${state}`;
+      },
+    },
+    {
+      key: 'email',
+      label: 'Contato',
+      width: 'min-w-[260px]',
+      format: (_, row) => {
+        const email = row.email ?? '-';
+        const phone = row.phone ? ` · ${row.phone}` : '';
+        return `${email}${phone}`;
+      },
+    },
+    {
+      key: 'active',
+      label: 'Status',
+      width: 'w-28',
+      format: value => (value ? 'Ativo' : 'Inativo'),
+    },
+  ];
+
   protected form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     cnpj: ['', [Validators.required, Validators.pattern(/^\d{14}$/)]],
@@ -131,6 +169,10 @@ export class AdminHospitalsComponent implements OnInit {
   protected goToPage(page: number): void {
     if (page < 0 || page >= this.totalPages() || page === this.pageIndex()) return;
     this.loadHospitals(page);
+  }
+
+  protected onTablePageChange(event: { page: number; pageSize: number }): void {
+    this.goToPage(event.page - 1);
   }
 
   protected openCreate(): void {

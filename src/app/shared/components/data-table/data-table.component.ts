@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, computed, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, signal, TemplateRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideChevronLeft, LucideChevronRight } from '@lucide/angular';
 
@@ -24,31 +24,45 @@ export interface PageEvent {
   imports: [CommonModule, LucideChevronLeft, LucideChevronRight],
   templateUrl: './data-table.component.html',
 })
-export class DataTableComponent {
+export class DataTableComponent implements OnChanges {
   @Input() columns: TableColumn[] = [];
   @Input() data: any[] = [];
   @Input() pageSize = 10;
+  @Input() totalItems = 0;
+  @Input() actionsTemplate: TemplateRef<any> | null = null;
 
   @Output() pageChange = new EventEmitter<PageEvent>();
 
   protected currentPage = signal(1);
 
-  protected totalPages = computed(() =>
-    Math.max(1, Math.ceil(this.data.length / this.pageSize))
-  );
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] || changes['totalItems'] || changes['pageSize']) {
+      const maxPage = this.totalPages();
+      if (this.currentPage() > maxPage) {
+        this.currentPage.set(maxPage);
+      }
+    }
+  }
+
+  protected totalPages = computed(() => {
+    const total = this.totalItems > 0 ? this.totalItems : this.data.length;
+    return Math.max(1, Math.ceil(total / this.pageSize));
+  });
 
   protected paginatedData = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
     return this.data.slice(start, start + this.pageSize);
   });
 
-  protected startItem = computed(() =>
-    this.data.length === 0 ? 0 : (this.currentPage() - 1) * this.pageSize + 1
-  );
+  protected startItem = computed(() => {
+    const total = this.totalItems > 0 ? this.totalItems : this.data.length;
+    return total === 0 ? 0 : (this.currentPage() - 1) * this.pageSize + 1;
+  });
 
-  protected endItem = computed(() =>
-    Math.min(this.currentPage() * this.pageSize, this.data.length)
-  );
+  protected endItem = computed(() => {
+    const total = this.totalItems > 0 ? this.totalItems : this.data.length;
+    return Math.min(this.currentPage() * this.pageSize, total);
+  });
 
   protected visiblePages = computed(() => {
     const total = this.totalPages();
