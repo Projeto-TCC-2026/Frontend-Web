@@ -1,25 +1,29 @@
-<div class="max-w-2xl">
+<div class="max-w-3xl mx-auto flex flex-col w-full gap-6">
   <!-- Cabeçalho -->
-  <div class="flex items-center gap-3 mb-1">
+  <div class="flex flex-row items-center gap-3 mb-1">
     <button
       type="button"
       (click)="goBack()"
       class="p-1.5 rounded-md text-[var(--color-neutro-500)] hover:bg-[var(--color-neutro-100)] transition-all duration-150">
-      <svg lucideChevronLeft class="w-5 h-5"></svg>
+      <svg lucideChevronLeft class="w-7 h-7 text-black"></svg>
     </button>
-    <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)]">
-      Editar conta
-    </h1>
-  </div>
 
-  <p class="text-sm text-[var(--color-neutro-500)] mb-8 ml-10">
-    Atualize as informações da sua conta.
-  </p>
+    <div class="flex flex-col items-start gap-2">
+      <h1
+        class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)]">
+        Editar conta
+      </h1>
+
+      <p class="text-sm text-[var(--color-neutro-500)]">
+        Atualize as informações da sua conta.
+      </p>
+    </div>
+  </div>
 
   <!-- Formulário Hospital -->
   @if (isHospital) {
-    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6 max-w-lg">
-      <form class="flex flex-col gap-4" (ngSubmit)="onSubmit()">
+    <section class="bg-white border border-[var(--color-neutro-150)] p-8 rounded-lg shadow-md">
+      <form class="flex flex-col gap-5" (ngSubmit)="onSubmit()">
 
         <app-input
           label="Nome do hospital"
@@ -77,12 +81,9 @@
           </app-input>
         </div>
 
-        <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+        <div class="flex flex-col gap-3 pt-2 sm:flex-row justify-end">
           <app-button type="submit" [loading]="isSubmitting" [fullWidth]="true">
             Salvar alterações
-          </app-button>
-          <app-button variant="ghost" type="button" [fullWidth]="true" (clicked)="goBack()">
-            Cancelar
           </app-button>
         </div>
 
