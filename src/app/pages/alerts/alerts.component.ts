@@ -2,10 +2,9 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
-  LucideChevronLeft,
-  LucideChevronRight,
   LucideCheck,
   LucideTriangleAlert,
+  LucideBellRing
 } from '@lucide/angular';
 
 import { DoctorAlertService } from '../../core/services/doctor-alert.service';
@@ -21,6 +20,7 @@ import {
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { DataTableComponent, PageEvent, TableColumn } from '../../shared/components/data-table/data-table.component';
 
 /** O médico só vê alertas já confirmados; a tela nunca filtra por outros status. */
 type AlertTabStatus = Extract<DoctorAlertStatus, 'PENDING' | 'RESOLVED'>;
@@ -65,10 +65,10 @@ const SAO_PAULO_FORMATTER = new Intl.DateTimeFormat('pt-BR', {
     LoadingComponent,
     ButtonComponent,
     EmptyStateComponent,
-    LucideChevronLeft,
-    LucideChevronRight,
     LucideCheck,
     LucideTriangleAlert,
+    LucideBellRing,
+    DataTableComponent
   ],
   templateUrl: './alerts.component.html',
 })
@@ -99,8 +99,34 @@ export class AlertsComponent implements OnInit {
   protected resolvingId = signal<string | null>(null);
 
   protected pageIndex = signal(0);
-  protected totalPages = signal(0);
   protected totalElements = signal(0);
+  protected readonly pageSize = PAGE_SIZE;
+  protected readonly tableColumns: TableColumn<DoctorAlert>[] = [
+    { key: 'patientName', label: 'Paciente', width: 'min-w-[160px]' },
+    {
+      key: 'readingType',
+      label: 'Medição',
+      width: 'min-w-[180px]',
+      format: (_, alert) => {
+        const value = [alert.readingValue, alert.unit].filter(Boolean).join(' ');
+        return value
+          ? `${this.getReadingTypeLabel(alert.readingType)}: ${value}`
+          : this.getReadingTypeLabel(alert.readingType);
+      },
+    },
+    {
+      key: 'measuredAt',
+      label: 'Horário da medição',
+      width: 'min-w-[170px]',
+      format: value => this.formatMeasuredAt(value),
+    },
+    {
+      key: 'confirmationReason',
+      label: 'Motivo',
+      width: 'min-w-[220px]',
+      format: value => this.getConfirmationReasonLabel(value),
+    },
+  ];
 
   ngOnInit(): void {
     this.loadAlerts(0);
@@ -129,9 +155,8 @@ export class AlertsComponent implements OnInit {
     document.getElementById('alerts-tab-' + status)?.focus();
   }
 
-  protected goToPage(page: number): void {
-    if (page < 0 || page >= this.totalPages() || page === this.pageIndex()) return;
-    this.loadAlerts(page);
+  protected onTablePageChange(event: PageEvent): void {
+    this.loadAlerts(event.page - 1);
   }
 
   protected reload(): void {
@@ -146,13 +171,11 @@ export class AlertsComponent implements OnInit {
       next: (response: DoctorAlertPage) => {
         this.alerts.set(response.content);
         this.pageIndex.set(response.number);
-        this.totalPages.set(response.totalPages);
         this.totalElements.set(response.totalElements);
         this.loading.set(false);
       },
       error: (error: unknown) => {
         this.alerts.set([]);
-        this.totalPages.set(0);
         this.totalElements.set(0);
         this.loadError.set(this.extractErrorMessage(error, 'Erro ao carregar alertas.'));
         this.loading.set(false);

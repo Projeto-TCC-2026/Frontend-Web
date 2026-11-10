@@ -27,11 +27,11 @@
           >{{ title }}</h2>
           @if (closable) {
             <button
-              class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:text-[var(--color-neutro-900)] hover:bg-[var(--color-neutro-100)]"
+              class="flex items-center justify-center w-6 h-6 rounded-full text-[var(--color-neutro-500)] transition-colors duration-150 hover:text-[var(--color-neutro-100)] hover:bg-[var(--color-critico)]"
               (click)="close()"
               aria-label="Fechar"
             >
-              <svg lucideX class="w-5 h-5"></svg>
+              <svg lucideX class="w-4 h-4"></svg>
             </button>
           }
         </div>
