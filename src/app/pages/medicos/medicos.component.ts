@@ -30,7 +30,7 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { DataTableComponent, TableColumn } from '../../shared/components/data-table/data-table.component';
 import { InputSearchFilterComponent } from '../../shared/components/input-search-filter/input-search-filter.component';
-import { SelectFilterActiveComponent, SelectOption } from '../../shared/components/select-filter/select-filter.component';
+import { SelectFilterComponent, SelectOption } from '../../shared/components/select-filter/select-filter.component';
 
 type FormMode = 'create' | 'edit';
 
@@ -53,7 +53,7 @@ type FormMode = 'create' | 'edit';
     LucideChevronLeft,
     LucideChevronRight,
     InputSearchFilterComponent,
-    SelectFilterActiveComponent,
+    SelectFilterComponent,
     LucideCopy,
     LucideUser
   ],

@@ -1,219 +1,153 @@
-<div class="max-w-7xl">
-  <div class="flex items-start justify-between mb-8 gap-4 flex-wrap">
-    <div>
-      <h1 class="font-heading font-extrabold text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">
-        Gerencial de Pacientes
-      </h1>
+<div class="max-w-7xl flex flex-col w-full mx-auto">
+  <!-- Header -->
+  <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
+    <div class="flex flex-col gap-1">
+      <div class="flex flex-row items-center gap-3">
+        <svg lucideUsers class="w-6 h-6 md:w-8 md:h-8"></svg>
+        <h1
+          class="font-heading font-extrabold text-[25px] md:text-[32px] leading-10 text-[var(--color-neutro-900)] mb-1">
+          Gerencial de Pacientes
+        </h1>
+      </div>
+
       <p class="text-sm text-[var(--color-neutro-500)]">{{ pageSubtitle() }}</p>
     </div>
     @if (canCreate()) {
-      <app-button variant="primary" (clicked)="openCreate()">
-        <svg lucidePlus class="w-4 h-4"></svg>
-        Novo Paciente
-      </app-button>
+    <app-button variant="primary" (clicked)="openCreate()">
+      <svg lucidePlus class="w-4 h-4"></svg>
+      Novo Paciente
+    </app-button>
     }
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_14rem] gap-4 mb-6 max-w-3xl">
-    <div>
-      <label
-        class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5"
-        for="patient-search">
-        Buscar
-      </label>
-      <div class="relative">
-        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-neutro-400)] pointer-events-none">
-          <svg lucideSearch class="w-4 h-4"></svg>
-        </span>
-        <input
-          id="patient-search"
-          type="text"
-          placeholder="Buscar paciente por nome, CPF, e-mail ou telefone..."
-          class="w-full pl-9 pr-4 py-2.5 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-500)] outline-none focus:border-[var(--color-azul-primario)] focus:shadow-[0_0_0_3px_rgba(12,76,138,0.14)] transition-all duration-150"
-          (input)="onSearch($event)" />
-      </div>
+  <hr class="border-[var(--color-neutro-150)] border-1 rounded-full my-3" />
+
+  <!-- Busca -->
+  <div
+    class="mb-3 flex flex-col items-center justify-between gap-4 md:flex-row">
+    <div class="w-full md:w-[calc(50%-2rem)]">
+      <app-input-search-filter
+        [value]="searchTerm()"
+        inputId="patient-search"
+        placeholder="Buscar registros"
+        (valueChange)="onSearch($event)">
+      </app-input-search-filter>
     </div>
-    <app-select
-      label="Status"
+
+    <app-select-filter-active
       inputId="patient-status"
       [options]="statusOptions"
       [selectedValue]="statusFilter()"
       (changed)="onStatusChange($event)">
-    </app-select>
+    </app-select-filter-active>
   </div>
 
   @if (loading()) {
-    <app-loading text="Carregando pacientes..." [fullPage]="true"></app-loading>
+  <app-loading text="Carregando pacientes..." [fullPage]="true"></app-loading>
   }
 
   @if (!loading()) {
-    @if (filteredPatients().length === 0) {
-      <app-empty-state
-        title="Nenhum paciente encontrado"
-        description="Cadastre um novo paciente para começar.">
-        @if (canCreate()) {
-          <app-button variant="primary" size="sm" (clicked)="openCreate()">Cadastrar paciente</app-button>
-        }
-      </app-empty-state>
-    } @else {
-      <div class="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-neutro-150)] mb-5">
-        <div class="overflow-x-auto">
-          <table class="w-full bg-white text-sm">
-            <thead>
-              <tr class="bg-[var(--color-neutro-150)] border-b border-[var(--color-neutro-150)]">
-                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Nome</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">CPF</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Contato</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Localização</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Status</th>
-                <th class="px-4 py-3 text-right text-xs font-semibold text-[var(--color-neutro-800)] uppercase tracking-wide">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (patient of filteredPatients(); track patient.id) {
-                <tr class="border-b border-[var(--color-neutro-150)] last:border-b-0 hover:bg-[var(--color-neutro-100)]/50 transition-colors duration-100">
-                  <td class="px-4 py-3 font-medium text-[var(--color-neutro-900)]">
-                    <div>{{ patient.fullName }}</div>
-                    @if (patient.birthDate) {
-                      <div class="text-xs font-normal text-[var(--color-neutro-500)]">{{ calculateAge(patient.birthDate) }} anos</div>
-                    }
-                  </td>
-                  <td class="px-4 py-3 font-data text-xs text-[var(--color-neutro-700)]">{{ formatCPF(patient.cpf) }}</td>
-                  <td class="px-4 py-3 text-[var(--color-neutro-700)]">
-                    @if (patient.email) {
-                      <div>{{ patient.email }}</div>
-                    }
-                    @if (patient.phone) {
-                      <div class="text-xs text-[var(--color-neutro-500)]">{{ formatPhone(patient.phone) }}</div>
-                    }
-                    @if (!patient.email && !patient.phone) {
-                      <span class="text-[var(--color-neutro-400)]">-</span>
-                    }
-                  </td>
-                  <td class="px-4 py-3 text-[var(--color-neutro-700)]">
-                    @if (patient.city && patient.state) {
-                      {{ patient.city }}/{{ patient.state }}
-                    } @else {
-                      <span class="text-[var(--color-neutro-400)]">-</span>
-                    }
-                  </td>
-                  <td class="px-4 py-3">
-                    @if (patient.active) {
-                      <span class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-sucesso-bg)] text-[var(--color-sucesso)] rounded-full">
-                        Ativo
-                      </span>
-                    } @else {
-                      <span class="inline-flex px-2 py-1 text-xs font-medium bg-[var(--color-neutro-100)] text-[var(--color-neutro-500)] rounded-full">
-                        Inativo
-                      </span>
-                    }
-                  </td>
-                  <td class="px-4 py-3">
-                    <div class="flex items-center justify-end gap-1">
-                      @if (patient.active) {
-                        <button
-                          type="button"
-                          class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
-                          title="Visualizar"
-                          (click)="viewPatient(patient)">
-                          <svg lucideEye class="w-4 h-4"></svg>
-                        </button>
-                        @if (canEdit()) {
-                          <button
-                            type="button"
-                            class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-azul-primario)] hover:bg-[var(--color-azul-primario)]/8 transition-all duration-150"
-                            title="Editar"
-                            (click)="openEdit(patient)">
-                            <svg lucidePencil class="w-4 h-4"></svg>
-                          </button>
-                        }
-                        @if (canDeactivate()) {
-                          <button
-                            type="button"
-                            class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] hover:text-[var(--color-critico)] hover:bg-[var(--color-critico-bg)] transition-all duration-150"
-                            title="Inativar"
-                            (click)="deactivatePatient(patient)">
-                            <svg lucideTrash2 class="w-4 h-4"></svg>
-                          </button>
-                        }
-                      }
-                    </div>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-
-        @if (totalPages() > 1) {
-          <div class="flex items-center justify-between px-4 py-3 bg-white border-t border-[var(--color-neutro-150)]">
-            <span class="text-xs text-[var(--color-neutro-500)]">
-              Página {{ pageIndex() + 1 }} de {{ totalPages() }} · {{ totalElements() }} pacientes
-            </span>
-            <div class="flex items-center gap-1">
-              <button
-                type="button"
-                class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
-                [disabled]="pageIndex() === 0"
-                (click)="goToPage(pageIndex() - 1)"
-                aria-label="Página anterior">
-                <svg lucideChevronLeft class="w-4 h-4"></svg>
-              </button>
-              <button
-                type="button"
-                class="flex items-center justify-center w-8 h-8 rounded-[var(--radius-sm)] text-[var(--color-neutro-500)] transition-colors duration-150 hover:bg-[var(--color-neutro-100)] disabled:opacity-40 disabled:cursor-not-allowed"
-                [disabled]="pageIndex() >= totalPages() - 1"
-                (click)="goToPage(pageIndex() + 1)"
-                aria-label="Próxima página">
-                <svg lucideChevronRight class="w-4 h-4"></svg>
-              </button>
-            </div>
-          </div>
-        }
-      </div>
-    }
+  @if (filteredPatients().length === 0) {
+  <div class="bg-white p-6 rounded-[var(--radius-lg)] shadow-md">
+    <app-empty-state
+      title="Nenhum paciente encontrado"
+      description="Cadastre um novo paciente para começar.">
+      @if (canCreate()) {
+      <app-button variant="primary" size="sm" (clicked)="openCreate()">Cadastrar
+        paciente</app-button>
+      }
+    </app-empty-state>
+  </div>
+  } @else {
+  <div class="mb-5">
+    <app-data-table
+      [columns]="tableColumns"
+      [data]="filteredPatients()"
+      [pageSize]="pageSize()"
+      [totalItems]="totalElements()"
+      [page]="pageIndex() + 1"
+      (pageChange)="onTablePageChange($event)"
+      [actionsTemplate]="patientActions">
+    </app-data-table>
+  </div>
   }
+  }
+
+  <ng-template #patientActions let-patient>
+    <div class="flex items-center justify-end gap-1">
+      @if (patient.active) {
+      <button
+        type="button"
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[var(--color-neutro-500)] hover:bg-[var(--color-atencao)] hover:text-white/80 transition-all duration-150"
+        title="Visualizar"
+        (click)="viewPatient(patient)">
+        <svg lucideEye class="w-4 h-4"></svg>
+      </button>
+      @if (canEdit()) {
+      <button
+        type="button"
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[var(--color-neutro-500)] hover:bg-[var(--color-azul-primario)] hover:text-white/80 transition-all duration-150"
+        title="Editar"
+        (click)="openEdit(patient)">
+        <svg lucidePencil class="w-4 h-4"></svg>
+      </button>
+      }
+      @if (canDeactivate()) {
+      <button
+        type="button"
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[var(--color-neutro-500)] hover:bg-[var(--color-critico)] hover:text-white/80 transition-all duration-150"
+        title="Inativar"
+        (click)="deactivatePatient(patient)">
+        <svg lucideTrash2 class="w-4 h-4"></svg>
+      </button>
+      }
+      }
+    </div>
+  </ng-template>
 
   <app-dialog
     [open]="formOpen()"
-    [title]="formMode() === 'create' ? 'Novo Paciente' : 'Editar Paciente'"
+    [title]="formMode() === 'create' ? 'Cadastrar Paciente' : 'Editar Paciente'"
     size="lg"
     (closed)="closeForm()">
-    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-4">
+    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" novalidate
+      class="flex flex-col gap-4">
       @if (formMode() === 'edit') {
-        <div>
-          <p class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5">
-            Médico responsável
-          </p>
-          <p class="w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-[var(--color-neutro-100)] text-[var(--color-neutro-700)]">
-            {{ responsibleDoctorName() || 'Não informado' }}
-          </p>
-        </div>
+      <div>
+        <p
+          class="block text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-1.5">
+          Médico responsável
+        </p>
+        <p
+          class="w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-[var(--color-neutro-100)] text-[var(--color-neutro-700)]">
+          {{ responsibleDoctorName() || 'Não informado' }}
+        </p>
+      </div>
       }
 
       @if (isHospital() && formMode() === 'create') {
-        <app-select
-          label="Médico responsável"
-          formControlName="doctorId"
-          [options]="doctorOptions()"
-          [required]="true"
-          [disabled]="loadingDoctors()"
-          [placeholder]="loadingDoctors() ? 'Carregando médicos...' : 'Selecione o médico responsável'"
-          [state]="isFieldInvalid('doctorId') ? 'error' : 'default'"
-          [helperText]="isFieldInvalid('doctorId') ? 'Selecione o médico responsável' : ''"
-          (changed)="onDoctorChange($event)"></app-select>
+      <app-select
+        label="Médico responsável"
+        formControlName="doctorId"
+        [options]="doctorOptions()"
+        [required]="true"
+        [disabled]="loadingDoctors()"
+        [placeholder]="loadingDoctors() ? 'Carregando médicos...' : 'Selecione o médico responsável'"
+        [state]="isFieldInvalid('doctorId') ? 'error' : 'default'"
+        [helperText]="isFieldInvalid('doctorId') ? 'Selecione o médico responsável' : ''"
+        (changed)="onDoctorChange($event)"></app-select>
       }
 
       @if (formMode() === 'create') {
-        <app-select
-          label="Procedimento"
-          formControlName="procedureId"
-          [options]="procedureOptions()"
-          [required]="true"
-          [disabled]="isProcedureFieldDisabled()"
-          [placeholder]="procedurePlaceholder()"
-          [state]="isFieldInvalid('procedureId') ? 'error' : 'default'"
-          [helperText]="procedureHelperText()"></app-select>
+      <app-select
+        label="Procedimento"
+        formControlName="procedureId"
+        [options]="procedureOptions()"
+        [required]="true"
+        [disabled]="isProcedureFieldDisabled()"
+        [placeholder]="procedurePlaceholder()"
+        [state]="isFieldInvalid('procedureId') ? 'error' : 'default'"
+        [helperText]="procedureHelperText()"></app-select>
       }
 
       <app-input
@@ -238,16 +172,19 @@
           [helperText]="isFieldInvalid('cpf') ? 'CPF deve ter 11 dígitos' : ''"></app-input>
 
         <div class="flex flex-col gap-1.5">
-          <label for="birthDate" class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">
-            Data de nascimento <span class="text-[var(--color-critico)]">*</span>
+          <label for="birthDate"
+            class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide">
+            Data de nascimento <span
+              class="text-[var(--color-critico)]">*</span>
           </label>
           <input
             id="birthDate"
             type="date"
             formControlName="birthDate"
-            class="w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white outline-none focus:border-[var(--color-azul-primario)] focus:shadow-[0_0_0_3px_rgba(12,76,138,0.14)]" />
+            class="w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] border-[var(--color-neutro-300)] bg-white outline-none focus:border-[var(--color-azul-primario)]" />
           @if (isFieldInvalid('birthDate')) {
-            <span class="text-xs text-[var(--color-critico)]">Data de nascimento é obrigatória</span>
+          <span class="text-xs text-[var(--color-critico)]">Data de nascimento é
+            obrigatória</span>
           }
         </div>
       </div>
@@ -332,10 +269,12 @@
     </form>
 
     <div dialogActions class="flex items-center justify-end gap-3">
-      <app-button variant="ghost" size="sm" type="button" customClass="min-w-[100px]" (clicked)="closeForm()">
+      <app-button variant="ghost" size="sm" type="button"
+        customClass="min-w-[100px]" (clicked)="closeForm()">
         Cancelar
       </app-button>
-      <app-button variant="primary" size="sm" type="submit" customClass="min-w-[150px]" [loading]="saving()" (clicked)="onSubmit()">
+      <app-button variant="primary" size="sm" type="submit"
+        customClass="min-w-[150px]" [loading]="saving()" (clicked)="onSubmit()">
         {{ formMode() === 'create' ? 'Cadastrar' : 'Salvar alterações' }}
       </app-button>
     </div>
@@ -347,115 +286,131 @@
     size="lg"
     (closed)="closeViewModal()">
     @if (selectedPatient(); as patient) {
-      <div class="flex flex-col gap-6">
-        <div>
-          <h3 class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-3">Informações pessoais</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">CPF</p>
-              <p class="text-sm font-data text-[var(--color-neutro-900)]">{{ formatCPF(patient.cpf) }}</p>
-            </div>
-            <div>
-              <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Data de nascimento</p>
-              <p class="text-sm text-[var(--color-neutro-900)]">
-                {{ patient.birthDate | date:'dd/MM/yyyy' }} ({{ calculateAge(patient.birthDate) }} anos)
-              </p>
-            </div>
-            <div>
-              <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Gênero</p>
-              <p class="text-sm text-[var(--color-neutro-900)]">
-                {{ patient.gender ? getGenderLabel(patient.gender) : 'Não informado' }}
-              </p>
-            </div>
-            <div>
-              <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Tipo sanguíneo</p>
-              <p class="text-sm text-[var(--color-neutro-900)]">
-                {{ patient.bloodType ? getBloodTypeLabel(patient.bloodType) : 'Não informado' }}
-              </p>
-            </div>
+    <div class="flex flex-col gap-6">
+      <div>
+        <h3
+          class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-3">Informações
+          pessoais</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">CPF</p>
+            <p class="text-sm font-data text-[var(--color-neutro-900)]">{{
+              formatCPF(patient.cpf) }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Data de
+              nascimento</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">
+              {{ patient.birthDate | date:'dd/MM/yyyy' }} ({{
+              calculateAge(patient.birthDate) }} anos)
+            </p>
+          </div>
+          <div>
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Gênero</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">
+              {{ patient.gender ? getGenderLabel(patient.gender) :
+              'Não informado' }}
+            </p>
+          </div>
+          <div>
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Tipo
+              sanguíneo</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">
+              {{ patient.bloodType ? getBloodTypeLabel(patient.bloodType) :
+              'Não informado' }}
+            </p>
           </div>
         </div>
-
-        <div>
-          <h3 class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-3">Contato</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">E-mail</p>
-              <p class="text-sm text-[var(--color-neutro-900)]">{{ patient.email || 'Não informado' }}</p>
-            </div>
-            <div>
-              <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Telefone</p>
-              <p class="text-sm text-[var(--color-neutro-900)]">
-                {{ patient.phone ? formatPhone(patient.phone) : 'Não informado' }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        @if (patient.address || patient.city || patient.state) {
-          <div>
-            <h3 class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-3">Endereço</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="md:col-span-2">
-                <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Endereço</p>
-                <p class="text-sm text-[var(--color-neutro-900)]">{{ patient.address || 'Não informado' }}</p>
-              </div>
-              <div>
-                <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Cidade</p>
-                <p class="text-sm text-[var(--color-neutro-900)]">{{ patient.city || 'Não informado' }}</p>
-              </div>
-              <div>
-                <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Estado</p>
-                <p class="text-sm text-[var(--color-neutro-900)]">{{ patient.state || 'Não informado' }}</p>
-              </div>
-              @if (patient.zipCode) {
-                <div class="md:col-span-2">
-                  <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">CEP</p>
-                  <p class="text-sm font-data text-[var(--color-neutro-900)]">{{ formatZipCode(patient.zipCode) }}</p>
-                </div>
-              }
-            </div>
-          </div>
-        }
-
-        @if (patient.weight || patient.height) {
-          <div>
-            <h3 class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-3">Dados físicos</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Peso</p>
-                <p class="text-sm text-[var(--color-neutro-900)]">
-                  {{ patient.weight ? patient.weight + ' kg' : 'Não informado' }}
-                </p>
-              </div>
-              <div>
-                <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Altura</p>
-                <p class="text-sm text-[var(--color-neutro-900)]">
-                  {{ patient.height ? patient.height + ' m' : 'Não informado' }}
-                </p>
-              </div>
-            </div>
-          </div>
-        }
       </div>
+
+      <div>
+        <h3
+          class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-3">Contato</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">E-mail</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">{{ patient.email
+              || 'Não informado' }}</p>
+          </div>
+          <div>
+            <p
+              class="text-xs text-[var(--color-neutro-500)] mb-0.5">Telefone</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">
+              {{ patient.phone ? formatPhone(patient.phone) : 'Não informado' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      @if (patient.address || patient.city || patient.state) {
+      <div>
+        <h3
+          class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-3">Endereço</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2">
+            <p
+              class="text-xs text-[var(--color-neutro-500)] mb-0.5">Endereço</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">{{ patient.address
+              || 'Não informado' }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Cidade</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">{{ patient.city ||
+              'Não informado' }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Estado</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">{{ patient.state
+              || 'Não informado' }}</p>
+          </div>
+          @if (patient.zipCode) {
+          <div class="md:col-span-2">
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">CEP</p>
+            <p class="text-sm font-data text-[var(--color-neutro-900)]">{{
+              formatZipCode(patient.zipCode) }}</p>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      @if (patient.weight || patient.height) {
+      <div>
+        <h3
+          class="text-xs font-semibold text-[var(--color-neutro-700)] uppercase tracking-wide mb-3">Dados
+          físicos</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Peso</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">
+              {{ patient.weight ? patient.weight + ' kg' : 'Não informado' }}
+            </p>
+          </div>
+          <div>
+            <p class="text-xs text-[var(--color-neutro-500)] mb-0.5">Altura</p>
+            <p class="text-sm text-[var(--color-neutro-900)]">
+              {{ patient.height ? patient.height + ' m' : 'Não informado' }}
+            </p>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
     }
 
     <div dialogActions class="flex items-center justify-end gap-3">
       @if (userRole() === 'HOSPITAL' || userRole() === 'DOCTOR') {
-        <app-button
-          variant="primary"
-          size="sm"
-          type="button"
-          [disabled]="!hasCheckedInToday()"
-          [loading]="exportingReport()"
-          [title]="hasCheckedInToday() ? 'Exportar relatório diário' : 'Paciente não fez check-in hoje'"
-          (clicked)="exportDailyReport()">
-          Exportar relatório do dia
-        </app-button>
-      }
-      <app-button variant="ghost" size="sm" type="button" customClass="min-w-[100px]" (clicked)="closeViewModal()">
-        Fechar
+      <app-button
+        variant="primary"
+        size="sm"
+        type="button"
+        [disabled]="!hasCheckedInToday()"
+        [loading]="exportingReport()"
+        [title]="hasCheckedInToday() ? 'Exportar relatório diário' : 'Paciente não fez check-in hoje'"
+        (clicked)="exportDailyReport()">
+        Exportar relatório do dia
       </app-button>
+      }
     </div>
   </app-dialog>
 </div>

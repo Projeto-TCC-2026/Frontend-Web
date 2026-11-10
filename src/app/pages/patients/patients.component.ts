@@ -7,10 +7,8 @@ import {
   LucidePlus,
   LucidePencil,
   LucideEye,
-  LucideSearch,
-  LucideChevronLeft,
-  LucideChevronRight,
   LucideTrash2,
+  LucideUsers
 } from '@lucide/angular';
 
 import { PatientService, PaginatedResponse } from '../../core/services/patient.service';
@@ -29,6 +27,9 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { InputComponent } from '../../shared/components/input/input.component';
 import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { InputSearchFilterComponent } from '../../shared/components/input-search-filter/input-search-filter.component';
+import { SelectFilterComponent } from '../../shared/components/select-filter/select-filter.component';
+import { DataTableComponent, PageEvent, TableColumn } from '../../shared/components/data-table/data-table.component';
 
 type FormMode = 'create' | 'edit';
 
@@ -47,10 +48,11 @@ type FormMode = 'create' | 'edit';
     LucidePlus,
     LucidePencil,
     LucideEye,
-    LucideSearch,
-    LucideChevronLeft,
-    LucideChevronRight,
     LucideTrash2,
+    LucideUsers,
+    InputSearchFilterComponent,
+    SelectFilterComponent,
+    DataTableComponent
   ],
   templateUrl: './patients.component.html',
 })
@@ -86,7 +88,6 @@ export class PatientsComponent implements OnInit {
   protected exportingReport = signal(false);
 
   protected pageIndex = signal(0);
-  protected totalPages = signal(0);
   protected totalElements = signal(0);
   protected pageSize = signal(10);
 
@@ -157,6 +158,39 @@ export class PatientsComponent implements OnInit {
       (p.city ?? '').toLowerCase().includes(term)
     );
   });
+
+  protected tableColumns: TableColumn<PatientListItem>[] = [
+    {
+      key: 'fullName',
+      label: 'Nome',
+      width: 'min-w-[180px]',
+      format: (_, patient) => patient.fullName,
+    },
+    {
+      key: 'cpf',
+      label: 'CPF',
+      width: 'min-w-[130px]',
+      format: value => this.formatCPF(value ?? ''),
+    },
+    {
+      key: 'email',
+      label: 'Contato',
+      width: 'min-w-[200px]',
+      format: (_, patient) => [
+        patient.email,
+        patient.phone ? this.formatPhone(patient.phone) : null,
+      ].filter(Boolean).join(' - ') || '-',
+    },
+    {
+      key: 'city',
+      label: 'Localização',
+      width: 'min-w-[140px]',
+      format: (_, patient) => patient.city && patient.state
+        ? `${patient.city}/${patient.state}`
+        : '-',
+    },
+    { key: 'active', label: 'Status', width: 'w-32' },
+  ];
 
   protected patientForm = this.fb.group({
     // Validators.required é aplicado em runtime apenas para HOSPITAL no cadastro (ver syncDoctorValidator).
@@ -314,7 +348,6 @@ export class PatientsComponent implements OnInit {
       next: (response: PaginatedResponse<PatientListItem>) => {
         this.patients.set(response.content);
         this.pageIndex.set(response.number);
-        this.totalPages.set(response.totalPages);
         this.totalElements.set(response.totalElements);
         this.loading.set(false);
       },
@@ -330,8 +363,9 @@ export class PatientsComponent implements OnInit {
     return status === 'all' ? null : status === 'active';
   }
 
-  protected onSearch(event: Event): void {
-    this.searchTerm.set((event.target as HTMLInputElement).value);
+  protected onSearch(value: string): void {
+    this.searchTerm.set(value);
+    this.pageIndex.set(0);
   }
 
   protected onStatusChange(status: string): void {
@@ -340,9 +374,8 @@ export class PatientsComponent implements OnInit {
     this.loadPatients(0);
   }
 
-  protected goToPage(page: number): void {
-    if (page < 0 || page >= this.totalPages() || page === this.pageIndex()) return;
-    this.loadPatients(page);
+  protected onTablePageChange(event: PageEvent): void {
+    this.loadPatients(event.page - 1);
   }
 
   protected openCreate(): void {

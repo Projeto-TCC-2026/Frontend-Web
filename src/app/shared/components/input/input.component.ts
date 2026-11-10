@@ -104,9 +104,9 @@ export class InputComponent implements ControlValueAccessor {
     const base = 'w-full px-4 py-3 text-sm rounded-[var(--radius-sm)] border-[1.5px] bg-white text-[var(--color-neutro-900)] placeholder:text-[var(--color-neutro-500)] transition-all duration-150 outline-none';
 
     const states: Record<InputState, string> = {
-      default: 'border-[var(--color-neutro-300)] focus:border-[var(--color-azul-primario)] focus:shadow-[0_0_0_3px_rgba(12,76,138,0.14)]',
-      error: 'border-[var(--color-critico)] focus:border-[var(--color-critico)] focus:shadow-[0_0_0_3px_rgba(217,72,75,0.14)]',
-      success: 'border-[var(--color-sucesso)] focus:border-[var(--color-sucesso)] focus:shadow-[0_0_0_3px_rgba(47,158,110,0.14)]',
+      default: 'border-[var(--color-neutro-300)] focus:border-[var(--color-azul-primario)]',
+      error: 'border-[var(--color-critico)] focus:border-[var(--color-critico)]',
+      success: 'border-[var(--color-sucesso)] focus:border-[var(--color-sucesso)]',
     };
 
     const disabledClass = this.isDisabled()

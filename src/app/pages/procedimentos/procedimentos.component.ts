@@ -16,7 +16,7 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
 import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
 import { DataTableComponent, TableColumn } from '../../shared/components/data-table/data-table.component';
 import { InputSearchFilterComponent } from '../../shared/components/input-search-filter/input-search-filter.component';
-import { SelectFilterActiveComponent } from '../../shared/components/select-filter/select-filter.component';
+import { SelectFilterComponent } from '../../shared/components/select-filter/select-filter.component';
 
 @Component({
   selector: 'app-procedimentos',
@@ -35,7 +35,7 @@ import { SelectFilterActiveComponent } from '../../shared/components/select-filt
     LucidePlus,
     LucideTrash2,
     LucideClipboardList,
-    SelectFilterActiveComponent
+    SelectFilterComponent
   ],
   templateUrl: './procedimentos.component.html',
 })

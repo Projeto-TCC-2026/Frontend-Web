@@ -13,10 +13,10 @@ export interface SelectOption {
   selector: 'app-select-filter-active',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LucideChevronDown, LucideCheck],
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectFilterActiveComponent), multi: true }],
+  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectFilterComponent), multi: true }],
   templateUrl: './select-filter.component.html',
 })
-export class SelectFilterActiveComponent implements ControlValueAccessor {
+export class SelectFilterComponent implements ControlValueAccessor {
   @Input() inputId = `select-${Math.random().toString(36).slice(2, 8)}`;
   @Input() placeholder = 'Selecione uma opção';
   @Input() set selectedValue(value: string) { this.value.set(value ?? ''); }
