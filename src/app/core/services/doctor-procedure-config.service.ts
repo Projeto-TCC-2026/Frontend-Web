@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 
-export type FieldDataType = 'INTEGER' | 'DECIMAL' | 'BOOLEAN' | 'TEXT' | 'SCALE' | 'PHOTO';
+export type FieldDataType = 'INTEGER' | 'DECIMAL' | 'BOOLEAN' | 'TEXT' | 'SCALE';
 
 export interface DoctorProcedureAssignment {
   id: string;
