@@ -2,7 +2,15 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LucideChevronRight, LucideGripVertical, LucidePencil, LucidePlus, LucideSave, LucideTrash2 } from '@lucide/angular';
+import {
+  LucideChevronRight,
+  LucideGripVertical,
+  LucidePencil, 
+  LucidePlus, 
+  LucideSave, 
+  LucideTrash2,
+  LucideClipboardList
+} from '@lucide/angular';
 
 import {
   DoctorProcedureAssignment,
@@ -37,6 +45,7 @@ import { SelectComponent, SelectOption } from '../../shared/components/select/se
     LucidePlus,
     LucideSave,
     LucideTrash2,
+    LucideClipboardList
   ],
   templateUrl: './meus-procedimentos.component.html',
 })
@@ -58,7 +67,7 @@ export class MeusProcedimentosComponent implements OnInit {
   protected dataTypeOptions: SelectOption[] = [
     { value: 'INTEGER', label: 'Número inteiro' }, { value: 'DECIMAL', label: 'Número decimal' },
     { value: 'BOOLEAN', label: 'Sim ou não' }, { value: 'TEXT', label: 'Texto livre' },
-    { value: 'SCALE', label: 'Escala' }, { value: 'PHOTO', label: 'Foto' },
+    { value: 'SCALE', label: 'Escala' }
   ];
   protected booleanOptions: SelectOption[] = [{ value: 'true', label: 'Sim' }, { value: 'false', label: 'Não' }];
   protected configurationDirty = signal(false);
@@ -246,7 +255,7 @@ export class MeusProcedimentosComponent implements OnInit {
 
   protected dataTypeLabel(dataType: FieldDataType): string {
     const labels: Record<FieldDataType, string> = {
-      INTEGER: 'Número inteiro', DECIMAL: 'Número decimal', BOOLEAN: 'Sim ou não', TEXT: 'Texto livre', SCALE: 'Escala', PHOTO: 'Foto',
+      INTEGER: 'Número inteiro', DECIMAL: 'Número decimal', BOOLEAN: 'Sim ou não', TEXT: 'Texto livre', SCALE: 'Escala',
     };
     return labels[dataType];
   }

@@ -93,7 +93,7 @@
 
   <!-- Formulário Doctor -->
   @if (isDoctor) {
-    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6 max-w-lg">
+    <section class="bg-white border border-[var(--color-neutro-150)] rounded-[var(--radius-lg)] p-6">
       <form class="flex flex-col gap-4" (ngSubmit)="onSubmit()">
 
         <app-input
@@ -122,12 +122,9 @@
           mask="phone">
         </app-input>
 
-        <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+        <div class="flex flex-col gap-3 pt-2 sm:flex-row justify-end">
           <app-button type="submit" [loading]="isSubmitting" [fullWidth]="true">
             Salvar alterações
-          </app-button>
-          <app-button variant="ghost" type="button" [fullWidth]="true" (clicked)="goBack()">
-            Cancelar
           </app-button>
         </div>
 

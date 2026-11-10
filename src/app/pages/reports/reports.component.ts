@@ -3,7 +3,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import {
   LucideDownload,
-  LucideInfo,
+  LucideFileSpreadsheet
 } from '@lucide/angular';
 import { forkJoin, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -37,6 +37,7 @@ interface FilterDefinition {
 
 interface ReportDefinition {
   id: ReportId;
+  tabLabel: string;
   title: string;
   description: string;
   filters: FilterDefinition[];
@@ -53,7 +54,7 @@ interface ReportDefinition {
     InputComponent,
     SelectComponent,
     LucideDownload,
-    LucideInfo,
+    LucideFileSpreadsheet
   ],
   templateUrl: './reports.component.html',
 })
@@ -78,6 +79,7 @@ export class ReportsComponent implements OnInit {
   protected readonly reports: ReportDefinition[] = [
     {
       id: 'daily',
+      tabLabel: 'Diário',
       title: 'Relatório diário de check-ins',
       description: 'Dados coletados nos questionários em uma data específica.',
       filters: [
@@ -89,6 +91,7 @@ export class ReportsComponent implements OnInit {
     },
     {
       id: 'weekly',
+      tabLabel: 'Semanal',
       title: 'Relatório semanal de check-ins',
       description: 'Dados coletados durante uma semana para acompanhar a evolução.',
       filters: [
@@ -100,6 +103,7 @@ export class ReportsComponent implements OnInit {
     },
     {
       id: 'monthly',
+      tabLabel: 'Mensal',
       title: 'Relatório mensal de check-ins',
       description: 'Visão mensal dos dados coletados nos questionários de acompanhamento.',
       filters: [
@@ -111,6 +115,7 @@ export class ReportsComponent implements OnInit {
     },
     {
       id: 'alerts',
+      tabLabel: 'Alertas',
       title: 'Relatório de alertas clínicos',
       description: 'Alertas emitidos em uma data, com dado clínico, origem e severidade.',
       filters: [
@@ -176,6 +181,27 @@ export class ReportsComponent implements OnInit {
     });
   }
 
+  protected selectTab(reportId: ReportId): void {
+    this.activeReport.set(reportId);
+  }
+
+  protected onTabKeydown(event: KeyboardEvent, index: number): void {
+    const last = this.reports.length - 1;
+    let next: number;
+    switch (event.key) {
+      case 'ArrowRight': next = index === last ? 0 : index + 1; break;
+      case 'ArrowLeft': next = index === 0 ? last : index - 1; break;
+      case 'Home': next = 0; break;
+      case 'End': next = last; break;
+      default: return;
+    }
+
+    event.preventDefault();
+    const reportId = this.reports[next].id;
+    this.selectTab(reportId);
+    document.getElementById(`reports-tab-${reportId}`)?.focus();
+  }
+
   protected showFilter(filter: FilterDefinition): boolean {
     return !filter.hospitalOnly || this.userRole() === 'HOSPITAL';
   }
@@ -183,10 +209,6 @@ export class ReportsComponent implements OnInit {
   protected readonly selectedReport = computed(
     () => this.reports.find(report => report.id === this.activeReport()) ?? this.reports[0]
   );
-
-  protected selectReport(reportId: ReportId): void {
-    this.activeReport.set(reportId);
-  }
 
   protected optionsFor(filter: FilterDefinition): SelectOption[] {
     if (filter.name === 'procedureId') return this.procedureOptions();
