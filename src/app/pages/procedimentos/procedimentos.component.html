@@ -34,21 +34,21 @@
 
     <div class="lg:w-[calc(50%-2rem)] flex flex-col lg:flex-row lg:justify-end justify-center items-center">
       @if (isAdmin()) {
-      <app-select-filter-active
+      <app-select-filter
         label="Hospital"
         inputId="procedure-hospital"
         [options]="hospitalOptions()"
         [selectedValue]="selectedHospitalId() ?? ''"
         (changed)="selectHospital($event)">
-      </app-select-filter-active>
+      </app-select-filter>
       }
 
-      <app-select-filter-active
+      <app-select-filter
         inputId="procedure-status"
         [options]="statusOptions"
         [selectedValue]="statusFilter()"
         (changed)="onStatusChange($event)">
-      </app-select-filter-active>
+      </app-select-filter>
     </div>
   </div>
 

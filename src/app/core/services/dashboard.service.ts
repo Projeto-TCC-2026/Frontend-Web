@@ -41,6 +41,35 @@ export interface DoctorDashboard {
   newPatientsLast30Days: number;
 }
 
+export interface DailyMetric {
+  date: string;
+  count: number;
+}
+
+export interface DailyProcedureAverage {
+  date: string;
+  average: number | null;
+  sampleSize: number;
+}
+
+export interface ProcedureFieldMetrics {
+  fieldId: string;
+  sourceFieldIds: string[];
+  name: string;
+  dataType: 'INTEGER' | 'DECIMAL' | 'SCALE';
+  unit: string | null;
+  dailyAverages: DailyProcedureAverage[];
+}
+
+export interface ProcedureMetrics {
+  procedureId: string;
+  requestedStartDate: string;
+  requestedEndDate: string;
+  dataStartDate: string;
+  dataEndDate: string;
+  fields: ProcedureFieldMetrics[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   private api = inject(ApiService);
@@ -64,6 +93,34 @@ export class DashboardService {
     return this.api.get<any>('/api/doctor/dashboard').pipe(
       map(response => response.data)
     );
+  }
+
+  getDailyCheckins(startDate: string, endDate: string): Observable<DailyMetric[]> {
+    return this.api.get<{ data: DailyMetric[] }>('/api/presentation/metrics/daily-checkins', {
+      startDate,
+      endDate,
+    }).pipe(map(response => response.data));
+  }
+
+  getDailySmartwatchPatients(startDate: string, endDate: string): Observable<DailyMetric[]> {
+    return this.api.get<{ data: DailyMetric[] }>('/api/presentation/metrics/daily-smartwatch-patients', {
+      startDate,
+      endDate,
+    }).pipe(map(response => response.data));
+  }
+
+  getDailyAlerts(startDate: string, endDate: string): Observable<DailyMetric[]> {
+    return this.api.get<{ data: DailyMetric[] }>('/api/presentation/metrics/daily-alerts', {
+      startDate,
+      endDate,
+    }).pipe(map(response => response.data));
+  }
+
+  getProcedureMetrics(procedureId: string, startDate: string, endDate: string): Observable<ProcedureMetrics> {
+    return this.api.get<{ data: ProcedureMetrics }>(`/api/presentation/metrics/procedures/${procedureId}`, {
+      startDate,
+      endDate,
+    }).pipe(map(response => response.data));
   }
 
   /** @deprecated Use getAdminSummary() or getHospitalDashboard() */

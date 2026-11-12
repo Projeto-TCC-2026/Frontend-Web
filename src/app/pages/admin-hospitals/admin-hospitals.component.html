@@ -33,12 +33,12 @@
       </app-input-search-filter>
     </div>
 
-    <app-select-filter-active
+    <app-select-filter
       inputId="hospital-status"
       [options]="statusOptions"
       [selectedValue]="statusFilter()"
       (changed)="onStatusChange($event)">
-    </app-select-filter-active>
+    </app-select-filter>
   </div>
 
   <!-- Loading -->

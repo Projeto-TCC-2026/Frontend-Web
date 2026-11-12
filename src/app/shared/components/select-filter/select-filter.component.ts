@@ -10,7 +10,7 @@ export interface SelectOption {
 }
 
 @Component({
-  selector: 'app-select-filter-active',
+  selector: 'app-select-filter',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LucideChevronDown, LucideCheck],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectFilterComponent), multi: true }],
